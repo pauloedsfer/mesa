@@ -162,6 +162,21 @@ textarea.ipt{width:100%;resize:vertical;min-height:54px;line-height:1.45}
   background:conic-gradient(#FF3D9A,#C77DFF,#2E7BF6,#12C9C9,#17B978,#FFB020,#FF3D9A);
 }
 input#p-corlivre{position:absolute;opacity:0;width:0;height:0;pointer-events:none}
+.emojis{
+  display:flex;flex-wrap:wrap;gap:4px;max-height:208px;overflow-y:auto;
+  padding:7px;border:1px solid var(--linha);border-radius:8px;background:var(--noite);
+}
+.emojis .cat{
+  width:100%;font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--luz-fraca);margin:5px 0 1px;
+}
+.emojis .cat:first-child{margin-top:0}
+.emojis button{
+  width:31px;height:31px;font-size:17px;line-height:1;border-radius:7px;
+  font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;
+}
+.emojis button:hover{background:var(--noite-3)}
+.emojis button.ativo{background:var(--acento);box-shadow:0 0 0 2px var(--acento-claro)}
 
 /* ---------- régua de cenas ---------- */
 .regua{
@@ -501,6 +516,7 @@ body.apresentando{--barra:0px}
     <label class="marcar"><input type="checkbox" id="ck-raios"> Direção do olhar</label>
     <label class="marcar"><input type="checkbox" id="ck-nomes"> Nomes</label>
     <label class="marcar"><input type="checkbox" id="ck-relogio"> Cronômetro à vista</label>
+    <label class="marcar"><input type="checkbox" id="ck-emojiNovo"> Novos representantes com emoji</label>
 
     <div class="rotulo">Fechamento</div>
     <label class="mini">Frase de força</label>
@@ -612,37 +628,49 @@ const TINTAS = ["#FF3D9A","#FF6FB5","#C77DFF","#A855F7","#7B5BF2","#2E7BF6",
 
 const PALETA = [
   { grupo:"Sistema familiar", itens:[
-    { papel:"Constelado", forma:"n", cor:"constelado" },
-    { papel:"Pai",        forma:"m", cor:"paterna" },
-    { papel:"Mãe",        forma:"f", cor:"materna" },
-    { papel:"Avô",        forma:"m", cor:"paterna" },
-    { papel:"Avó",        forma:"f", cor:"materna" },
-    { papel:"Irmão",      forma:"m", cor:"irmaos" },
-    { papel:"Irmã",       forma:"f", cor:"irmaos" },
-    { papel:"Filho",      forma:"m", cor:"filhos" },
-    { papel:"Filha",      forma:"f", cor:"filhos" },
-    { papel:"Cônjuge",    forma:"n", cor:"conjugal" },
-    { papel:"Ex-cônjuge", forma:"n", cor:"conjugal" }
+    { papel:"Constelado", forma:"n", cor:"constelado", emoji:"🧑" },
+    { papel:"Pai",        forma:"m", cor:"paterna",    emoji:"👨" },
+    { papel:"Mãe",        forma:"f", cor:"materna",    emoji:"👩" },
+    { papel:"Avô",        forma:"m", cor:"paterna",    emoji:"👴" },
+    { papel:"Avó",        forma:"f", cor:"materna",    emoji:"👵" },
+    { papel:"Irmão",      forma:"m", cor:"irmaos",     emoji:"👦" },
+    { papel:"Irmã",       forma:"f", cor:"irmaos",     emoji:"👧" },
+    { papel:"Filho",      forma:"m", cor:"filhos",     emoji:"🧒" },
+    { papel:"Filha",      forma:"f", cor:"filhos",     emoji:"👧" },
+    { papel:"Cônjuge",    forma:"n", cor:"conjugal",   emoji:"💑" },
+    { papel:"Ex-cônjuge", forma:"n", cor:"conjugal",   emoji:"💔" }
   ]},
   { grupo:"Excluídos e mortos", itens:[
-    { papel:"Excluído",   forma:"n", cor:"excluido", estado:"excluido" },
-    { papel:"Falecido",   forma:"n", cor:"morto",    estado:"morto" },
-    { papel:"Aborto",     forma:"d", cor:"morto",    estado:"morto", raio:17 },
-    { papel:"Natimorto",  forma:"d", cor:"morto",    estado:"morto", raio:17 },
-    { papel:"Segredo",    forma:"d", cor:"excluido", estado:"excluido" }
+    { papel:"Excluído",   forma:"n", cor:"excluido", estado:"excluido", emoji:"🚪" },
+    { papel:"Falecido",   forma:"n", cor:"morto",    estado:"morto", emoji:"🕯️" },
+    { papel:"Aborto",     forma:"d", cor:"morto",    estado:"morto", raio:17, emoji:"👼" },
+    { papel:"Natimorto",  forma:"d", cor:"morto",    estado:"morto", raio:17, emoji:"👼" },
+    { papel:"Segredo",    forma:"d", cor:"excluido", estado:"excluido", emoji:"🔒" }
   ]},
   { grupo:"Forças e recursos", itens:[
-    { papel:"Sintoma",  forma:"d", cor:"sintoma" },
-    { papel:"Doença",   forma:"d", cor:"sintoma" },
-    { papel:"Destino",  forma:"d", cor:"materna" },
-    { papel:"Morte",    forma:"d", cor:"morto" },
-    { papel:"Dinheiro", forma:"d", cor:"recurso" },
-    { papel:"Empresa",  forma:"d", cor:"recurso" },
-    { papel:"Trabalho", forma:"d", cor:"recurso" },
-    { papel:"Vida",     forma:"d", cor:"luz" },
-    { papel:"Solução",  forma:"d", cor:"luz" }
+    { papel:"Sintoma",  forma:"d", cor:"sintoma", emoji:"🩹" },
+    { papel:"Doença",   forma:"d", cor:"sintoma", emoji:"🩺" },
+    { papel:"Destino",  forma:"d", cor:"materna", emoji:"⏳" },
+    { papel:"Morte",    forma:"d", cor:"morto",   emoji:"⚰️" },
+    { papel:"Dinheiro", forma:"d", cor:"recurso", emoji:"💰" },
+    { papel:"Empresa",  forma:"d", cor:"recurso", emoji:"🏢" },
+    { papel:"Trabalho", forma:"d", cor:"recurso", emoji:"💼" },
+    { papel:"Vida",     forma:"d", cor:"luz",     emoji:"🌱" },
+    { papel:"Solução",  forma:"d", cor:"luz",     emoji:"✨" }
   ]}
 ];
+
+const EMOJIS = [
+  ["Pessoas",        ["🧑","👨","👩","👴","👵","🧓","👦","👧","🧒","👶","🤰","🧔","👱‍♀️","🧕","🤵","👰"]],
+  ["Vínculos",       ["👪","👨‍👩‍👧","💑","💏","🤝","🫂","💍","👣","🪢","⛓️"]],
+  ["Coração",        ["❤️","🩷","💙","💜","🖤","🤍","💔","💗","💘","🩶"]],
+  ["Corpo e sintoma",["🩺","💊","🩹","🧠","🫀","🦴","🩸","🤕","🤒","😢","😡","😨","😴","♿"]],
+  ["Destino",        ["✨","⭐","🌟","🕊️","🙏","⚖️","🕯️","⚰️","🪦","👼","☠️","⏳"]],
+  ["Natureza",       ["🌳","🌱","🌸","🌊","🔥","🌙","☀️","🏔️","🌈","🍂","🐕","🐈"]],
+  ["Recursos",       ["💰","💼","🏠","🏢","🎓","📚","🔑","⚓","🚗","✈️","🛠️","🍞"]],
+  ["Marcas",         ["🚪","🪞","🧩","❓","🔒","📿","🎭","⚔️","🛡️","🧿"]]
+];
+const FONTE_EMOJI = '"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';
 
 const RAIO = 27;
 const LARG = 1400, ALT = 900;
@@ -1008,7 +1036,7 @@ function montarFundo(destino){
    4. Estado
    ============================================================ */
 const OPCOES_PADRAO = {
-  raios:true, nomes:true, relogio:true,
+  raios:true, nomes:true, relogio:true, emojiNovo:false,
   fundo:"nevoa", tomFundo:62, animar:true,
   corFundo:"#6B4FD8", corFundo2:"#0D0828", degrade:true,
   ondas:true, forcaOndas:62, qtdOndas:5, corOndas:"#B9A3FF"
@@ -1114,22 +1142,36 @@ function desenharFigura(fig, t, opts){
     giro.appendChild(raio);
   }
 
-  const corpo = formaDe(fig.forma, r);
-  corpo.setAttribute("fill", c.base);
-  corpo.setAttribute("stroke", contorno);
-  corpo.setAttribute("stroke-width", 2.4);
-  if(fantasma){
-    corpo.setAttribute("stroke-dasharray","5 4");
-    corpo.setAttribute("fill-opacity", .55);
+  const comEmoji = fig.forma === "e" && fig.emoji;
+
+  if(comEmoji){
+    // disco neutro para o emoji ficar legível; a cor fica no anel e no halo
+    const disco = el("circle");
+    disco.setAttribute("r", r);
+    disco.setAttribute("fill", t.claro ? "#FFFFFF" : "#1A1330");
+    disco.setAttribute("fill-opacity", .84);
+    disco.setAttribute("stroke", c.base);
+    disco.setAttribute("stroke-width", 3.4);
+    if(fantasma) disco.setAttribute("stroke-dasharray","5 4");
+    giro.appendChild(disco);
+  } else {
+    const corpo = formaDe(fig.forma, r);
+    corpo.setAttribute("fill", c.base);
+    corpo.setAttribute("stroke", contorno);
+    corpo.setAttribute("stroke-width", 2.4);
+    if(fantasma){
+      corpo.setAttribute("stroke-dasharray","5 4");
+      corpo.setAttribute("fill-opacity", .55);
+    }
+    giro.appendChild(corpo);
   }
-  giro.appendChild(corpo);
 
   const proa = el("polygon");
   proa.setAttribute("points", `0,${-r-12} ${-8},${-r+2} ${8},${-r+2}`);
-  proa.setAttribute("fill", contorno);
+  proa.setAttribute("fill", comEmoji ? c.base : contorno);
   giro.appendChild(proa);
 
-  if(fig.estado === "morto"){
+  if(fig.estado === "morto" && !comEmoji){
     [[-1,-1,1,1],[-1,1,1,-1]].forEach(([a,b,d,e]) => {
       const l = el("line");
       l.setAttribute("x1", a*r*.62); l.setAttribute("y1", b*r*.62);
@@ -1140,6 +1182,19 @@ function desenharFigura(fig, t, opts){
     });
   }
   g.appendChild(giro);
+
+  if(comEmoji){
+    const face = el("text");
+    face.setAttribute("y", 0);
+    face.setAttribute("text-anchor","middle");
+    face.setAttribute("dominant-baseline","central");
+    face.setAttribute("font-size", (r * 1.28).toFixed(1));
+    face.setAttribute("font-family", FONTE_EMOJI);
+    if(fantasma) face.setAttribute("opacity", .62);
+    face.style.pointerEvents = "none";
+    face.textContent = fig.emoji;
+    g.appendChild(face);
+  }
 
   if(opts.selecionado){
     const anel = el("circle");
@@ -1233,6 +1288,11 @@ function miniatura(snap, figuras, escuro = true){
     const c = corDe(f);
     const rx = 27, x = p.x, y = p.y;
     const dx = Math.sin(p.ang*Math.PI/180)*50, dy = -Math.cos(p.ang*Math.PI/180)*50;
+    if(f.forma === "e" && f.emoji){
+      return `<circle cx="${x}" cy="${y}" r="${rx}" fill="${escuro ? "#1A1330" : "#FFFFFF"}" fill-opacity=".9" stroke="${c.base}" stroke-width="6"/>` +
+             `<line x1="${x}" y1="${y}" x2="${x+dx}" y2="${y+dy}" stroke="${c.base}" stroke-width="5" opacity=".7"/>` +
+             `<text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="central" font-size="${(rx*1.3).toFixed(0)}" font-family='${FONTE_EMOJI}'>${escapar(f.emoji)}</text>`;
+    }
     const forma = f.forma === "f"
       ? `<circle cx="${x}" cy="${y}" r="${rx}" fill="${c.base}"/>`
       : f.forma === "d"
@@ -1390,7 +1450,8 @@ function addFigura(base){
     id:id(),
     nome: base.nome || base.papel,
     papel: base.papel || "",
-    forma: base.forma || "n",
+    forma: (dados.opcoes.emojiNovo && base.emoji) ? "e" : (base.forma || "n"),
+    emoji: base.emoji || null,
     cor: base.cor || "materna",
     corLivre: null,
     estado: base.estado || "vivo",
@@ -1410,7 +1471,7 @@ function addLivre(){
   const campo = $("#in-livre");
   const nome = campo.value.trim();
   if(!nome) return campo.focus();
-  addFigura({ nome, papel:"", forma:"n", cor:"filhos" });
+  addFigura({ nome, papel:"", forma:"n", cor:"filhos", emoji:"🧑" });
   campo.value = "";
 }
 
@@ -1475,6 +1536,7 @@ function painelProps(){
           <option value="f" ${f.forma==="f"?"selected":""}>Feminino</option>
           <option value="n" ${f.forma==="n"?"selected":""}>Neutro</option>
           <option value="d" ${f.forma==="d"?"selected":""}>Força</option>
+          <option value="e" ${f.forma==="e"?"selected":""}>Emoji</option>
         </select>
       </div>
       <div style="flex:1">
@@ -1486,6 +1548,16 @@ function painelProps(){
         </select>
       </div>
     </div>
+    ${f.forma === "e" ? `<div class="grupo">
+      <label class="mini">Emoji</label>
+      <div class="emojis">
+        ${EMOJIS.map(([cat, lista]) => `<div class="cat">${cat}</div>` +
+          lista.map(x => `<button data-emoji="${x}" class="${x===f.emoji?"ativo":""}">${x}</button>`).join("")).join("")}
+      </div>
+      <input class="ipt" id="p-emoji-livre" value="${escapar(f.emoji || "")}"
+             placeholder="ou cole qualquer emoji" style="width:100%;margin-top:6px;text-align:center;font-size:18px">
+    </div>` : ""}
+
     <div class="grupo">
       <label class="mini">Direção do olhar</label>
       <div class="deslize">
@@ -1521,7 +1593,19 @@ function painelProps(){
     if(!e.target.value) return;
     f.cor = e.target.value; f.corLivre = null; mudou(); painelProps();
   };
-  $("#p-forma").onchange = e => { f.forma = e.target.value; mudou(); };
+  $("#p-forma").onchange = e => {
+    f.forma = e.target.value;
+    if(f.forma === "e" && !f.emoji) f.emoji = "🧑";
+    mudou(); painelProps();
+  };
+  $$("#props .emojis button").forEach(b => {
+    b.onclick = () => { f.emoji = b.dataset.emoji; mudou(); painelProps(); };
+  });
+  if($("#p-emoji-livre")) $("#p-emoji-livre").oninput = e => {
+    const v = [...e.target.value.trim()].slice(0, 4).join("");
+    f.emoji = v || null;
+    render(); salvar();
+  };
   $("#p-estado").onchange = e => {
     f.estado = e.target.value;
     if(!f.corLivre){
@@ -2111,6 +2195,8 @@ function normalizar(){
       if(antigas[f.cor]) f.cor = antigas[f.cor];
       if(!CORES[f.cor]) f.cor = "materna";
       if(f.corLivre === undefined) f.corLivre = null;
+      if(f.emoji === undefined) f.emoji = null;
+      if(f.forma === "e" && !f.emoji) f.forma = "n";
     });
   });
   if(!sessao()) dados.atual = dados.sessoes[0]?.id;
@@ -2233,7 +2319,7 @@ function montarFundos(){
 
 function aplicarOpcoes(){
   const o = dados.opcoes;
-  ["raios","nomes","relogio","ondas","degrade"].forEach(k => { $("#ck-" + k).checked = !!o[k]; });
+  ["raios","nomes","relogio","ondas","degrade","emojiNovo"].forEach(k => { $("#ck-" + k).checked = !!o[k]; });
   $("#in-fundo").value = o.fundo;
   $("#in-tom").value = o.tomFundo;   $("#out-tom").value = o.tomFundo + "%";
   $("#in-forca").value = o.forcaOndas; $("#out-forca").value = o.forcaOndas + "%";
@@ -2296,6 +2382,7 @@ $("#ck-degrade").onchange = e => { dados.opcoes.degrade = e.target.checked; salv
   $("#ck-" + k).onchange = e => { dados.opcoes[k] = e.target.checked; salvar(); render(); };
 });
 $("#ck-relogio").onchange = e => { dados.opcoes.relogio = e.target.checked; salvar(); pintarRelogio(); };
+$("#ck-emojiNovo").onchange = e => { dados.opcoes.emojiNovo = e.target.checked; salvar(); };
 
 ["cliente","tema","data","modalidade","frase","final","obs","tarefa","retorno"].forEach(k => {
   $("#in-" + k).oninput = e => {
