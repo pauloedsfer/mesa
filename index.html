@@ -2,7 +2,8 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#150F2E">
 <title>Mesa — Constelação Familiar</title>
 <style>
 :root{
@@ -18,6 +19,7 @@
   --serif: Charter, "Bitstream Charter", "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
   --sans: "Avenir Next", "Segoe UI", Inter, system-ui, -apple-system, sans-serif;
   --mono: ui-monospace, "SF Mono", "Roboto Mono", Menlo, Consolas, monospace;
+  --barra:0px;
 }
 *{box-sizing:border-box}
 html,body{height:100%;margin:0}
@@ -25,54 +27,65 @@ body{
   background:var(--noite);color:var(--luz);
   font-family:var(--sans);font-size:14px;
   display:flex;flex-direction:column;overflow:hidden;
+  -webkit-text-size-adjust:100%;
 }
 button,input,select,textarea{font:inherit;color:inherit}
 button{cursor:pointer;background:none;border:none}
 
 /* ---------- topo ---------- */
 .topo{
-  display:flex;align-items:center;gap:14px;padding:9px 14px;
+  display:flex;align-items:center;gap:10px;padding:9px 12px;
+  padding-top:calc(9px + env(safe-area-inset-top));
   background:var(--noite-2);border-bottom:1px solid var(--linha);flex:0 0 auto;
 }
-.marca{font-family:var(--serif);font-size:19px;letter-spacing:.02em;padding-right:4px}
+.marca{font-family:var(--serif);font-size:19px;letter-spacing:.02em;flex:0 0 auto}
 .marca em{font-style:normal;color:var(--acento)}
-.campo-sessao{display:flex;align-items:center;gap:8px;flex:1;min-width:0}
+.topo .espaco{flex:1;min-width:0}
 .ipt{
-  background:var(--noite-3);border:1px solid var(--linha);border-radius:5px;
-  padding:6px 9px;min-width:0;
+  background:var(--noite-3);border:1px solid var(--linha);border-radius:6px;
+  padding:7px 9px;min-width:0;
 }
 .ipt::placeholder{color:#8A7CB8}
 .ipt:focus{outline:2px solid var(--acento);outline-offset:1px}
-.ipt.cliente{width:190px}
-.ipt.tema{flex:1;min-width:120px}
 select.ipt{cursor:pointer}
 .acoes{display:flex;gap:6px;align-items:center;flex:0 0 auto}
 .btn{
-  padding:6px 11px;border:1px solid var(--linha);border-radius:5px;
+  padding:7px 11px;border:1px solid var(--linha);border-radius:6px;
   background:var(--noite-3);white-space:nowrap;
 }
 .btn:hover{border-color:var(--acento);background:#332764}
 .btn:focus-visible{outline:2px solid var(--acento);outline-offset:1px}
 .btn.principal{background:var(--acento);color:#1A1030;border-color:var(--acento);font-weight:600}
 .btn.principal:hover{background:var(--acento-claro)}
+.btn.pequeno{padding:4px 8px;font-size:12px}
 .menu{position:relative}
 .menu-lista{
-  position:absolute;right:0;top:calc(100% + 5px);z-index:40;min-width:196px;
-  background:var(--noite-2);border:1px solid var(--linha);border-radius:7px;
+  position:absolute;right:0;top:calc(100% + 5px);z-index:60;min-width:210px;
+  background:var(--noite-2);border:1px solid var(--linha);border-radius:8px;
   padding:5px;box-shadow:0 14px 34px rgba(10,4,30,.65);
 }
-.menu-lista button{display:block;width:100%;text-align:left;padding:7px 9px;border-radius:4px}
+.menu-lista button{display:block;width:100%;text-align:left;padding:8px 9px;border-radius:5px}
 .menu-lista button:hover{background:var(--noite-3)}
 .menu-lista hr{border:none;border-top:1px solid var(--linha);margin:5px 2px}
 [hidden]{display:none !important}
 
+/* cronômetro */
+.relogio{
+  display:flex;align-items:center;gap:2px;background:var(--noite-3);
+  border:1px solid var(--linha);border-radius:20px;padding:3px 4px 3px 10px;flex:0 0 auto;
+}
+.relogio .tempo{font-family:var(--mono);font-size:14px;letter-spacing:.04em;min-width:52px;text-align:center}
+.relogio.correndo .tempo{color:var(--acento)}
+.relogio button{width:27px;height:27px;border-radius:50%;font-size:12px;line-height:1}
+.relogio button:hover{background:var(--noite-2)}
+
 /* ---------- corpo ---------- */
-.corpo{flex:1;display:flex;min-height:0}
+.corpo{flex:1;display:flex;min-height:0;position:relative}
 .lateral{
   width:216px;flex:0 0 auto;background:var(--noite-2);overflow-y:auto;
   border-right:1px solid var(--linha);padding:12px;
 }
-.lateral.dir{border-right:none;border-left:1px solid var(--linha);width:266px}
+.lateral.dir{border-right:none;border-left:1px solid var(--linha);width:272px}
 .rotulo{
   font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
   color:var(--luz-fraca);margin:16px 0 7px;
@@ -80,7 +93,7 @@ select.ipt{cursor:pointer}
 .rotulo:first-child{margin-top:0}
 .fichas{display:flex;flex-wrap:wrap;gap:5px}
 .ficha{
-  display:flex;align-items:center;gap:6px;padding:5px 9px 5px 6px;
+  display:flex;align-items:center;gap:6px;padding:6px 10px 6px 7px;
   border:1px solid var(--linha);border-radius:20px;background:var(--noite-3);font-size:12.5px;
 }
 .ficha:hover{border-color:var(--acento);background:#352A6B}
@@ -88,53 +101,65 @@ select.ipt{cursor:pointer}
 .ficha i.f{border-radius:50%}
 .ficha i.d{transform:rotate(45deg)}
 .ficha i.n{border-radius:3px}
-
 .livre{display:flex;gap:5px;margin-top:8px}
-.livre .ipt{flex:1;font-size:12.5px;padding:5px 8px}
+.cab-gaveta{
+  display:none;align-items:center;justify-content:space-between;gap:10px;
+  margin:-2px 0 12px;padding-bottom:9px;border-bottom:1px solid var(--linha);
+}
+.cab-gaveta strong{font-family:var(--serif);font-weight:normal;font-size:17px}
+.cab-gaveta button{
+  width:32px;height:32px;border-radius:50%;border:1px solid var(--linha);
+  background:var(--noite-3);font-size:15px;line-height:1;flex:0 0 auto;
+}
+.livre .ipt{flex:1;font-size:12.5px;padding:6px 8px}
 
 /* ---------- campo ---------- */
 .palco{flex:1;position:relative;min-width:0;background:#191141;display:flex}
 svg#campo{flex:1;display:block;touch-action:none;cursor:default}
 svg#campo.arrastando-campo{cursor:grabbing}
 .zoom{
-  position:absolute;left:12px;bottom:12px;display:flex;gap:4px;
-  background:rgba(21,15,46,.82);border:1px solid var(--linha);border-radius:7px;padding:4px;
+  position:absolute;left:12px;bottom:calc(12px + var(--barra));display:flex;gap:4px;
+  background:rgba(21,15,46,.8);border:1px solid var(--linha);border-radius:8px;padding:4px;
   backdrop-filter:blur(6px);
 }
-.zoom button{width:29px;height:29px;border-radius:4px;font-size:15px;line-height:1}
+.zoom button{width:31px;height:31px;border-radius:5px;font-size:15px;line-height:1}
 .zoom button:hover{background:var(--noite-3)}
 .dica{
-  position:absolute;left:50%;transform:translateX(-50%);bottom:14px;
+  position:absolute;left:50%;transform:translateX(-50%);bottom:calc(16px + var(--barra));
   font-size:12px;color:var(--luz-fraca);background:rgba(21,15,46,.8);
   padding:6px 12px;border-radius:16px;border:1px solid var(--linha);pointer-events:none;
-  backdrop-filter:blur(6px);
+  backdrop-filter:blur(6px);max-width:78%;text-align:center;
 }
 
 /* ---------- painel direito ---------- */
-.grupo{margin-bottom:6px}
+.grupo{margin-bottom:7px}
 .linha{display:flex;gap:7px;margin-bottom:7px}
 .linha .ipt{flex:1;width:100%}
 label.mini{display:block;font-size:11px;color:var(--luz-fraca);margin-bottom:3px}
-.marcar{display:flex;align-items:center;gap:8px;padding:5px 0;font-size:13px;cursor:pointer}
-.marcar input{accent-color:var(--acento);width:15px;height:15px}
-.angulo{display:flex;align-items:center;gap:9px}
-.angulo input[type=range]{flex:1;accent-color:var(--acento)}
-.angulo output{font-family:var(--mono);font-size:12px;color:var(--acento);width:44px;text-align:right}
+.marcar{display:flex;align-items:center;gap:8px;padding:6px 0;font-size:13px;cursor:pointer}
+.marcar input{accent-color:var(--acento);width:16px;height:16px}
+.deslize{display:flex;align-items:center;gap:9px}
+.deslize input[type=range]{flex:1;accent-color:var(--acento);min-width:0}
+.deslize output{font-family:var(--mono);font-size:11.5px;color:var(--acento);width:46px;text-align:right}
 textarea.ipt{width:100%;resize:vertical;min-height:54px;line-height:1.45}
 .vazio{color:var(--luz-fraca);font-size:13px;line-height:1.5;padding:10px 0}
+.cor-linha{display:flex;align-items:center;gap:8px}
+.cor-linha input[type=color]{
+  width:34px;height:30px;padding:0;border:1px solid var(--linha);border-radius:6px;background:none;cursor:pointer;
+}
+.cor-linha span{font-family:var(--mono);font-size:11px;color:var(--luz-fraca)}
 
 /* tintas — o paciente escolhe */
-.tintas{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.tintas{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:8px}
 .tinta{
-  width:25px;height:25px;border-radius:50%;border:2px solid transparent;
+  width:27px;height:27px;border-radius:50%;border:2px solid transparent;
   box-shadow:0 0 0 1px rgba(255,255,255,.16), 0 0 9px -1px currentColor;
 }
-.tinta:hover{transform:scale(1.12)}
+.tinta:hover{transform:scale(1.1)}
 .tinta.ativa{border-color:var(--luz);box-shadow:0 0 0 1px var(--luz), 0 0 13px currentColor}
 .tinta-livre{
-  width:25px;height:25px;padding:0;border:1px dashed var(--luz-fraca);border-radius:50%;
-  background:conic-gradient(#FF3D9A,#C77DFF,#2E7BF6,#10C7C7,#17B978,#FFB020,#FF3D9A);
-  cursor:pointer;
+  width:27px;height:27px;padding:0;border:1px dashed var(--luz-fraca);border-radius:50%;
+  background:conic-gradient(#FF3D9A,#C77DFF,#2E7BF6,#12C9C9,#17B978,#FFB020,#FF3D9A);
 }
 input#p-corlivre{position:absolute;opacity:0;width:0;height:0;pointer-events:none}
 
@@ -145,95 +170,195 @@ input#p-corlivre{position:absolute;opacity:0;width:0;height:0;pointer-events:non
 }
 .regua-cab{display:flex;flex-direction:column;gap:5px;flex:0 0 auto}
 .regua-cab .rotulo{margin:0}
-.regua-cab .btn{padding:4px 9px;font-size:12px}
 .trilho{display:flex;gap:8px;overflow-x:auto;padding:2px;flex:1}
 .cena{
-  flex:0 0 auto;width:104px;border:1px solid var(--linha);border-radius:7px;
+  flex:0 0 auto;width:106px;border:1px solid var(--linha);border-radius:8px;
   background:var(--noite-3);padding:5px;text-align:left;position:relative;
 }
 .cena:hover{border-color:var(--acento)}
 .cena.ativa{border-color:var(--acento);box-shadow:0 0 0 1px var(--acento)}
-.cena svg{display:block;width:100%;height:56px;border-radius:4px}
+.cena svg{display:block;width:100%;height:56px;border-radius:5px}
 .cena .num{font-family:var(--mono);font-size:10px;color:var(--acento);letter-spacing:.1em;margin-top:5px}
 .cena .tit{
   font-size:11.5px;line-height:1.3;margin-top:1px;color:var(--luz);
   display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
 }
 .cena .x{
-  position:absolute;top:3px;right:3px;width:19px;height:19px;border-radius:4px;
-  background:rgba(21,15,46,.8);color:var(--luz-fraca);font-size:13px;line-height:19px;text-align:center;opacity:0;
+  position:absolute;top:3px;right:3px;width:20px;height:20px;border-radius:5px;
+  background:rgba(21,15,46,.82);color:var(--luz-fraca);font-size:13px;line-height:20px;text-align:center;opacity:0;
 }
-.cena:hover .x{opacity:1}
+.cena:hover .x,.cena:focus-within .x{opacity:1}
 .cena .x:hover{color:var(--rosa)}
 .trilho .vazio{padding:14px 4px;white-space:nowrap}
+
+/* ---------- barra mobile e cortina ---------- */
+.barra-mobile{
+  display:none;position:fixed;left:0;right:0;bottom:0;z-index:48;
+  background:var(--noite-2);border-top:1px solid var(--linha);
+  padding:6px 6px calc(6px + env(safe-area-inset-bottom));
+}
+.barra-mobile .fila{display:flex;gap:4px}
+.barra-mobile button{
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;
+  padding:7px 2px;border-radius:8px;font-size:10.5px;color:var(--luz-fraca);
+}
+.barra-mobile button b{font-size:16px;line-height:1;font-weight:normal}
+.barra-mobile button.ligado{background:var(--noite-3);color:var(--acento)}
+.cortina{position:fixed;inset:0;background:rgba(10,6,26,.6);z-index:44;display:none}
+body.gaveta-esq .cortina,body.gaveta-dir .cortina,body.gaveta-baixo .cortina{display:block}
 
 /* ---------- avisos e modais ---------- */
 .aviso{
   flex:0 0 auto;background:#3A2159;border-bottom:1px solid #5C3A85;color:#EBCBFF;
   padding:7px 14px;font-size:12.5px;display:flex;gap:10px;align-items:center;
 }
-.aviso button{margin-left:auto;color:#EBCBFF;text-decoration:underline}
+.aviso button{margin-left:auto;color:#EBCBFF;text-decoration:underline;flex:0 0 auto}
 .toast{
-  position:fixed;left:50%;bottom:96px;transform:translateX(-50%);z-index:80;
+  position:fixed;left:50%;bottom:calc(96px + var(--barra));transform:translateX(-50%);z-index:80;
   background:var(--noite-2);border:1px solid var(--acento);border-radius:20px;
-  padding:8px 18px;font-size:13px;box-shadow:0 12px 30px rgba(10,4,30,.6);
-  opacity:0;transition:opacity .2s,transform .2s;pointer-events:none;
+  padding:9px 18px;font-size:13px;box-shadow:0 12px 30px rgba(10,4,30,.6);
+  opacity:0;transition:opacity .2s,transform .2s;pointer-events:none;max-width:88vw;text-align:center;
 }
 .toast.ver{opacity:1;transform:translateX(-50%) translateY(-6px)}
 .veu{
-  position:fixed;inset:0;z-index:70;background:rgba(10,6,26,.74);
-  display:flex;align-items:center;justify-content:center;padding:20px;
+  position:fixed;inset:0;z-index:70;background:rgba(10,6,26,.76);
+  display:flex;align-items:center;justify-content:center;padding:18px;overflow-y:auto;
 }
 .caixa{
-  background:var(--noite-2);border:1px solid var(--linha);border-radius:11px;
-  padding:20px;width:min(430px,100%);
+  background:var(--noite-2);border:1px solid var(--linha);border-radius:12px;
+  padding:20px;width:min(440px,100%);
 }
 .caixa h2{font-family:var(--serif);font-weight:normal;font-size:21px;margin:0 0 4px}
 .caixa p{color:var(--luz-fraca);font-size:13px;line-height:1.5;margin:0 0 14px}
 .caixa .ipt{width:100%}
 .caixa .fim{display:flex;justify-content:flex-end;gap:7px;margin-top:16px}
 
+/* ---------- carta sistêmica ---------- */
+.carta{
+  width:min(430px,100%);border-radius:18px;padding:2px;
+  background:linear-gradient(150deg,#FF6FB5,#C77DFF 42%,#6E8BFF 78%,#12C9C9);
+  box-shadow:0 22px 60px rgba(10,4,30,.7);
+}
+.carta-dentro{
+  background:linear-gradient(165deg,#241A50,#170F38);border-radius:16px;
+  padding:30px 26px 22px;text-align:center;position:relative;min-height:250px;
+  display:flex;flex-direction:column;justify-content:center;gap:16px;
+}
+.carta .campo-carta{
+  font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--acento);
+}
+.carta .frase{
+  font-family:var(--serif);font-size:25px;line-height:1.36;color:#F6F1FF;margin:0;
+}
+.carta .frase.longa{font-size:21px}
+.carta .fim{display:flex;gap:7px;justify-content:center;flex-wrap:wrap;margin-top:6px}
+.carta-troca{animation:virar .34s ease}
+@keyframes virar{
+  from{opacity:0;transform:translateY(9px) scale(.985)}
+  to{opacity:1;transform:none}
+}
+
 /* ---------- apresentação ---------- */
 body.apresentando .lateral,
 body.apresentando .topo,
-body.apresentando .regua{display:none}
+body.apresentando .regua,
+body.apresentando .barra-mobile{display:none}
 body.apresentando .sair-apresentacao{display:block}
+body.apresentando{--barra:0px}
 .sair-apresentacao{
-  display:none;position:absolute;right:12px;top:12px;z-index:30;
-  background:rgba(21,15,46,.82);border:1px solid var(--linha);border-radius:7px;padding:7px 13px;
+  display:none;position:absolute;right:12px;top:calc(12px + env(safe-area-inset-top));z-index:30;
+  background:rgba(21,15,46,.82);border:1px solid var(--linha);border-radius:8px;padding:8px 13px;
   backdrop-filter:blur(6px);
 }
 
-/* ---------- impressão ---------- */
+/* ---------- laudo ---------- */
 #laudo{display:none}
 @media print{
-  body{display:block;overflow:visible;background:#fff;color:#000}
-  .topo,.corpo,.regua,.aviso,.toast,.veu{display:none !important}
-  #laudo{display:block;font-family:var(--serif);color:#000}
-  #laudo h1{font-size:22px;margin:0 0 2px;font-weight:normal}
-  #laudo .sub{font-family:var(--sans);font-size:11px;color:#555;margin-bottom:16px}
-  #laudo .campo-impresso{border:1px solid #C9BEE4;border-radius:4px;overflow:hidden;margin-bottom:18px}
-  #laudo .campo-impresso svg{display:block;width:100%;height:auto}
-  #laudo h2{
-    font-family:var(--sans);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
-    color:#5B4A7A;margin:16px 0 6px;border-bottom:1px solid #DCD3EC;padding-bottom:3px;font-weight:600;
+  body{display:block;overflow:visible;background:#fff;color:#111}
+  .topo,.corpo,.regua,.aviso,.toast,.veu,.barra-mobile,.cortina{display:none !important}
+  #laudo{display:block;font-family:var(--serif);color:#111;font-size:12pt;line-height:1.5}
+  #laudo .cabeca{
+    display:flex;justify-content:space-between;align-items:flex-end;gap:16px;
+    border-bottom:2.5px solid #2B2059;padding-bottom:8px;margin-bottom:4px;
   }
-  #laudo .mov{display:flex;gap:12px;margin-bottom:11px;break-inside:avoid;page-break-inside:avoid}
-  #laudo .mov svg{width:112px;height:62px;border:1px solid #DCD3EC;flex:0 0 auto}
-  #laudo .mov .n{font-family:var(--mono);font-size:10px;color:#7A6A99}
-  #laudo .mov p{margin:2px 0 0;font-size:12.5px;line-height:1.45}
-  #laudo .txt{font-size:13px;line-height:1.55;white-space:pre-wrap;margin:0 0 10px}
-  #laudo .ponto{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:-1px}
-  #laudo .assina{margin-top:44px;border-top:1px solid #000;width:290px;font-size:11px;padding-top:5px;font-family:var(--sans)}
-  @page{margin:15mm}
+  #laudo .cabeca .quem{font-size:15pt;letter-spacing:.01em}
+  #laudo .cabeca .cred{font-family:var(--sans);font-size:8.5pt;color:#555;line-height:1.45}
+  #laudo .cabeca .contato{font-family:var(--sans);font-size:8.5pt;color:#555;text-align:right;line-height:1.45}
+  #laudo .titulo{
+    font-family:var(--sans);font-size:11pt;font-weight:700;letter-spacing:.18em;
+    text-transform:uppercase;text-align:center;margin:20px 0 18px;
+  }
+  #laudo h2{
+    font-family:var(--sans);font-size:8.5pt;letter-spacing:.16em;text-transform:uppercase;
+    color:#3B2E72;margin:17px 0 6px;border-bottom:.75px solid #C9BEE4;padding-bottom:3px;font-weight:700;
+  }
+  #laudo table.ident{width:100%;border-collapse:collapse;font-size:10pt}
+  #laudo table.ident td{padding:4px 8px;border:.75px solid #D5CCE9;vertical-align:top}
+  #laudo table.ident td.rot{
+    font-family:var(--sans);font-size:8pt;letter-spacing:.06em;text-transform:uppercase;
+    color:#5B4A7A;width:23%;background:#F6F3FC;
+  }
+  #laudo table.reps{width:100%;border-collapse:collapse;font-size:10pt}
+  #laudo table.reps th{
+    font-family:var(--sans);font-size:8pt;letter-spacing:.08em;text-transform:uppercase;
+    color:#5B4A7A;text-align:left;padding:4px 8px;border-bottom:.75px solid #C9BEE4;
+  }
+  #laudo table.reps td{padding:4px 8px;border-bottom:.5px solid #E6E0F2}
+  #laudo .ponto{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:7px;vertical-align:-1px}
+  #laudo .campo-impresso{border:.75px solid #C9BEE4;border-radius:3px;overflow:hidden;margin:4px 0 6px}
+  #laudo .campo-impresso svg{display:block;width:100%;height:auto}
+  #laudo .legenda{font-family:var(--sans);font-size:8pt;color:#666;text-align:center;margin-bottom:6px}
+  #laudo .mov{display:flex;gap:12px;margin-bottom:12px;break-inside:avoid;page-break-inside:avoid}
+  #laudo .mov svg{width:120px;height:66px;border:.75px solid #D5CCE9;flex:0 0 auto}
+  #laudo .mov .n{font-family:var(--sans);font-size:8pt;letter-spacing:.1em;color:#5B4A7A;font-weight:700}
+  #laudo .mov p{margin:3px 0 0;font-size:10.5pt;line-height:1.45}
+  #laudo .txt{font-size:11pt;line-height:1.55;white-space:pre-wrap;margin:0 0 8px;text-align:justify}
+  #laudo .frase-forca{
+    font-size:13pt;font-style:italic;text-align:center;margin:6px 0;padding:10px 16px;
+    border-left:2.5px solid #C77DFF;background:#F8F5FD;white-space:pre-wrap;text-align:left;
+  }
+  #laudo .fecho{margin-top:34px;text-align:center;font-size:10.5pt}
+  #laudo .assinaturas{display:flex;justify-content:center;margin-top:52px}
+  #laudo .assina{border-top:.75px solid #111;width:330px;text-align:center;font-size:9.5pt;padding-top:5px;font-family:var(--sans)}
+  #laudo .assina b{display:block;font-size:10.5pt;font-family:var(--serif);font-weight:normal}
+  #laudo .rodape{
+    margin-top:26px;border-top:.5px solid #D5CCE9;padding-top:7px;
+    font-family:var(--sans);font-size:7.5pt;color:#777;line-height:1.5;text-align:justify;
+  }
+  @page{margin:16mm 15mm}
 }
 
-@media (max-width:900px){
-  .lateral{width:172px;padding:9px}
-  .lateral.dir{width:212px}
+/* ---------- mobile ---------- */
+@media (max-width:880px){
+  body{--barra:60px}
+  .topo{gap:8px;padding:8px 10px;padding-top:calc(8px + env(safe-area-inset-top))}
+  .topo .btn span.rotulo-btn{display:none}
+  .lateral{
+    position:fixed;top:0;bottom:0;z-index:46;width:min(310px,88vw);
+    padding:14px 14px calc(14px + var(--barra));
+    transform:translateX(-101%);transition:transform .26s cubic-bezier(.4,0,.2,1);
+    box-shadow:14px 0 40px rgba(8,4,22,.6);
+  }
+  .lateral.dir{left:auto;right:0;width:min(330px,92vw);transform:translateX(101%);box-shadow:-14px 0 40px rgba(8,4,22,.6)}
+  body.gaveta-esq .lateral:not(.dir){transform:none}
+  body.gaveta-dir .lateral.dir{transform:none}
+  .regua{
+    position:fixed;left:0;right:0;bottom:var(--barra);z-index:46;
+    flex-direction:column;align-items:stretch;gap:8px;
+    transform:translateY(115%);transition:transform .26s cubic-bezier(.4,0,.2,1);
+    box-shadow:0 -14px 40px rgba(8,4,22,.6);
+  }
+  body.gaveta-baixo .regua{transform:none}
+  .regua-cab{flex-direction:row;align-items:center;justify-content:space-between}
+  .barra-mobile{display:block}
+  .cab-gaveta{display:flex}
+  #fecha-baixo{display:block !important}
+  .carta-dentro{padding:26px 20px 18px}
+  .carta .frase{font-size:22px}
+  .carta .frase.longa{font-size:19px}
 }
 @media (prefers-reduced-motion:reduce){
-  *{transition:none !important}
+  *{transition:none !important;animation:none !important}
 }
 </style>
 </head>
@@ -246,19 +371,21 @@ body.apresentando .sair-apresentacao{display:block}
 
 <header class="topo">
   <div class="marca">mesa<em>.</em></div>
+  <select class="ipt" id="sel-sessao" title="Sessão" style="max-width:170px"></select>
+  <div class="espaco"></div>
 
-  <div class="campo-sessao">
-    <select class="ipt" id="sel-sessao" title="Sessão" style="max-width:200px"></select>
-    <input class="ipt cliente" id="in-cliente" placeholder="Constelado" autocomplete="off">
-    <input class="ipt tema" id="in-tema" placeholder="Tema trazido" autocomplete="off">
-    <input class="ipt" id="in-data" type="date" style="width:145px">
+  <div class="relogio" id="relogio">
+    <span class="tempo" id="tempo">00:00</span>
+    <button id="btn-play" title="Iniciar ou pausar">▶</button>
+    <button id="btn-zera" title="Zerar">↺</button>
   </div>
 
   <div class="acoes">
-    <button class="btn principal" id="btn-cena">Salvar movimento</button>
-    <button class="btn" onclick="apresentar(true)">Apresentar</button>
+    <button class="btn principal" id="btn-cena">✚ <span class="rotulo-btn">Salvar movimento</span></button>
+    <button class="btn" id="btn-carta" title="Sortear carta sistêmica">✦</button>
+    <button class="btn" onclick="apresentar(true)" title="Apresentar">⛶</button>
     <div class="menu">
-      <button class="btn" id="btn-menu">Mais ▾</button>
+      <button class="btn" id="btn-menu">⋯</button>
       <div class="menu-lista" id="menu" hidden>
         <button onclick="novaSessao()">Nova sessão</button>
         <button onclick="renomearSessao()">Renomear sessão</button>
@@ -266,7 +393,8 @@ body.apresentando .sair-apresentacao{display:block}
         <button onclick="apagarSessao()">Apagar sessão</button>
         <hr>
         <button onclick="baixarPNG()">Exportar imagem do campo</button>
-        <button onclick="imprimir()">Imprimir registro da sessão</button>
+        <button onclick="imprimir()">Emitir laudo da sessão</button>
+        <button onclick="configLaudo()">Dados do laudo</button>
         <hr>
         <button onclick="exportarJSON()">Backup — salvar arquivo</button>
         <button onclick="importarJSON()">Backup — abrir arquivo</button>
@@ -278,8 +406,8 @@ body.apresentando .sair-apresentacao{display:block}
 </header>
 
 <div class="corpo">
-
-  <aside class="lateral">
+  <aside class="lateral" id="gaveta-esq">
+    <div class="cab-gaveta"><strong>Representantes</strong><button data-fecha aria-label="Fechar">✕</button></div>
     <div id="paleta"></div>
     <div class="rotulo">Representante livre</div>
     <div class="livre">
@@ -294,27 +422,93 @@ body.apresentando .sair-apresentacao{display:block}
     <div class="zoom">
       <button onclick="zoom(.8)" title="Aproximar">+</button>
       <button onclick="zoom(1.25)" title="Afastar">−</button>
-      <button onclick="enquadrar()" title="Enquadrar tudo" style="font-size:12px">⤢</button>
+      <button onclick="enquadrar()" title="Enquadrar tudo" style="font-size:13px">⤢</button>
     </div>
-    <div class="dica" id="dica">Escolha um representante à esquerda para começar</div>
+    <div class="dica" id="dica">Escolha um representante para começar</div>
   </div>
 
-  <aside class="lateral dir">
+  <aside class="lateral dir" id="gaveta-dir">
+    <div class="cab-gaveta"><strong>Ajustes</strong><button data-fecha aria-label="Fechar">✕</button></div>
+    <div class="rotulo">Sessão</div>
+    <div class="grupo">
+      <input class="ipt" id="in-cliente" placeholder="Constelado" autocomplete="off" style="width:100%">
+    </div>
+    <div class="grupo">
+      <input class="ipt" id="in-tema" placeholder="Tema ou demanda trazida" autocomplete="off" style="width:100%">
+    </div>
+    <div class="linha">
+      <input class="ipt" id="in-data" type="date">
+      <select class="ipt" id="in-modalidade">
+        <option value="Individual presencial">Individual presencial</option>
+        <option value="Individual online">Individual online</option>
+        <option value="Grupo">Grupo</option>
+      </select>
+    </div>
+
     <div class="rotulo">Representante</div>
     <div id="props"></div>
 
-    <div class="rotulo">Campo</div>
-    <label class="marcar"><input type="checkbox" id="ck-raios"> Mostrar direção do olhar</label>
-    <label class="marcar"><input type="checkbox" id="ck-circulo"> Mostrar ondas do campo</label>
-    <label class="marcar"><input type="checkbox" id="ck-nomes"> Mostrar nomes</label>
-    <label class="marcar"><input type="checkbox" id="ck-agua"> Água em movimento</label>
-    <label class="marcar"><input type="checkbox" id="ck-claro"> Água clara</label>
+    <div class="rotulo">Fundo do campo</div>
+    <div class="grupo">
+      <select class="ipt" id="in-fundo" style="width:100%"></select>
+    </div>
+    <div class="grupo" id="bloco-tom">
+      <label class="mini">Tonalidade — claro a escuro</label>
+      <div class="deslize">
+        <input type="range" id="in-tom" min="0" max="100">
+        <output id="out-tom"></output>
+      </div>
+    </div>
+    <div class="grupo" id="bloco-corfundo">
+      <label class="mini" id="rot-corfundo">Cor do fundo</label>
+      <div class="cor-linha">
+        <input type="color" id="in-corfundo">
+        <span id="txt-corfundo"></span>
+      </div>
+    </div>
+    <div class="grupo" id="bloco-degrade" hidden>
+      <label class="marcar"><input type="checkbox" id="ck-degrade"> Degradê</label>
+      <div class="cor-linha" id="linha-cor2">
+        <input type="color" id="in-corfundo2">
+        <span>segunda cor</span>
+      </div>
+    </div>
+
+    <div class="rotulo">Ondas do campo</div>
+    <label class="marcar"><input type="checkbox" id="ck-ondas"> Mostrar ondas</label>
+    <div class="grupo">
+      <label class="mini">Visibilidade</label>
+      <div class="deslize">
+        <input type="range" id="in-forca" min="0" max="100">
+        <output id="out-forca"></output>
+      </div>
+    </div>
+    <div class="grupo">
+      <label class="mini">Quantidade</label>
+      <div class="deslize">
+        <input type="range" id="in-qtd" min="2" max="12">
+        <output id="out-qtd"></output>
+      </div>
+    </div>
+    <div class="grupo">
+      <div class="cor-linha">
+        <input type="color" id="in-corondas">
+        <span>cor das ondas</span>
+      </div>
+    </div>
+
+    <div class="rotulo">Exibição</div>
+    <label class="marcar"><input type="checkbox" id="ck-raios"> Direção do olhar</label>
+    <label class="marcar"><input type="checkbox" id="ck-nomes"> Nomes</label>
+    <label class="marcar"><input type="checkbox" id="ck-relogio"> Cronômetro à vista</label>
 
     <div class="rotulo">Fechamento</div>
     <label class="mini">Frase de força</label>
     <textarea class="ipt" id="in-frase" placeholder="O que foi dito e sustentado"></textarea>
     <label class="mini" style="margin-top:9px">Movimento final</label>
     <textarea class="ipt" id="in-final" placeholder="Como o campo se organizou ao término"></textarea>
+    <label class="mini" style="margin-top:9px">Observações</label>
+    <textarea class="ipt" id="in-obs" placeholder="Leitura sistêmica do atendimento"></textarea>
     <label class="mini" style="margin-top:9px">Tarefa ou ritual</label>
     <textarea class="ipt" id="in-tarefa" placeholder="O que o constelado leva"></textarea>
     <label class="mini" style="margin-top:9px">Retorno</label>
@@ -322,13 +516,25 @@ body.apresentando .sair-apresentacao{display:block}
   </aside>
 </div>
 
-<div class="regua">
+<div class="regua" id="gaveta-baixo">
   <div class="regua-cab">
     <div class="rotulo">Movimentos</div>
-    <button class="btn" id="btn-reproduzir">▸ Reproduzir</button>
+    <button class="btn pequeno" id="btn-reproduzir">▸ Reproduzir</button>
+    <button class="btn pequeno" data-fecha aria-label="Fechar" style="display:none" id="fecha-baixo">✕</button>
   </div>
   <div class="trilho" id="trilho"></div>
 </div>
+
+<div class="cortina" id="cortina"></div>
+
+<nav class="barra-mobile">
+  <div class="fila">
+    <button data-gaveta="esq"><b>◍</b>Representantes</button>
+    <button data-gaveta="dir"><b>⚙</b>Ajustes</button>
+    <button data-gaveta="baixo"><b>▤</b>Movimentos</button>
+    <button id="m-carta"><b>✦</b>Cartas</button>
+  </div>
+</nav>
 
 <div class="toast" id="toast"></div>
 <div id="laudo"></div>
@@ -338,12 +544,11 @@ body.apresentando .sair-apresentacao{display:block}
 "use strict";
 
 /* ============================================================
-   1. Persistência — IndexedDB com queda para memória
+   1. Persistência
    ============================================================ */
 const Banco = (() => {
   let db = null, persiste = false;
   const memoria = {};
-
   function abrir(){
     return new Promise(res => {
       let respondeu = false;
@@ -382,11 +587,11 @@ const Banco = (() => {
       }catch(e){ res(false); }
     });
   }
-  return { abrir, ler, gravar, get persiste(){ return persiste; } };
+  return { abrir, ler, gravar };
 })();
 
 /* ============================================================
-   2. Cores — fortes, uma leitura por elemento
+   2. Cores e vocabulário
    ============================================================ */
 const CORES = {
   constelado:{ nome:"Constelado",     hex:"#FF3D9A" },
@@ -402,7 +607,6 @@ const CORES = {
   luz:       { nome:"Luz, solução",   hex:"#EFE8FF" }
 };
 
-/* tintas oferecidas ao paciente, na ordem do espectro */
 const TINTAS = ["#FF3D9A","#FF6FB5","#C77DFF","#A855F7","#7B5BF2","#2E7BF6",
                 "#12C9C9","#17B978","#FFB020","#F5455C","#EFE8FF","#6C7BA8"];
 
@@ -443,33 +647,374 @@ const PALETA = [
 const RAIO = 27;
 const LARG = 1400, ALT = 900;
 
-/* ângulo de (x1,y1) olhando para (x2,y2); 0° = norte do campo */
 function anguloEntre(x1, y1, x2, y2){
   const a = Math.atan2(x2 - x1, -(y2 - y1)) * 180 / Math.PI;
   return Math.round((a + 360) % 360);
 }
-
 function misturar(hex, alvo, f){
   const n = parseInt(hex.slice(1), 16), m = parseInt(alvo.slice(1), 16);
   const c = i => Math.round((((n >> i) & 255) * (1-f)) + (((m >> i) & 255) * f));
   return "#" + ((1<<24) + (c(16)<<16) + (c(8)<<8) + c(0)).toString(16).slice(1);
 }
-const escurecer = (hex, f=.45) => misturar(hex, "#000000", f);
-const clarear   = (hex, f=.4)  => misturar(hex, "#FFFFFF", f);
+const escurecer = (h, f=.45) => misturar(h, "#000000", Math.max(0, Math.min(1, f)));
+const clarear   = (h, f=.40) => misturar(h, "#FFFFFF", Math.max(0, Math.min(1, f)));
 
-/* cor efetiva de uma figura: a livre escolhida vence a do papel */
+function luminancia(hex){
+  const n = parseInt(hex.slice(1),16);
+  const f = v => { v/=255; return v <= .03928 ? v/12.92 : Math.pow((v+.055)/1.055, 2.4); };
+  return .2126*f((n>>16)&255) + .7152*f((n>>8)&255) + .0722*f(n&255);
+}
+
 function corDe(fig){
   const base = fig.corLivre || (CORES[fig.cor] || CORES.materna).hex;
   return { base, borda: escurecer(base, .42), claro: clarear(base, .45) };
 }
 
 /* ============================================================
-   3. Estado
+   3. Fundos do campo
    ============================================================ */
-let dados = {
-  sessoes:[], atual:null,
-  opcoes:{ raios:true, circulo:true, nomes:true, agua:true, claro:false }
+const FUNDOS = {
+  nevoa:    { nome:"Névoa em movimento", tipo:"animado", corPropria:true,
+              base:{ topo:"#2A1B78", meio:"#1B1252", baixo:"#0D0828" } },
+  agua:     { nome:"Água em movimento",  tipo:"animado", corPropria:true,
+              base:{ topo:"#1E5FA8", meio:"#123C74", baixo:"#08203F" } },
+  madeira:  { nome:"Madeira clara", tipo:"textura",
+              base:{ topo:"#E9D3AA", meio:"#DCC094", baixo:"#C9A97A" }, detalhe:"#8A5F2A" },
+  mogno:    { nome:"Mogno", tipo:"textura",
+              base:{ topo:"#733225", meio:"#58221A", baixo:"#3B160F" }, detalhe:"#A9503A" },
+  pedra:    { nome:"Pedras", tipo:"textura",
+              base:{ topo:"#726D80", meio:"#5C5768", baixo:"#45404F" }, detalhe:"#B3ACC4" },
+  natureza: { nome:"Natureza", tipo:"textura",
+              base:{ topo:"#3A5C3E", meio:"#2B472F", baixo:"#1C3021" }, detalhe:"#7CA860" },
+  areia:    { nome:"Areia", tipo:"textura",
+              base:{ topo:"#F0DEB6", meio:"#E4CE9E", baixo:"#D2B884" }, detalhe:"#BFA271" },
+  cor:      { nome:"Cor lisa ou degradê", tipo:"cor", corPropria:true }
 };
+
+/* aplica a tonalidade escolhida: 0 = bem claro, 100 = bem escuro */
+function tonalizar(hex){
+  const t = dados.opcoes.tomFundo / 100;
+  if(t < 0.5) return clarear(hex, (0.5 - t) * 1.5);
+  return escurecer(hex, (t - 0.5) * 1.5);
+}
+
+function paletaFundo(){
+  const o = dados.opcoes;
+  const d = FUNDOS[o.fundo] || FUNDOS.nevoa;
+  let topo, meio, baixo, detalhe;
+
+  if(o.fundo === "cor"){
+    topo = o.corFundo;
+    baixo = o.degrade ? o.corFundo2 : o.corFundo;
+    meio = misturar(topo, baixo, .5);
+    detalhe = clarear(topo, .3);
+    return { topo, meio, baixo, detalhe, claro: luminancia(meio) > .34 };
+  }
+  if(d.corPropria){
+    topo  = tonalizar(o.corFundo);
+    meio  = tonalizar(escurecer(o.corFundo, .30));
+    baixo = tonalizar(escurecer(o.corFundo, .62));
+    detalhe = clarear(o.corFundo, .38);
+  } else {
+    topo  = tonalizar(d.base.topo);
+    meio  = tonalizar(d.base.meio);
+    baixo = tonalizar(d.base.baixo);
+    detalhe = tonalizar(d.detalhe);
+  }
+  return { topo, meio, baixo, detalhe, claro: luminancia(meio) > .34 };
+}
+
+function tintas(){
+  const p = paletaFundo();
+  return p.claro
+    ? { texto:"#1E1836", apoio:"#5D5382", halo:.32, claro:true }
+    : { texto:"#F4EFFF", apoio:"#B3A7DA", halo:.55, claro:false };
+}
+
+function semMovimento(){
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+function grad(id, paradas, vertical = true){
+  const g = el("linearGradient");
+  g.id = id;
+  g.setAttribute("x1","0"); g.setAttribute("y1", vertical ? "0" : "0");
+  g.setAttribute("x2", vertical ? "0" : "1"); g.setAttribute("y2", vertical ? "1" : "0");
+  paradas.forEach(([o,c,a]) => {
+    const s = el("stop");
+    s.setAttribute("offset", o); s.setAttribute("stop-color", c);
+    if(a !== undefined) s.setAttribute("stop-opacity", a);
+    g.appendChild(s);
+  });
+  return g;
+}
+
+function panoDeFundo(destino, atributos = {}){
+  const r = el("rect");
+  r.setAttribute("x", -LARG); r.setAttribute("y", -ALT);
+  r.setAttribute("width", LARG*3); r.setAttribute("height", ALT*3);
+  Object.entries(atributos).forEach(([k,v]) => r.setAttribute(k, v));
+  destino.appendChild(r);
+  return r;
+}
+
+/* névoa: nuvens suaves que respiram */
+function filtroNevoa(id, cor, mover){
+  const f = el("filter");
+  f.id = id;
+  f.setAttribute("x","0"); f.setAttribute("y","0");
+  f.setAttribute("width","100%"); f.setAttribute("height","100%");
+  const t = el("feTurbulence");
+  t.setAttribute("type","fractalNoise");
+  t.setAttribute("baseFrequency","0.006 0.016");
+  t.setAttribute("numOctaves","3");
+  t.setAttribute("seed","11");
+  t.setAttribute("result","n");
+  if(mover){
+    const a = el("animate");
+    a.setAttribute("attributeName","baseFrequency");
+    a.setAttribute("dur","28s");
+    a.setAttribute("repeatCount","indefinite");
+    a.setAttribute("values","0.006 0.016;0.009 0.013;0.005 0.018;0.006 0.016");
+    a.setAttribute("calcMode","spline");
+    a.setAttribute("keyTimes","0;0.33;0.66;1");
+    a.setAttribute("keySplines",".42 0 .58 1;.42 0 .58 1;.42 0 .58 1");
+    t.appendChild(a);
+  }
+  f.appendChild(t);
+  const n = parseInt(cor.slice(1),16);
+  const cm = el("feColorMatrix");
+  cm.setAttribute("in","n");
+  cm.setAttribute("type","matrix");
+  cm.setAttribute("values",
+    `0 0 0 0 ${(((n>>16)&255)/255).toFixed(3)}  0 0 0 0 ${(((n>>8)&255)/255).toFixed(3)}  ` +
+    `0 0 0 0 ${((n&255)/255).toFixed(3)}  0.9 0.4 0 0 -0.42`);
+  f.appendChild(cm);
+  return f;
+}
+
+/* água: rede de cáusticas com contorno nítido */
+function filtroAgua(id, cor, mover){
+  const f = el("filter");
+  f.id = id;
+  f.setAttribute("x","0"); f.setAttribute("y","0");
+  f.setAttribute("width","100%"); f.setAttribute("height","100%");
+
+  const t = el("feTurbulence");
+  t.setAttribute("type","fractalNoise");
+  t.setAttribute("baseFrequency","0.009 0.013");
+  t.setAttribute("numOctaves","2");
+  t.setAttribute("seed","5");
+  t.setAttribute("result","n");
+  if(mover){
+    const a = el("animate");
+    a.setAttribute("attributeName","baseFrequency");
+    a.setAttribute("dur","19s");
+    a.setAttribute("repeatCount","indefinite");
+    a.setAttribute("values","0.009 0.013;0.011 0.011;0.008 0.015;0.009 0.013");
+    a.setAttribute("calcMode","spline");
+    a.setAttribute("keyTimes","0;0.34;0.67;1");
+    a.setAttribute("keySplines",".45 0 .55 1;.45 0 .55 1;.45 0 .55 1");
+    t.appendChild(a);
+  }
+  f.appendChild(t);
+
+  const cinza = el("feColorMatrix");
+  cinza.setAttribute("in","n");
+  cinza.setAttribute("type","matrix");
+  cinza.setAttribute("values","0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  1 0 0 0 0");
+  cinza.setAttribute("result","a");
+  f.appendChild(cinza);
+
+  // as bandas transformam o ruído macio em fios de luz
+  const ct = el("feComponentTransfer");
+  ct.setAttribute("in","a");
+  const fa = el("feFuncA");
+  fa.setAttribute("type","table");
+  fa.setAttribute("tableValues","0 0 0.85 0 0 0.6 0 0 0.95 0 0");
+  ct.appendChild(fa);
+  ct.setAttribute("result","bandas");
+  f.appendChild(ct);
+
+  const suave = el("feGaussianBlur");
+  suave.setAttribute("in","bandas");
+  suave.setAttribute("stdDeviation","1.6");
+  suave.setAttribute("result","suave");
+  f.appendChild(suave);
+
+  const n = parseInt(cor.slice(1),16);
+  const tinge = el("feColorMatrix");
+  tinge.setAttribute("in","suave");
+  tinge.setAttribute("type","matrix");
+  tinge.setAttribute("values",
+    `0 0 0 0 ${(((n>>16)&255)/255).toFixed(3)}  0 0 0 0 ${(((n>>8)&255)/255).toFixed(3)}  ` +
+    `0 0 0 0 ${((n&255)/255).toFixed(3)}  0 0 0 1 0`);
+  f.appendChild(tinge);
+  return f;
+}
+
+/* veio de madeira: ruído esticado no eixo horizontal */
+function filtroMadeira(id, cor, freq){
+  const f = el("filter");
+  f.id = id;
+  f.setAttribute("x","0"); f.setAttribute("y","0");
+  f.setAttribute("width","100%"); f.setAttribute("height","100%");
+  const t = el("feTurbulence");
+  t.setAttribute("type","fractalNoise");
+  t.setAttribute("baseFrequency", freq);
+  t.setAttribute("numOctaves","4");
+  t.setAttribute("seed","23");
+  t.setAttribute("result","n");
+  f.appendChild(t);
+  const n = parseInt(cor.slice(1),16);
+  const cm = el("feColorMatrix");
+  cm.setAttribute("in","n");
+  cm.setAttribute("type","matrix");
+  cm.setAttribute("values",
+    `0 0 0 0 ${(((n>>16)&255)/255).toFixed(3)}  0 0 0 0 ${(((n>>8)&255)/255).toFixed(3)}  ` +
+    `0 0 0 0 ${((n&255)/255).toFixed(3)}  2.4 0 0 0 -0.82`);
+  f.appendChild(cm);
+  return f;
+}
+
+/* relevo: pedra e areia nascem de iluminação sobre ruído */
+function filtroRelevo(id, cor, freq, oitavas, escala, semente){
+  const f = el("filter");
+  f.id = id;
+  f.setAttribute("x","0"); f.setAttribute("y","0");
+  f.setAttribute("width","100%"); f.setAttribute("height","100%");
+  const t = el("feTurbulence");
+  t.setAttribute("type","fractalNoise");
+  t.setAttribute("baseFrequency", freq);
+  t.setAttribute("numOctaves", oitavas);
+  t.setAttribute("seed", semente);
+  t.setAttribute("result","n");
+  f.appendChild(t);
+  const dl = el("feDiffuseLighting");
+  dl.setAttribute("in","n");
+  dl.setAttribute("lighting-color", cor);
+  dl.setAttribute("surfaceScale", escala);
+  dl.setAttribute("diffuseConstant","1.05");
+  dl.setAttribute("result","relevo");
+  const luz = el("feDistantLight");
+  luz.setAttribute("azimuth","228");
+  luz.setAttribute("elevation","58");
+  dl.appendChild(luz);
+  f.appendChild(dl);
+  return f;
+}
+
+function montarFundo(destino){
+  const o = dados.opcoes;
+  const p = paletaFundo();
+  const d = FUNDOS[o.fundo] || FUNDOS.nevoa;
+  const defs = el("defs");
+  destino.appendChild(defs);
+
+  defs.appendChild(grad("fundo-base", [["0", p.topo],["0.5", p.meio],["1", p.baixo]]));
+  panoDeFundo(destino, { fill:"url(#fundo-base)" });
+
+  const mover = o.animar && !semMovimento();
+
+  if(o.fundo === "nevoa" || o.fundo === "agua"){
+    // feixe de luz vindo de cima
+    const rg = el("radialGradient");
+    rg.id = "fundo-luz";
+    [["0", p.detalhe, ".5"],["1", p.detalhe, "0"]].forEach(([of,c,a]) => {
+      const s = el("stop");
+      s.setAttribute("offset", of); s.setAttribute("stop-color", c); s.setAttribute("stop-opacity", a);
+      rg.appendChild(s);
+    });
+    defs.appendChild(rg);
+    const luz = el("ellipse");
+    luz.setAttribute("cx", LARG/2); luz.setAttribute("cy", ALT*0.42);
+    luz.setAttribute("rx", LARG*0.44); luz.setAttribute("ry", ALT*0.50);
+    luz.setAttribute("fill","url(#fundo-luz)");
+    destino.appendChild(luz);
+
+    if(o.fundo === "nevoa"){
+      defs.appendChild(filtroNevoa("fundo-tex", p.detalhe, mover));
+      panoDeFundo(destino, { filter:"url(#fundo-tex)", opacity:.5 });
+    } else {
+      defs.appendChild(filtroAgua("fundo-tex", clarear(p.detalhe, .45), mover));
+      const grupo = el("g");
+      const alvo = panoDeFundo(grupo, { filter:"url(#fundo-tex)", opacity:.62 });
+      if(mover){
+        const at = el("animateTransform");
+        at.setAttribute("attributeName","transform");
+        at.setAttribute("type","translate");
+        at.setAttribute("dur","36s");
+        at.setAttribute("repeatCount","indefinite");
+        at.setAttribute("values","0 0; 46 -26; -32 18; 0 0");
+        at.setAttribute("calcMode","spline");
+        at.setAttribute("keyTimes","0;0.33;0.66;1");
+        at.setAttribute("keySplines",".45 0 .55 1;.45 0 .55 1;.45 0 .55 1");
+        grupo.appendChild(at);
+      }
+      destino.appendChild(grupo);
+      void alvo;
+    }
+  }
+  else if(o.fundo === "madeira" || o.fundo === "mogno"){
+    defs.appendChild(filtroMadeira("fundo-tex", p.detalhe, "0.0022 0.085"));
+    panoDeFundo(destino, { filter:"url(#fundo-tex)", opacity:.7 });
+    defs.appendChild(filtroMadeira("fundo-tex2", escurecer(p.detalhe, .35), "0.0009 0.028"));
+    panoDeFundo(destino, { filter:"url(#fundo-tex2)", opacity:.38 });
+  }
+  else if(o.fundo === "pedra"){
+    defs.appendChild(filtroRelevo("fundo-tex", p.detalhe, "0.008", "4", "8.5", "3"));
+    panoDeFundo(destino, { filter:"url(#fundo-tex)", opacity:.8 });
+    defs.appendChild(filtroRelevo("fundo-tex2", clarear(p.detalhe,.2), "0.06", "3", "2.2", "9"));
+    panoDeFundo(destino, { filter:"url(#fundo-tex2)", opacity:.3 });
+  }
+  else if(o.fundo === "areia"){
+    defs.appendChild(filtroRelevo("fundo-tex", clarear(p.detalhe,.25), "0.075", "3", "2.2", "8"));
+    panoDeFundo(destino, { filter:"url(#fundo-tex)", opacity:.7 });
+    defs.appendChild(filtroRelevo("fundo-tex2", p.detalhe, "0.004 0.012", "2", "3.6", "2"));
+    panoDeFundo(destino, { filter:"url(#fundo-tex2)", opacity:.34 });
+  }
+  else if(o.fundo === "natureza"){
+    defs.appendChild(filtroRelevo("fundo-tex", p.detalhe, "0.02 0.035", "4", "3.8", "14"));
+    panoDeFundo(destino, { filter:"url(#fundo-tex)", opacity:.66 });
+    defs.appendChild(filtroMadeira("fundo-tex2", escurecer(p.detalhe, .45), "0.012 0.04"));
+    panoDeFundo(destino, { filter:"url(#fundo-tex2)", opacity:.32 });
+  }
+
+  // ondas concêntricas
+  if(o.ondas && o.qtdOndas > 0){
+    const forca = o.forcaOndas / 100;
+    const maxR = Math.min(LARG, ALT) / 2 * 1.02;
+    for(let i = 0; i < o.qtdOndas; i++){
+      const k = (i + 1) / o.qtdOndas;
+      const c = el("circle");
+      c.setAttribute("cx", LARG/2); c.setAttribute("cy", ALT/2);
+      c.setAttribute("r", (maxR * k).toFixed(1));
+      c.setAttribute("fill","none");
+      c.setAttribute("stroke", o.corOndas);
+      c.setAttribute("stroke-width", (1.1 + forca * 2.6).toFixed(2));
+      c.setAttribute("opacity", (forca * (1 - k * 0.42)).toFixed(3));
+      destino.appendChild(c);
+    }
+    const cruz = el("path");
+    cruz.setAttribute("d", `M${LARG/2-12} ${ALT/2} H${LARG/2+12} M${LARG/2} ${ALT/2-12} V${ALT/2+12}`);
+    cruz.setAttribute("stroke", o.corOndas);
+    cruz.setAttribute("stroke-width", 1.6);
+    cruz.setAttribute("opacity", (forca * 0.85).toFixed(3));
+    destino.appendChild(cruz);
+  }
+}
+
+/* ============================================================
+   4. Estado
+   ============================================================ */
+const OPCOES_PADRAO = {
+  raios:true, nomes:true, relogio:true,
+  fundo:"nevoa", tomFundo:62, animar:true,
+  corFundo:"#6B4FD8", corFundo2:"#0D0828", degrade:true,
+  ondas:true, forcaOndas:62, qtdOndas:5, corOndas:"#B9A3FF"
+};
+
+let dados = { sessoes:[], atual:null, opcoes:{ ...OPCOES_PADRAO }, laudo:{} };
 let selecionado = null;
 let cenaAtiva = null;
 let vista = { x:0, y:0, l:LARG, a:ALT };
@@ -488,130 +1033,15 @@ function sessaoNova(nome){
   return {
     id:id(), nome: nome || "Sessão sem título",
     cliente:"", tema:"", data:new Date().toISOString().slice(0,10),
-    frase:"", final:"", tarefa:"", retorno:"",
+    modalidade:"Individual presencial",
+    frase:"", final:"", obs:"", tarefa:"", retorno:"",
+    segundos:0, correndo:false, desde:null,
     figuras:[], cenas:[]
   };
 }
 
 /* ============================================================
-   4. A água
-   ============================================================ */
-function tintas(){
-  return dados.opcoes.claro
-    ? { texto:"#241C40", apoio:"#6B5F91", onda:"#B9A8E8", halo:.30 }
-    : { texto:"#F2ECFF", apoio:"#A99BD6", onda:"#8E7BE0", halo:.55 };
-}
-
-function semMovimento(){
-  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-}
-
-/* profundidade, cáusticas e ondas concêntricas */
-function montarAgua(destino, claro, cores){
-  const defs = el("defs");
-
-  const fundo = el("linearGradient");
-  fundo.id = "agua-fundo";
-  fundo.setAttribute("x1","0"); fundo.setAttribute("y1","0");
-  fundo.setAttribute("x2","0"); fundo.setAttribute("y2","1");
-  const paradas = claro
-    ? [["0","#F4F1FE"],["0.55","#EAE6FB"],["1","#DFE3FA"]]
-    : [["0","#2A1B78"],["0.45","#1B1252"],["1","#0D0828"]];
-  paradas.forEach(([o,c]) => {
-    const s = el("stop"); s.setAttribute("offset", o); s.setAttribute("stop-color", c);
-    fundo.appendChild(s);
-  });
-  defs.appendChild(fundo);
-
-  // feixe de luz atravessando a água
-  const feixe = el("radialGradient");
-  feixe.id = "agua-luz";
-  [["0", claro ? "#FFFFFF" : "#6B4FD8", claro ? ".55" : ".55"],
-   ["1", claro ? "#FFFFFF" : "#6B4FD8", "0"]].forEach(([o,c,a]) => {
-    const s = el("stop");
-    s.setAttribute("offset", o); s.setAttribute("stop-color", c); s.setAttribute("stop-opacity", a);
-    feixe.appendChild(s);
-  });
-  defs.appendChild(feixe);
-
-  if(!claro){
-    const f = el("filter");
-    f.id = "agua-causticas";
-    f.setAttribute("x","0"); f.setAttribute("y","0");
-    f.setAttribute("width","100%"); f.setAttribute("height","100%");
-    const turb = el("feTurbulence");
-    turb.setAttribute("type","fractalNoise");
-    turb.setAttribute("baseFrequency","0.006 0.016");
-    turb.setAttribute("numOctaves","3");
-    turb.setAttribute("seed","11");
-    turb.setAttribute("result","n");
-    if(dados.opcoes.agua && !semMovimento()){
-      const an = el("animate");
-      an.setAttribute("attributeName","baseFrequency");
-      an.setAttribute("dur","28s");
-      an.setAttribute("repeatCount","indefinite");
-      an.setAttribute("values","0.006 0.016;0.009 0.013;0.005 0.018;0.006 0.016");
-      an.setAttribute("calcMode","spline");
-      an.setAttribute("keyTimes","0;0.33;0.66;1");
-      an.setAttribute("keySplines",".42 0 .58 1;.42 0 .58 1;.42 0 .58 1");
-      turb.appendChild(an);
-    }
-    f.appendChild(turb);
-    // tinge o ruído de azul-violeta e recorta os brilhos
-    const cm = el("feColorMatrix");
-    cm.setAttribute("in","n");
-    cm.setAttribute("type","matrix");
-    cm.setAttribute("values",
-      "0 0 0 0 0.42  0 0 0 0 0.34  0 0 0 0 0.95  0.9 0.4 0 0 -0.42");
-    f.appendChild(cm);
-    defs.appendChild(f);
-  }
-  destino.appendChild(defs);
-
-  const base = el("rect");
-  base.setAttribute("x", -LARG); base.setAttribute("y", -ALT);
-  base.setAttribute("width", LARG*3); base.setAttribute("height", ALT*3);
-  base.setAttribute("fill","url(#agua-fundo)");
-  destino.appendChild(base);
-
-  const luz = el("ellipse");
-  luz.setAttribute("cx", LARG/2); luz.setAttribute("cy", ALT/2);
-  luz.setAttribute("rx", LARG*0.42); luz.setAttribute("ry", ALT*0.46);
-  luz.setAttribute("fill","url(#agua-luz)");
-  destino.appendChild(luz);
-
-  if(!claro){
-    const caust = el("rect");
-    caust.setAttribute("x", -LARG); caust.setAttribute("y", -ALT);
-    caust.setAttribute("width", LARG*3); caust.setAttribute("height", ALT*3);
-    caust.setAttribute("filter","url(#agua-causticas)");
-    caust.setAttribute("opacity", ".5");
-    destino.appendChild(caust);
-  }
-
-  // ondas concêntricas — a superfície tocada no centro
-  if(dados.opcoes.circulo){
-    [0.30, 0.45, 0.60, 0.76, 0.93].forEach((k, i) => {
-      const c = el("circle");
-      c.setAttribute("cx", LARG/2); c.setAttribute("cy", ALT/2);
-      c.setAttribute("r", (Math.min(LARG, ALT)/2) * (k*1.05));
-      c.setAttribute("fill","none");
-      c.setAttribute("stroke", cores.onda);
-      c.setAttribute("stroke-width", i === 2 ? 1.8 : 1.1);
-      c.setAttribute("opacity", (0.30 - i*0.045).toFixed(2));
-      destino.appendChild(c);
-    });
-    const cruz = el("path");
-    cruz.setAttribute("d", `M${LARG/2-10} ${ALT/2} H${LARG/2+10} M${LARG/2} ${ALT/2-10} V${ALT/2+10}`);
-    cruz.setAttribute("stroke", cores.onda);
-    cruz.setAttribute("stroke-width", 1.4);
-    cruz.setAttribute("opacity",".4");
-    destino.appendChild(cruz);
-  }
-}
-
-/* ============================================================
-   5. As figuras
+   5. Figuras
    ============================================================ */
 function formaDe(f, r){
   if(f === "f"){ const c = el("circle"); c.setAttribute("r", r); return c; }
@@ -627,20 +1057,18 @@ function formaDe(f, r){
   return q;
 }
 
-/* um halo por cor usada — a luz da figura difundida na água */
 function halosNecessarios(destino, figuras, t){
-  const vistos = new Set();
   let defs = destino.querySelector("defs");
   if(!defs){ defs = el("defs"); destino.appendChild(defs); }
+  const vistos = new Set();
   figuras.forEach(f => {
     const c = corDe(f).base;
     const chave = "halo-" + c.replace("#","");
     if(vistos.has(chave)) return;
     vistos.add(chave);
-    if(destino.querySelector("#" + chave)) return;
     const g = el("radialGradient");
     g.id = chave;
-    [["0", c, (t.halo * 1.0).toFixed(2)],
+    [["0", c, t.halo.toFixed(2)],
      ["0.45", c, (t.halo * 0.42).toFixed(2)],
      ["1", c, "0"]].forEach(([o,cor,a]) => {
       const s = el("stop");
@@ -655,13 +1083,13 @@ function desenharFigura(fig, t, opts){
   const c = corDe(fig);
   const r = fig.raio || RAIO;
   const fantasma = fig.estado === "morto" || fig.estado === "excluido";
+  const contorno = t.claro ? c.borda : c.claro;
 
   const g = el("g");
   g.setAttribute("class","fig");
   g.dataset.id = fig.id;
   g.style.transform = `translate(${fig.x}px, ${fig.y}px)`;
 
-  // halo difuso na água
   const halo = el("circle");
   halo.setAttribute("r", r * 2.7);
   halo.setAttribute("fill", `url(#halo-${c.base.replace("#","")})`);
@@ -681,14 +1109,14 @@ function desenharFigura(fig, t, opts){
     raio.setAttribute("stroke-width", 2);
     raio.setAttribute("stroke-linecap","round");
     raio.setAttribute("stroke-dasharray","2 9");
-    raio.setAttribute("opacity", .72);
+    raio.setAttribute("opacity", .75);
     raio.style.pointerEvents = "none";
     giro.appendChild(raio);
   }
 
   const corpo = formaDe(fig.forma, r);
   corpo.setAttribute("fill", c.base);
-  corpo.setAttribute("stroke", dados.opcoes.claro ? c.borda : c.claro);
+  corpo.setAttribute("stroke", contorno);
   corpo.setAttribute("stroke-width", 2.4);
   if(fantasma){
     corpo.setAttribute("stroke-dasharray","5 4");
@@ -696,10 +1124,9 @@ function desenharFigura(fig, t, opts){
   }
   giro.appendChild(corpo);
 
-  // proa — para onde a figura olha
   const proa = el("polygon");
   proa.setAttribute("points", `0,${-r-12} ${-8},${-r+2} ${8},${-r+2}`);
-  proa.setAttribute("fill", dados.opcoes.claro ? c.borda : c.claro);
+  proa.setAttribute("fill", contorno);
   giro.appendChild(proa);
 
   if(fig.estado === "morto"){
@@ -707,7 +1134,7 @@ function desenharFigura(fig, t, opts){
       const l = el("line");
       l.setAttribute("x1", a*r*.62); l.setAttribute("y1", b*r*.62);
       l.setAttribute("x2", d*r*.62); l.setAttribute("y2", e*r*.62);
-      l.setAttribute("stroke", dados.opcoes.claro ? c.borda : c.claro);
+      l.setAttribute("stroke", contorno);
       l.setAttribute("stroke-width", 2.2);
       giro.appendChild(l);
     });
@@ -737,7 +1164,7 @@ function desenharFigura(fig, t, opts){
 
     const punho = el("circle");
     punho.setAttribute("class","punho");
-    punho.setAttribute("r", 8.5);
+    punho.setAttribute("r", 10);
     punho.setAttribute("cx", px); punho.setAttribute("cy", py);
     punho.setAttribute("fill", t.texto);
     punho.setAttribute("stroke", c.base);
@@ -770,19 +1197,19 @@ function desenharFigura(fig, t, opts){
   return g;
 }
 
-/* a água é cara de compor: fica numa camada fixa, refeita só quando muda */
-let camadaAgua = null, camadaFig = null;
+/* o fundo é caro de compor: camada fixa, refeita só quando muda */
+let camadaFundo = null, camadaFig = null;
 
 function montarPalco(){
   svg.innerHTML = "";
-  camadaAgua = el("g"); camadaAgua.setAttribute("class","agua");
-  camadaFig  = el("g"); camadaFig.setAttribute("class","figuras");
-  svg.appendChild(camadaAgua);
+  camadaFundo = el("g"); camadaFundo.setAttribute("class","fundo");
+  camadaFig   = el("g"); camadaFig.setAttribute("class","figuras");
+  svg.appendChild(camadaFundo);
   svg.appendChild(camadaFig);
-  montarAgua(camadaAgua, dados.opcoes.claro, tintas());
+  montarFundo(camadaFundo);
 }
 
-function refazerAgua(){ montarPalco(); render(); }
+function refazerFundo(){ montarPalco(); render(); }
 
 function render(){
   const s = sessao();
@@ -798,7 +1225,6 @@ function render(){
   $("#dica").hidden = s.figuras.length > 0;
 }
 
-/* miniatura de uma cena — água e figuras reduzidas, sem filtros */
 function miniatura(snap, figuras, escuro = true){
   const mapa = Object.fromEntries(figuras.map(f => [f.id, f]));
   const corpos = snap.map(p => {
@@ -814,8 +1240,9 @@ function miniatura(snap, figuras, escuro = true){
         : `<rect x="${x-rx}" y="${y-rx}" width="${rx*2}" height="${rx*2}" rx="${f.forma==='n'?9:0}" fill="${c.base}"/>`;
     return `<line x1="${x}" y1="${y}" x2="${x+dx}" y2="${y+dy}" stroke="${c.base}" stroke-width="5" opacity=".7"/>` + forma;
   }).join("");
-  const fundo = escuro ? "#1C1350" : "#EDEAFB";
-  return `<svg viewBox="0 0 ${LARG} ${ALT}" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet"><rect width="${LARG}" height="${ALT}" fill="${fundo}"/>${corpos}</svg>`;
+  const p = paletaFundo();
+  const fundo = escuro ? p.meio : "#F1EEF9";
+  return `<svg viewBox="0 0 ${LARG} ${ALT}" xmlns="${NS}" preserveAspectRatio="xMidYMid meet"><rect width="${LARG}" height="${ALT}" fill="${fundo}"/>${corpos}</svg>`;
 }
 
 /* ============================================================
@@ -828,9 +1255,20 @@ function paraCampo(evt){
 }
 
 let arraste = null;
+const dedos = new Map();
+let pinca = null;
 
 svg.addEventListener("pointerdown", e => {
   const s = sessao(); if(!s) return;
+  dedos.set(e.pointerId, { x:e.clientX, y:e.clientY });
+
+  if(dedos.size === 2){          // dois dedos: pinça de zoom
+    arraste = null;
+    const [a,b] = [...dedos.values()];
+    pinca = { d: Math.hypot(a.x-b.x, a.y-b.y), l: vista.l };
+    return;
+  }
+
   const p = paraCampo(e);
   const punho = e.target.closest(".punho");
   const grupo = e.target.closest(".fig");
@@ -851,6 +1289,23 @@ svg.addEventListener("pointerdown", e => {
 });
 
 svg.addEventListener("pointermove", e => {
+  if(dedos.has(e.pointerId)) dedos.set(e.pointerId, { x:e.clientX, y:e.clientY });
+
+  if(pinca && dedos.size === 2){
+    const [a,b] = [...dedos.values()];
+    const d = Math.hypot(a.x-b.x, a.y-b.y);
+    if(d > 8 && pinca.d > 8){
+      const alvo = Math.max(320, Math.min(4200, pinca.l * (pinca.d / d)));
+      const c = { x: vista.x + vista.l/2, y: vista.y + vista.a/2 };
+      vista.x = c.x - alvo/2;
+      vista.l = alvo;
+      vista.a = alvo * (ALT/LARG);
+      vista.y = c.y - vista.a/2;
+      render();
+    }
+    return;
+  }
+
   if(!arraste) return;
   const s = sessao(); if(!s) return;
 
@@ -876,7 +1331,9 @@ svg.addEventListener("pointermove", e => {
   render();
 });
 
-function soltar(){
+function soltar(e){
+  if(e) dedos.delete(e.pointerId);
+  if(dedos.size < 2) pinca = null;
   if(!arraste) return;
   arraste = null;
   svg.classList.remove("arrastando-campo");
@@ -945,6 +1402,7 @@ function addFigura(base){
   selecionar(f.id);
   cenaAtiva = null;
   salvar();
+  fecharGavetas();
   return f;
 }
 
@@ -954,7 +1412,6 @@ function addLivre(){
   if(!nome) return campo.focus();
   addFigura({ nome, papel:"", forma:"n", cor:"filhos" });
   campo.value = "";
-  campo.focus();
 }
 
 function selecionar(fid){
@@ -974,7 +1431,7 @@ function painelProps(){
   const s = sessao();
 
   if(!f){
-    alvo.innerHTML = `<p class="vazio">Nenhum representante selecionado.<br>Toque numa figura na água para editar nome, cor, estado e direção do olhar.</p>`;
+    alvo.innerHTML = `<p class="vazio">Nenhum representante selecionado. Toque numa figura do campo para editar nome, cor, estado e direção do olhar.</p>`;
     return;
   }
 
@@ -993,7 +1450,6 @@ function painelProps(){
       <label class="mini">Papel no sistema</label>
       <input class="ipt" id="p-papel" value="${escapar(f.papel)}" placeholder="Pai, Sintoma, Empresa…" style="width:100%">
     </div>
-
     <div class="grupo">
       <label class="mini">Cor — deixe o constelado escolher</label>
       <div class="tintas">
@@ -1002,9 +1458,8 @@ function painelProps(){
         <button class="tinta-livre" id="p-abrir-cor" title="Qualquer outra cor"></button>
         <input type="color" id="p-corlivre" value="${atual}">
       </div>
-      ${f.corLivre ? `<button class="btn" id="p-limpar-cor" style="width:100%;font-size:12px;padding:4px">Voltar à cor do papel</button>` : ""}
+      ${f.corLivre ? `<button class="btn pequeno" id="p-limpar-cor" style="width:100%">Voltar à cor do papel</button>` : ""}
     </div>
-
     <div class="grupo">
       <label class="mini">Pertencimento</label>
       <select class="ipt" id="p-cor" style="width:100%">
@@ -1012,7 +1467,6 @@ function painelProps(){
         ${opcoesCor}
       </select>
     </div>
-
     <div class="linha">
       <div style="flex:1">
         <label class="mini">Figura</label>
@@ -1032,10 +1486,9 @@ function painelProps(){
         </select>
       </div>
     </div>
-
     <div class="grupo">
       <label class="mini">Direção do olhar</label>
-      <div class="angulo">
+      <div class="deslize">
         <input type="range" id="in-ang" min="0" max="359" value="${f.ang}">
         <output id="out-ang">${f.ang}°</output>
       </div>
@@ -1111,16 +1564,17 @@ function escapar(t){
    ============================================================ */
 function salvarCena(){
   const s = sessao();
-  if(!s || !s.figuras.length) return aviso("Coloque representantes na água antes de salvar um movimento.");
+  if(!s || !s.figuras.length) return aviso("Coloque representantes no campo antes de salvar um movimento.");
   abrirCaixa({
     titulo:"Salvar movimento",
-    texto:"O campo será congelado como está. Descreva o que aconteceu — é isso que aparece no registro impresso.",
+    texto:"O campo será congelado como está. Descreva o que aconteceu — é isso que entra no laudo.",
     valor:"", campo:"O que se moveu, o que foi dito", ok:"Salvar movimento",
     aoConfirmar: texto => {
       s.cenas.push({
         id:id(),
         titulo: texto.trim() || `Movimento ${s.cenas.length + 1}`,
         t: new Date().toISOString(),
+        min: Math.round(segundosDe(s) / 60),
         snap: s.figuras.map(f => ({ id:f.id, x:f.x, y:f.y, ang:f.ang }))
       });
       cenaAtiva = s.cenas[s.cenas.length - 1].id;
@@ -1133,7 +1587,6 @@ function salvarCena(){
 
 function aplicarCena(cena, anima = true){
   const s = sessao(); if(!s) return;
-
   cena.snap.forEach(p => {
     const f = s.figuras.find(x => x.id === p.id);
     if(f){ f.x = p.x; f.y = p.y; f.ang = p.ang; }
@@ -1159,7 +1612,6 @@ function aplicarCena(cena, anima = true){
   } else {
     render();
   }
-
   desenharTrilho();
   painelProps();
 }
@@ -1171,10 +1623,11 @@ function desenharTrilho(){
     t.innerHTML = `<p class="vazio">Nenhum movimento salvo. Organize o campo e use “Salvar movimento” a cada reorganização.</p>`;
     return;
   }
+  const escuro = !tintas().claro;
   t.innerHTML = s.cenas.map((c, i) => `
     <div class="cena ${c.id===cenaAtiva?"ativa":""}" data-id="${c.id}" role="button" tabindex="0">
-      ${miniatura(c.snap, s.figuras, !dados.opcoes.claro)}
-      <div class="num">${String(i+1).padStart(2,"0")}</div>
+      ${miniatura(c.snap, s.figuras, escuro)}
+      <div class="num">${String(i+1).padStart(2,"0")}${c.min ? " · " + c.min + "min" : ""}</div>
       <div class="tit">${escapar(c.titulo)}</div>
       <button class="x" data-x="${c.id}" title="Apagar movimento">×</button>
     </div>`).join("");
@@ -1221,7 +1674,169 @@ function reproduzir(){
 }
 
 /* ============================================================
-   9. Sessões
+   9. Cronômetro
+   ============================================================ */
+function segundosDe(s){
+  if(!s) return 0;
+  let n = s.segundos || 0;
+  if(s.correndo && s.desde) n += Math.floor((Date.now() - s.desde) / 1000);
+  return n;
+}
+function comoRelogio(seg){
+  const h = Math.floor(seg/3600), m = Math.floor(seg%3600/60), x = seg%60;
+  const dois = v => String(v).padStart(2,"0");
+  return h ? `${h}:${dois(m)}:${dois(x)}` : `${dois(m)}:${dois(x)}`;
+}
+function pintarRelogio(){
+  const s = sessao();
+  const caixa = $("#relogio");
+  caixa.hidden = !dados.opcoes.relogio;
+  if(!s) return;
+  $("#tempo").textContent = comoRelogio(segundosDe(s));
+  $("#btn-play").textContent = s.correndo ? "❚❚" : "▶";
+  caixa.classList.toggle("correndo", !!s.correndo);
+}
+function alternarRelogio(){
+  const s = sessao(); if(!s) return;
+  if(s.correndo){
+    s.segundos = segundosDe(s);
+    s.correndo = false; s.desde = null;
+  } else {
+    s.correndo = true; s.desde = Date.now();
+  }
+  salvar(); pintarRelogio();
+}
+function zerarRelogio(){
+  const s = sessao(); if(!s) return;
+  if(segundosDe(s) > 0 && !confirm("Zerar o cronômetro desta sessão?")) return;
+  s.segundos = 0; s.correndo = false; s.desde = null;
+  salvar(); pintarRelogio();
+}
+setInterval(pintarRelogio, 1000);
+
+/* ============================================================
+   10. Cartas sistêmicas
+   ============================================================ */
+const BARALHO = [
+  ["Pertencimento","Você pertence a esta família. Ninguém pode tirar isso de você."],
+  ["Pertencimento","Há um lugar aqui que é seu."],
+  ["Pertencimento","Eu vejo você. Você faz parte."],
+  ["Pertencimento","Quem foi esquecido volta a ter lugar entre nós."],
+  ["Pertencimento","Você não está fora. Você nunca esteve."],
+  ["Pertencimento","Eu tomo o meu lugar, e deixo o seu para você."],
+
+  ["Ordem","Você é grande, eu sou pequeno."],
+  ["Ordem","Eu sou apenas o filho. Isso já é muito."],
+  ["Ordem","O que veio antes vem antes."],
+  ["Ordem","Eu ocupo o meu lugar, nem à frente nem atrás."],
+  ["Ordem","Deixo com você o que sempre foi seu."],
+  ["Ordem","Eu sou a criança aqui. Você é o adulto."],
+
+  ["Dar e receber","Eu recebo o que você me deu."],
+  ["Dar e receber","Eu dou o que posso dar, e não mais do que isso."],
+  ["Dar e receber","Recebo com as duas mãos, e agradeço."],
+  ["Dar e receber","O que eu recebi, eu passo adiante."],
+  ["Dar e receber","Deixo com você o preço que você pagou."],
+  ["Dar e receber","Eu não preciso pagar por isso com a minha vida."],
+
+  ["Pais","Obrigado por me dar a vida."],
+  ["Pais","Eu recebo a vida de vocês, com tudo o que veio junto."],
+  ["Pais","Eu te honro como meu pai."],
+  ["Pais","Eu te honro como minha mãe."],
+  ["Pais","Vocês são os certos para mim. Não há outros."],
+  ["Pais","O que vocês puderam dar, foi o bastante."],
+  ["Pais","Eu levo comigo o melhor de vocês."],
+
+  ["Destino","Eu deixo com você o seu destino."],
+  ["Destino","Eu respeito o que é seu, e não carrego no seu lugar."],
+  ["Destino","Isso é grande demais para mim. Eu devolvo."],
+  ["Destino","Eu me curvo diante do que não posso mudar."],
+  ["Destino","Não foi minha culpa, e não é meu peso."],
+  ["Destino","Eu olho para isso, e continuo vivendo."],
+
+  ["Sintoma","O que você está querendo me mostrar?"],
+  ["Sintoma","Eu vejo o que você guarda por mim."],
+  ["Sintoma","Se eu olhar para isso, você pode descansar."],
+  ["Sintoma","Por quem eu estou carregando isso?"],
+  ["Sintoma","Obrigado por me avisar. Agora eu assumo."],
+
+  ["Despedida","Eu te deixo ir, com amor."],
+  ["Despedida","Um pouco mais, e eu vou também."],
+  ["Despedida","Guardo você no coração, e sigo vivendo."],
+  ["Despedida","Eu me lembro de você. Você tem lugar em mim."],
+  ["Despedida","Agora eu olho para a vida."],
+  ["Despedida","Fica em paz. Eu fico com a vida."],
+
+  ["Concordância","Assim como é, está bem."],
+  ["Concordância","Eu concordo com o que é."],
+  ["Concordância","Sim."],
+  ["Concordância","Eu tomo a vida como ela veio."],
+  ["Concordância","Isso pertence à minha história, e eu não nego nada."],
+  ["Concordância","Eu paro de lutar contra o que já aconteceu."]
+];
+
+let saco = [];
+let cartaAberta = null;
+
+function sortearCarta(filtro){
+  const disponiveis = filtro
+    ? BARALHO.filter(c => c[0] === filtro)
+    : BARALHO;
+  if(!saco.length || saco.some(c => filtro && c[0] !== filtro)){
+    saco = disponiveis.slice();
+  }
+  if(!saco.length) saco = disponiveis.slice();
+  const i = Math.floor(Math.random() * saco.length);
+  const carta = saco.splice(i, 1)[0];
+  return carta;
+}
+
+function abrirCarta(filtro){
+  const carta = sortearCarta(filtro);
+  cartaAberta = carta;
+  const campos = [...new Set(BARALHO.map(c => c[0]))];
+
+  let veu = $("#veu-carta");
+  if(!veu){
+    veu = document.createElement("div");
+    veu.className = "veu";
+    veu.id = "veu-carta";
+    document.body.appendChild(veu);
+    veu.onclick = e => { if(e.target === veu) veu.remove(); };
+  }
+  veu.innerHTML = `
+    <div class="carta">
+      <div class="carta-dentro carta-troca">
+        <div class="campo-carta">${escapar(carta[0])}</div>
+        <p class="frase ${carta[1].length > 58 ? "longa" : ""}">${escapar(carta[1])}</p>
+        <div class="fim">
+          <button class="btn principal" id="c-outra">Outra carta</button>
+          <button class="btn" id="c-anotar">Anotar na sessão</button>
+          <button class="btn" id="c-fechar">Fechar</button>
+        </div>
+        <div style="margin-top:4px">
+          <select class="ipt" id="c-campo" style="width:100%;font-size:12.5px">
+            <option value="">Todo o baralho</option>
+            ${campos.map(c => `<option value="${c}" ${c===filtro?"selected":""}>${c}</option>`).join("")}
+          </select>
+        </div>
+      </div>
+    </div>`;
+  veu.querySelector("#c-outra").onclick = () => abrirCarta(veu.querySelector("#c-campo").value || null);
+  veu.querySelector("#c-campo").onchange = e => { saco = []; abrirCarta(e.target.value || null); };
+  veu.querySelector("#c-fechar").onclick = () => veu.remove();
+  veu.querySelector("#c-anotar").onclick = () => {
+    const s = sessao(); if(!s) return;
+    s.frase = (s.frase ? s.frase.trim() + "\n" : "") + carta[1];
+    $("#in-frase").value = s.frase;
+    salvar();
+    toast("Frase anotada no fechamento");
+    veu.remove();
+  };
+}
+
+/* ============================================================
+   11. Sessões
    ============================================================ */
 function listarSessoes(){
   $("#sel-sessao").innerHTML = dados.sessoes.map(s =>
@@ -1230,16 +1845,12 @@ function listarSessoes(){
 
 function carregarSessao(){
   const s = sessao(); if(!s) return;
-  $("#in-cliente").value = s.cliente;
-  $("#in-tema").value = s.tema;
-  $("#in-data").value = s.data;
-  $("#in-frase").value = s.frase;
-  $("#in-final").value = s.final;
-  $("#in-tarefa").value = s.tarefa;
-  $("#in-retorno").value = s.retorno;
+  ["cliente","tema","data","modalidade","frase","final","obs","tarefa","retorno"].forEach(k => {
+    $("#in-" + k).value = s[k] ?? "";
+  });
   selecionado = null; cenaAtiva = null;
   vista = { x:0, y:0, l:LARG, a:ALT };
-  render(); painelProps(); desenharTrilho(); listarSessoes();
+  render(); painelProps(); desenharTrilho(); listarSessoes(); pintarRelogio();
 }
 
 function novaSessao(){
@@ -1249,24 +1860,20 @@ function novaSessao(){
   salvar(); carregarSessao();
   toast("Sessão criada");
 }
-
 function renomearSessao(){
   const s = sessao(); if(!s) return;
-  abrirCaixa({
-    titulo:"Renomear sessão", texto:"", valor:s.nome, campo:"Nome da sessão", ok:"Renomear",
-    aoConfirmar: v => { s.nome = v.trim() || s.nome; salvar(); listarSessoes(); }
-  });
+  abrirCaixa({ titulo:"Renomear sessão", texto:"", valor:s.nome, campo:"Nome da sessão", ok:"Renomear",
+    aoConfirmar: v => { s.nome = v.trim() || s.nome; salvar(); listarSessoes(); } });
 }
-
 function duplicarSessao(){
   const s = sessao(); if(!s) return;
   const copia = JSON.parse(JSON.stringify(s));
   copia.id = id(); copia.nome = s.nome + " (cópia)";
+  copia.segundos = 0; copia.correndo = false; copia.desde = null;
   dados.sessoes.push(copia); dados.atual = copia.id;
   salvar(); carregarSessao();
   toast("Sessão duplicada");
 }
-
 function apagarSessao(){
   const s = sessao(); if(!s) return;
   if(!confirm(`Apagar “${s.nome}” e todos os seus movimentos? Não há como desfazer.`)) return;
@@ -1275,17 +1882,15 @@ function apagarSessao(){
   dados.atual = dados.sessoes[0].id;
   salvar(); carregarSessao();
 }
-
 function limparCampo(){
   const s = sessao(); if(!s) return;
-  if(!confirm("Remover todos os representantes da água? Os movimentos salvos permanecem.")) return;
+  if(!confirm("Remover todos os representantes do campo? Os movimentos salvos permanecem.")) return;
   s.figuras = []; selecionar(null); salvar(); render();
 }
 
 /* ============================================================
-   10. Saídas — imagem, impressão, backup
+   12. Saídas
    ============================================================ */
-/* ids únicos por cópia, para o SVG exportado não puxar defs da tela */
 function reidentificar(raiz){
   const sufixo = "-" + Math.random().toString(36).slice(2,7);
   const mapa = {};
@@ -1299,25 +1904,31 @@ function reidentificar(raiz){
   });
 }
 
-function svgLimpo(claro){
-  const antesClaro = dados.opcoes.claro, antesSel = selecionado, antesVista = { ...vista };
-  dados.opcoes.claro = !!claro;
+/* o laudo precisa de fundo leve: troca temporariamente para papel */
+function svgLimpo(paraPapel){
+  const antes = { ...dados.opcoes };
+  const antesSel = selecionado, antesVista = { ...vista };
+  if(paraPapel){
+    dados.opcoes.fundo = "cor";
+    dados.opcoes.corFundo = "#F6F3FC";
+    dados.opcoes.corFundo2 = "#E9E3F7";
+    dados.opcoes.degrade = true;
+    dados.opcoes.corOndas = "#9C8AC9";
+  }
   selecionado = null;
   vista = { x:0, y:0, l:LARG, a:ALT };
-  refazerAgua();
+  refazerFundo();
   const copia = svg.cloneNode(true);
-  dados.opcoes.claro = antesClaro;
+  dados.opcoes = antes;
   selecionado = antesSel;
   vista = antesVista;
-  refazerAgua();
+  refazerFundo();
 
   copia.setAttribute("xmlns", NS);
   copia.setAttribute("width", LARG);
   copia.setAttribute("height", ALT);
   copia.setAttribute("viewBox", `0 0 ${LARG} ${ALT}`);
   copia.removeAttribute("style");
-
-  // transform inline vira atributo; o resto do style é descartado
   copia.querySelectorAll("[style]").forEach(e => {
     const tr = e.style.transform;
     if(tr){
@@ -1334,7 +1945,7 @@ function svgLimpo(claro){
 
 function baixarPNG(){
   const s = sessao(); if(!s) return;
-  const copia = svgLimpo(dados.opcoes.claro);
+  const copia = svgLimpo(false);
   const texto = new XMLSerializer().serializeToString(copia);
   const img = new Image();
   img.onload = () => {
@@ -1356,42 +1967,100 @@ function baixarPNG(){
   img.src = "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(texto)));
 }
 
+function configLaudo(){
+  const l = dados.laudo || {};
+  abrirFormulario({
+    titulo:"Dados do laudo",
+    texto:"Aparecem no cabeçalho e na assinatura de todo laudo emitido.",
+    campos:[
+      { chave:"terapeuta", rotulo:"Nome da terapeuta", valor:l.terapeuta || "" },
+      { chave:"credencial", rotulo:"Formação e registro", valor:l.credencial || "" },
+      { chave:"contato", rotulo:"Contato", valor:l.contato || "" },
+      { chave:"local", rotulo:"Cidade", valor:l.local || "" }
+    ],
+    ok:"Salvar",
+    aoConfirmar: v => { dados.laudo = v; salvar(); toast("Dados do laudo salvos"); }
+  });
+}
+
 function imprimir(){
   const s = sessao(); if(!s) return;
+  const l = dados.laudo || {};
   const copia = svgLimpo(true);
-  const bloco = (rot, txt) => txt && txt.trim() ? `<h2>${rot}</h2><p class="txt">${escapar(txt)}</p>` : "";
+  const dataBR = d => d ? d.split("-").reverse().join("/") : "—";
+  const dur = segundosDe(s);
+  const bloco = (rot, txt, classe = "txt") =>
+    txt && txt.trim() ? `<h2>${rot}</h2><p class="${classe}">${escapar(txt)}</p>` : "";
+
+  const estados = { vivo:"Presente", morto:"Falecido", excluido:"Excluído" };
 
   $("#laudo").innerHTML = `
-    <h1>${escapar(s.cliente || "Constelado não identificado")}</h1>
-    <div class="sub">
-      ${escapar(s.tema || "Tema não registrado")} ·
-      ${s.data ? s.data.split("-").reverse().join("/") : ""} ·
-      ${s.figuras.length} representantes · ${s.cenas.length} movimentos
+    <div class="cabeca">
+      <div>
+        <div class="quem">${escapar(l.terapeuta || "Terapeuta em Constelação Familiar")}</div>
+        <div class="cred">${escapar(l.credencial || "")}</div>
+      </div>
+      <div class="contato">${escapar(l.contato || "").split("\n").map(escapar).join("<br>")}</div>
     </div>
+
+    <div class="titulo">Registro de atendimento — Constelação Familiar</div>
+
+    <table class="ident">
+      <tr><td class="rot">Constelado</td><td>${escapar(s.cliente || "—")}</td>
+          <td class="rot">Data</td><td>${dataBR(s.data)}</td></tr>
+      <tr><td class="rot">Modalidade</td><td>${escapar(s.modalidade || "—")}</td>
+          <td class="rot">Duração</td><td>${dur ? comoRelogio(dur) : "—"}</td></tr>
+      <tr><td class="rot">Representantes</td><td>${s.figuras.length}</td>
+          <td class="rot">Movimentos</td><td>${s.cenas.length}</td></tr>
+    </table>
+
+    <h2>Demanda apresentada</h2>
+    <p class="txt">${escapar(s.tema || "Não registrada.")}</p>
+
+    <h2>Composição do campo</h2>
+    <table class="reps">
+      <tr><th style="width:44%">Representante</th><th style="width:36%">Papel no sistema</th><th>Situação</th></tr>
+      ${s.figuras.map(f => `<tr>
+        <td><span class="ponto" style="background:${corDe(f).base}"></span>${escapar(f.nome)}</td>
+        <td>${escapar(f.papel || "—")}</td>
+        <td>${estados[f.estado] || "—"}</td>
+      </tr>`).join("") || `<tr><td colspan="3">Nenhum representante registrado.</td></tr>`}
+    </table>
+
+    <h2>Configuração final do campo</h2>
     <div class="campo-impresso">${new XMLSerializer().serializeToString(copia)}</div>
+    <div class="legenda">Disposição e direção do olhar dos representantes ao encerramento do atendimento.</div>
 
-    <h2>Representantes do campo</h2>
-    <div class="txt">${s.figuras.map(f =>
-      `<span class="ponto" style="background:${corDe(f).base}"></span>${escapar(f.nome)}` +
-      `${f.papel && f.papel !== f.nome ? " — " + escapar(f.papel) : ""}` +
-      `${f.estado !== "vivo" ? " (" + (f.estado === "morto" ? "falecido" : "excluído") + ")" : ""}`
-    ).join("<br>") || "—"}</div>
-
-    ${s.cenas.length ? `<h2>Sequência dos movimentos</h2>` + s.cenas.map((c,i) => `
+    ${s.cenas.length ? `<h2>Movimentos observados</h2>` + s.cenas.map((c,i) => `
       <div class="mov">
         ${miniatura(c.snap, s.figuras, false)}
         <div>
-          <div class="n">MOVIMENTO ${String(i+1).padStart(2,"0")} · ${new Date(c.t).toLocaleString("pt-BR")}</div>
+          <div class="n">MOVIMENTO ${String(i+1).padStart(2,"0")}${c.min ? " — aos " + c.min + " min" : ""}</div>
           <p>${escapar(c.titulo)}</p>
         </div>
       </div>`).join("") : ""}
 
-    ${bloco("Frase de força", s.frase)}
+    ${s.frase ? `<h2>Frases de força trabalhadas</h2><p class="frase-forca">${escapar(s.frase)}</p>` : ""}
     ${bloco("Movimento final", s.final)}
-    ${bloco("Tarefa ou ritual", s.tarefa)}
-    ${s.retorno ? `<h2>Retorno</h2><p class="txt">${s.retorno.split("-").reverse().join("/")}</p>` : ""}
+    ${bloco("Observações da terapeuta", s.obs)}
+    ${bloco("Encaminhamento e tarefa", s.tarefa)}
+    ${s.retorno ? `<h2>Retorno sugerido</h2><p class="txt">${dataBR(s.retorno)}</p>` : ""}
 
-    <div class="assina">Terapeuta responsável</div>`;
+    <div class="fecho">${escapar(l.local || "")}${l.local ? ", " : ""}${dataBR(s.data)}.</div>
+    <div class="assinaturas">
+      <div class="assina">
+        <b>${escapar(l.terapeuta || "")}</b>
+        ${escapar(l.credencial || "Terapeuta em Constelação Familiar")}
+      </div>
+    </div>
+
+    <div class="rodape">
+      Este documento registra o atendimento em Constelação Familiar realizado na data indicada, para fins de
+      acompanhamento terapêutico do próprio constelado. A Constelação Familiar é uma prática de abordagem
+      sistêmica e não constitui diagnóstico, prognóstico ou tratamento médico ou psicológico, não substituindo
+      acompanhamento profissional nessas áreas. Contém informações sensíveis de caráter pessoal e familiar,
+      de acesso restrito ao constelado e à terapeuta responsável, nos termos da Lei nº 13.709/2018.
+    </div>`;
   setTimeout(() => window.print(), 60);
 }
 
@@ -1404,7 +2073,6 @@ function exportarJSON(){
   setTimeout(() => URL.revokeObjectURL(a.href), 4000);
   toast("Backup salvo");
 }
-
 function importarJSON(){ $("#arquivo").click(); }
 
 $("#arquivo").onchange = e => {
@@ -1417,7 +2085,7 @@ $("#arquivo").onchange = e => {
       if(!confirm("Substituir todas as sessões atuais pelo conteúdo do arquivo?")) return;
       dados = novo;
       normalizar();
-      salvar(); aplicarOpcoes(); carregarSessao();
+      salvar(); aplicarOpcoes(); refazerFundo(); carregarSessao();
       toast("Backup restaurado");
     }catch(err){
       aviso("Arquivo não reconhecido. Escolha um backup gerado por esta mesa.");
@@ -1427,12 +2095,18 @@ $("#arquivo").onchange = e => {
   e.target.value = "";
 };
 
-/* compatibilidade com backups da versão anterior */
 function normalizar(){
-  const padrao = { raios:true, circulo:true, nomes:true, agua:true, claro:false };
-  dados.opcoes = Object.assign({}, padrao, dados.opcoes || {});
+  dados.opcoes = Object.assign({}, OPCOES_PADRAO, dados.opcoes || {});
+  if(!FUNDOS[dados.opcoes.fundo]) dados.opcoes.fundo = "nevoa";
+  if(dados.opcoes.agua === false) dados.opcoes.animar = false;   // nome antigo
+  dados.laudo = dados.laudo || {};
   const antigas = { origem:"paterna", conjuge:"conjugal", abstrato:"sintoma", solucao:"luz", neutro:"filhos" };
   (dados.sessoes || []).forEach(s => {
+    s.modalidade = s.modalidade || "Individual presencial";
+    s.obs = s.obs ?? "";
+    s.segundos = s.segundos || 0;
+    s.correndo = !!s.correndo;
+    s.desde = s.desde || null;
     (s.figuras || []).forEach(f => {
       if(antigas[f.cor]) f.cor = antigas[f.cor];
       if(!CORES[f.cor]) f.cor = "materna";
@@ -1443,15 +2117,37 @@ function normalizar(){
 }
 
 /* ============================================================
-   11. Apresentação, avisos, caixa de texto
+   13. Apresentação, gavetas, avisos, modais
    ============================================================ */
 function apresentar(ligar){
+  fecharGavetas();
   document.body.classList.toggle("apresentando", ligar);
   selecionar(ligar ? null : selecionado);
   if(ligar && document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(()=>{});
   else if(!ligar && document.fullscreenElement) document.exitFullscreen().catch(()=>{});
   setTimeout(render, 120);
 }
+
+function abrirGaveta(qual){
+  const classe = "gaveta-" + qual;
+  const jaAberta = document.body.classList.contains(classe);
+  fecharGavetas();
+  if(!jaAberta) document.body.classList.add(classe);
+  pintarBarra();
+}
+function fecharGavetas(){
+  ["esq","dir","baixo"].forEach(g => document.body.classList.remove("gaveta-" + g));
+  pintarBarra();
+}
+function pintarBarra(){
+  $$(".barra-mobile [data-gaveta]").forEach(b => {
+    b.classList.toggle("ligado", document.body.classList.contains("gaveta-" + b.dataset.gaveta));
+  });
+}
+$$(".barra-mobile [data-gaveta]").forEach(b => { b.onclick = () => abrirGaveta(b.dataset.gaveta); });
+$("#cortina").onclick = fecharGavetas;
+$$("[data-fecha]").forEach(b => { b.onclick = fecharGavetas; });
+$("#m-carta").onclick = () => { fecharGavetas(); abrirCarta(null); };
 
 let tempoToast;
 function toast(t){
@@ -1461,41 +2157,58 @@ function toast(t){
   clearTimeout(tempoToast);
   tempoToast = setTimeout(() => e.classList.remove("ver"), 2200);
 }
-
 function aviso(t){
   $("#aviso-txt").textContent = t;
   $("#aviso").hidden = false;
 }
 
 function abrirCaixa({ titulo, texto, valor, campo, ok, aoConfirmar }){
+  abrirFormulario({
+    titulo, texto, ok,
+    campos:[{ chave:"v", rotulo:campo, valor:valor || "", semRotulo:true }],
+    aoConfirmar: r => aoConfirmar(r.v)
+  });
+}
+
+function abrirFormulario({ titulo, texto, campos, ok, aoConfirmar }){
   const veu = document.createElement("div");
   veu.className = "veu";
   veu.innerHTML = `
     <div class="caixa">
       <h2>${escapar(titulo)}</h2>
       ${texto ? `<p>${escapar(texto)}</p>` : ""}
-      <input class="ipt" id="cx-in" placeholder="${escapar(campo||"")}" value="${escapar(valor||"")}">
+      ${campos.map((c,i) => `
+        <div class="grupo">
+          ${c.semRotulo ? "" : `<label class="mini">${escapar(c.rotulo)}</label>`}
+          <input class="ipt" ${i===0?'id="cx-in"':""} data-i="${i}" placeholder="${escapar(c.rotulo)}" value="${escapar(c.valor)}">
+        </div>`).join("")}
       <div class="fim">
         <button class="btn" id="cx-nao">Cancelar</button>
         <button class="btn principal" id="cx-sim">${escapar(ok)}</button>
       </div>
     </div>`;
   document.body.appendChild(veu);
-  const inp = veu.querySelector("#cx-in");
-  inp.focus(); inp.select();
+  const entradas = Array.from(veu.querySelectorAll("input[data-i]"));
+  entradas[0].focus(); entradas[0].select();
   const fechar = () => veu.remove();
-  const confirmar = () => { aoConfirmar(inp.value); fechar(); };
+  const confirmar = () => {
+    const r = {};
+    campos.forEach((c,i) => { r[c.chave] = entradas[i].value; });
+    aoConfirmar(r); fechar();
+  };
   veu.querySelector("#cx-nao").onclick = fechar;
   veu.querySelector("#cx-sim").onclick = confirmar;
-  inp.onkeydown = e => {
-    if(e.key === "Enter") confirmar();
-    if(e.key === "Escape") fechar();
-  };
+  entradas.forEach(i => {
+    i.onkeydown = e => {
+      if(e.key === "Enter") confirmar();
+      if(e.key === "Escape") fechar();
+    };
+  });
   veu.onclick = e => { if(e.target === veu) fechar(); };
 }
 
 /* ============================================================
-   12. Ligações de interface
+   14. Ligações de interface
    ============================================================ */
 function montarPaleta(){
   $("#paleta").innerHTML = PALETA.map((g, gi) => `
@@ -1508,27 +2221,83 @@ function montarPaleta(){
         </button>`;
       }).join("")}
     </div>`).join("");
-
   $$("#paleta .ficha").forEach(b => {
     b.onclick = () => addFigura(PALETA[+b.dataset.g].itens[+b.dataset.i]);
   });
 }
 
-function aplicarOpcoes(){
-  ["raios","circulo","nomes","agua","claro"].forEach(k => { $("#ck-" + k).checked = !!dados.opcoes[k]; });
+function montarFundos(){
+  $("#in-fundo").innerHTML = Object.entries(FUNDOS)
+    .map(([k,v]) => `<option value="${k}">${v.nome}</option>`).join("");
 }
 
-["raios","circulo","nomes","agua","claro"].forEach(k => {
-  $("#ck-" + k).onchange = e => {
-    dados.opcoes[k] = e.target.checked;
-    salvar();
-    if(k === "circulo" || k === "agua" || k === "claro") refazerAgua();
-    else render();
-    desenharTrilho();
+function aplicarOpcoes(){
+  const o = dados.opcoes;
+  ["raios","nomes","relogio","ondas","degrade"].forEach(k => { $("#ck-" + k).checked = !!o[k]; });
+  $("#in-fundo").value = o.fundo;
+  $("#in-tom").value = o.tomFundo;   $("#out-tom").value = o.tomFundo + "%";
+  $("#in-forca").value = o.forcaOndas; $("#out-forca").value = o.forcaOndas + "%";
+  $("#in-qtd").value = o.qtdOndas;   $("#out-qtd").value = o.qtdOndas;
+  $("#in-corfundo").value = o.corFundo;
+  $("#in-corfundo2").value = o.corFundo2;
+  $("#in-corondas").value = o.corOndas;
+  $("#txt-corfundo").textContent = o.corFundo.toUpperCase();
+
+  const d = FUNDOS[o.fundo];
+  const animado = d.tipo === "animado";
+  $("#bloco-corfundo").hidden = !d.corPropria;
+  $("#bloco-degrade").hidden = o.fundo !== "cor";
+  $("#bloco-tom").hidden = o.fundo === "cor";
+  $("#rot-corfundo").textContent = animado ? "Cor da " + (o.fundo === "agua" ? "água" : "névoa") : "Cor do fundo";
+  $("#linha-cor2").hidden = !o.degrade;
+
+  let extra = $("#ck-animar-linha");
+  if(!extra){
+    extra = document.createElement("label");
+    extra.className = "marcar";
+    extra.id = "ck-animar-linha";
+    extra.innerHTML = `<input type="checkbox" id="ck-animar"> Movimento contínuo`;
+    $("#bloco-tom").after(extra);
+    $("#ck-animar").onchange = e => { dados.opcoes.animar = e.target.checked; salvar(); refazerFundo(); };
+  }
+  extra.hidden = !animado;
+  $("#ck-animar").checked = !!o.animar;
+  pintarRelogio();
+}
+
+$("#in-fundo").onchange = e => {
+  const o = dados.opcoes;
+  o.fundo = e.target.value;
+  if(o.fundo === "nevoa") o.corFundo = "#6B4FD8";
+  if(o.fundo === "agua")  o.corFundo = "#1E7BC8";
+  if(o.fundo === "cor" && luminancia(o.corFundo) < .02) o.corFundo = "#2A1B78";
+  salvar(); aplicarOpcoes(); refazerFundo(); desenharTrilho();
+};
+
+[["in-tom","tomFundo","out-tom","%"],["in-forca","forcaOndas","out-forca","%"],["in-qtd","qtdOndas","out-qtd",""]]
+.forEach(([campo, chave, saida, suf]) => {
+  $("#" + campo).oninput = e => {
+    dados.opcoes[chave] = +e.target.value;
+    $("#" + saida).value = e.target.value + suf;
+    refazerFundo();
   };
+  $("#" + campo).onchange = () => { salvar(); aplicarOpcoes(); desenharTrilho(); };
 });
 
-["cliente","tema","data","frase","final","tarefa","retorno"].forEach(k => {
+["corfundo","corfundo2","corondas"].forEach(k => {
+  const chave = { corfundo:"corFundo", corfundo2:"corFundo2", corondas:"corOndas" }[k];
+  $("#in-" + k).oninput = e => { dados.opcoes[chave] = e.target.value; refazerFundo(); };
+  $("#in-" + k).onchange = () => { salvar(); aplicarOpcoes(); desenharTrilho(); };
+});
+
+$("#ck-ondas").onchange = e => { dados.opcoes.ondas = e.target.checked; salvar(); refazerFundo(); };
+$("#ck-degrade").onchange = e => { dados.opcoes.degrade = e.target.checked; salvar(); aplicarOpcoes(); refazerFundo(); };
+["raios","nomes"].forEach(k => {
+  $("#ck-" + k).onchange = e => { dados.opcoes[k] = e.target.checked; salvar(); render(); };
+});
+$("#ck-relogio").onchange = e => { dados.opcoes.relogio = e.target.checked; salvar(); pintarRelogio(); };
+
+["cliente","tema","data","modalidade","frase","final","obs","tarefa","retorno"].forEach(k => {
   $("#in-" + k).oninput = e => {
     const s = sessao(); if(!s) return;
     s[k] = e.target.value;
@@ -1542,7 +2311,10 @@ function aplicarOpcoes(){
 
 $("#sel-sessao").onchange = e => { dados.atual = e.target.value; salvar(); carregarSessao(); };
 $("#btn-cena").onclick = salvarCena;
+$("#btn-carta").onclick = () => abrirCarta(null);
 $("#btn-reproduzir").onclick = reproduzir;
+$("#btn-play").onclick = alternarRelogio;
+$("#btn-zera").onclick = zerarRelogio;
 $("#in-livre").onkeydown = e => { if(e.key === "Enter") addLivre(); };
 
 $("#btn-menu").onclick = e => { e.stopPropagation(); $("#menu").hidden = !$("#menu").hidden; };
@@ -1552,7 +2324,9 @@ $("#menu").onclick = () => { $("#menu").hidden = true; };
 document.addEventListener("keydown", e => {
   const editando = /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName);
   if(e.key === "Escape"){
+    const carta = $("#veu-carta"); if(carta) return carta.remove();
     if(document.body.classList.contains("apresentando")) return apresentar(false);
+    if(document.body.className.includes("gaveta-")) return fecharGavetas();
     if(!editando) selecionar(null);
     return;
   }
@@ -1586,7 +2360,7 @@ document.addEventListener("keydown", e => {
 });
 
 /* ============================================================
-   13. Salvamento e partida
+   15. Salvamento e partida
    ============================================================ */
 let tempoSalvar;
 function salvar(){
@@ -1608,10 +2382,11 @@ function salvar(){
   normalizar();
 
   if(!ok){
-    aviso("Este ambiente não permite armazenamento local — o trabalho desta sessão não será salvo ao fechar a aba. Publique o arquivo para gravar, e use Mais ▸ Backup enquanto isso.");
+    aviso("Este ambiente não permite armazenamento local — o trabalho desta sessão não será salvo ao fechar a aba. Publique o arquivo para gravar, e use ⋯ ▸ Backup enquanto isso.");
   }
 
   montarPaleta();
+  montarFundos();
   aplicarOpcoes();
   montarPalco();
   carregarSessao();
