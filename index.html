@@ -1,0 +1,1623 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mesa — Constelação Familiar</title>
+<style>
+:root{
+  --noite:#150F2E;
+  --noite-2:#1E1642;
+  --noite-3:#2B2059;
+  --linha:#413173;
+  --luz:#EBE4FF;
+  --luz-fraca:#A99BD6;
+  --acento:#C77DFF;
+  --acento-claro:#DDA9FF;
+  --rosa:#FF6FB5;
+  --serif: Charter, "Bitstream Charter", "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  --sans: "Avenir Next", "Segoe UI", Inter, system-ui, -apple-system, sans-serif;
+  --mono: ui-monospace, "SF Mono", "Roboto Mono", Menlo, Consolas, monospace;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{
+  background:var(--noite);color:var(--luz);
+  font-family:var(--sans);font-size:14px;
+  display:flex;flex-direction:column;overflow:hidden;
+}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;background:none;border:none}
+
+/* ---------- topo ---------- */
+.topo{
+  display:flex;align-items:center;gap:14px;padding:9px 14px;
+  background:var(--noite-2);border-bottom:1px solid var(--linha);flex:0 0 auto;
+}
+.marca{font-family:var(--serif);font-size:19px;letter-spacing:.02em;padding-right:4px}
+.marca em{font-style:normal;color:var(--acento)}
+.campo-sessao{display:flex;align-items:center;gap:8px;flex:1;min-width:0}
+.ipt{
+  background:var(--noite-3);border:1px solid var(--linha);border-radius:5px;
+  padding:6px 9px;min-width:0;
+}
+.ipt::placeholder{color:#8A7CB8}
+.ipt:focus{outline:2px solid var(--acento);outline-offset:1px}
+.ipt.cliente{width:190px}
+.ipt.tema{flex:1;min-width:120px}
+select.ipt{cursor:pointer}
+.acoes{display:flex;gap:6px;align-items:center;flex:0 0 auto}
+.btn{
+  padding:6px 11px;border:1px solid var(--linha);border-radius:5px;
+  background:var(--noite-3);white-space:nowrap;
+}
+.btn:hover{border-color:var(--acento);background:#332764}
+.btn:focus-visible{outline:2px solid var(--acento);outline-offset:1px}
+.btn.principal{background:var(--acento);color:#1A1030;border-color:var(--acento);font-weight:600}
+.btn.principal:hover{background:var(--acento-claro)}
+.menu{position:relative}
+.menu-lista{
+  position:absolute;right:0;top:calc(100% + 5px);z-index:40;min-width:196px;
+  background:var(--noite-2);border:1px solid var(--linha);border-radius:7px;
+  padding:5px;box-shadow:0 14px 34px rgba(10,4,30,.65);
+}
+.menu-lista button{display:block;width:100%;text-align:left;padding:7px 9px;border-radius:4px}
+.menu-lista button:hover{background:var(--noite-3)}
+.menu-lista hr{border:none;border-top:1px solid var(--linha);margin:5px 2px}
+[hidden]{display:none !important}
+
+/* ---------- corpo ---------- */
+.corpo{flex:1;display:flex;min-height:0}
+.lateral{
+  width:216px;flex:0 0 auto;background:var(--noite-2);overflow-y:auto;
+  border-right:1px solid var(--linha);padding:12px;
+}
+.lateral.dir{border-right:none;border-left:1px solid var(--linha);width:266px}
+.rotulo{
+  font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--luz-fraca);margin:16px 0 7px;
+}
+.rotulo:first-child{margin-top:0}
+.fichas{display:flex;flex-wrap:wrap;gap:5px}
+.ficha{
+  display:flex;align-items:center;gap:6px;padding:5px 9px 5px 6px;
+  border:1px solid var(--linha);border-radius:20px;background:var(--noite-3);font-size:12.5px;
+}
+.ficha:hover{border-color:var(--acento);background:#352A6B}
+.ficha i{width:11px;height:11px;flex:0 0 auto;display:block;box-shadow:0 0 7px currentColor}
+.ficha i.f{border-radius:50%}
+.ficha i.d{transform:rotate(45deg)}
+.ficha i.n{border-radius:3px}
+
+.livre{display:flex;gap:5px;margin-top:8px}
+.livre .ipt{flex:1;font-size:12.5px;padding:5px 8px}
+
+/* ---------- campo ---------- */
+.palco{flex:1;position:relative;min-width:0;background:#191141;display:flex}
+svg#campo{flex:1;display:block;touch-action:none;cursor:default}
+svg#campo.arrastando-campo{cursor:grabbing}
+.zoom{
+  position:absolute;left:12px;bottom:12px;display:flex;gap:4px;
+  background:rgba(21,15,46,.82);border:1px solid var(--linha);border-radius:7px;padding:4px;
+  backdrop-filter:blur(6px);
+}
+.zoom button{width:29px;height:29px;border-radius:4px;font-size:15px;line-height:1}
+.zoom button:hover{background:var(--noite-3)}
+.dica{
+  position:absolute;left:50%;transform:translateX(-50%);bottom:14px;
+  font-size:12px;color:var(--luz-fraca);background:rgba(21,15,46,.8);
+  padding:6px 12px;border-radius:16px;border:1px solid var(--linha);pointer-events:none;
+  backdrop-filter:blur(6px);
+}
+
+/* ---------- painel direito ---------- */
+.grupo{margin-bottom:6px}
+.linha{display:flex;gap:7px;margin-bottom:7px}
+.linha .ipt{flex:1;width:100%}
+label.mini{display:block;font-size:11px;color:var(--luz-fraca);margin-bottom:3px}
+.marcar{display:flex;align-items:center;gap:8px;padding:5px 0;font-size:13px;cursor:pointer}
+.marcar input{accent-color:var(--acento);width:15px;height:15px}
+.angulo{display:flex;align-items:center;gap:9px}
+.angulo input[type=range]{flex:1;accent-color:var(--acento)}
+.angulo output{font-family:var(--mono);font-size:12px;color:var(--acento);width:44px;text-align:right}
+textarea.ipt{width:100%;resize:vertical;min-height:54px;line-height:1.45}
+.vazio{color:var(--luz-fraca);font-size:13px;line-height:1.5;padding:10px 0}
+
+/* tintas — o paciente escolhe */
+.tintas{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.tinta{
+  width:25px;height:25px;border-radius:50%;border:2px solid transparent;
+  box-shadow:0 0 0 1px rgba(255,255,255,.16), 0 0 9px -1px currentColor;
+}
+.tinta:hover{transform:scale(1.12)}
+.tinta.ativa{border-color:var(--luz);box-shadow:0 0 0 1px var(--luz), 0 0 13px currentColor}
+.tinta-livre{
+  width:25px;height:25px;padding:0;border:1px dashed var(--luz-fraca);border-radius:50%;
+  background:conic-gradient(#FF3D9A,#C77DFF,#2E7BF6,#10C7C7,#17B978,#FFB020,#FF3D9A);
+  cursor:pointer;
+}
+input#p-corlivre{position:absolute;opacity:0;width:0;height:0;pointer-events:none}
+
+/* ---------- régua de cenas ---------- */
+.regua{
+  flex:0 0 auto;background:var(--noite-2);border-top:1px solid var(--linha);
+  padding:9px 12px;display:flex;align-items:center;gap:12px;
+}
+.regua-cab{display:flex;flex-direction:column;gap:5px;flex:0 0 auto}
+.regua-cab .rotulo{margin:0}
+.regua-cab .btn{padding:4px 9px;font-size:12px}
+.trilho{display:flex;gap:8px;overflow-x:auto;padding:2px;flex:1}
+.cena{
+  flex:0 0 auto;width:104px;border:1px solid var(--linha);border-radius:7px;
+  background:var(--noite-3);padding:5px;text-align:left;position:relative;
+}
+.cena:hover{border-color:var(--acento)}
+.cena.ativa{border-color:var(--acento);box-shadow:0 0 0 1px var(--acento)}
+.cena svg{display:block;width:100%;height:56px;border-radius:4px}
+.cena .num{font-family:var(--mono);font-size:10px;color:var(--acento);letter-spacing:.1em;margin-top:5px}
+.cena .tit{
+  font-size:11.5px;line-height:1.3;margin-top:1px;color:var(--luz);
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+}
+.cena .x{
+  position:absolute;top:3px;right:3px;width:19px;height:19px;border-radius:4px;
+  background:rgba(21,15,46,.8);color:var(--luz-fraca);font-size:13px;line-height:19px;text-align:center;opacity:0;
+}
+.cena:hover .x{opacity:1}
+.cena .x:hover{color:var(--rosa)}
+.trilho .vazio{padding:14px 4px;white-space:nowrap}
+
+/* ---------- avisos e modais ---------- */
+.aviso{
+  flex:0 0 auto;background:#3A2159;border-bottom:1px solid #5C3A85;color:#EBCBFF;
+  padding:7px 14px;font-size:12.5px;display:flex;gap:10px;align-items:center;
+}
+.aviso button{margin-left:auto;color:#EBCBFF;text-decoration:underline}
+.toast{
+  position:fixed;left:50%;bottom:96px;transform:translateX(-50%);z-index:80;
+  background:var(--noite-2);border:1px solid var(--acento);border-radius:20px;
+  padding:8px 18px;font-size:13px;box-shadow:0 12px 30px rgba(10,4,30,.6);
+  opacity:0;transition:opacity .2s,transform .2s;pointer-events:none;
+}
+.toast.ver{opacity:1;transform:translateX(-50%) translateY(-6px)}
+.veu{
+  position:fixed;inset:0;z-index:70;background:rgba(10,6,26,.74);
+  display:flex;align-items:center;justify-content:center;padding:20px;
+}
+.caixa{
+  background:var(--noite-2);border:1px solid var(--linha);border-radius:11px;
+  padding:20px;width:min(430px,100%);
+}
+.caixa h2{font-family:var(--serif);font-weight:normal;font-size:21px;margin:0 0 4px}
+.caixa p{color:var(--luz-fraca);font-size:13px;line-height:1.5;margin:0 0 14px}
+.caixa .ipt{width:100%}
+.caixa .fim{display:flex;justify-content:flex-end;gap:7px;margin-top:16px}
+
+/* ---------- apresentação ---------- */
+body.apresentando .lateral,
+body.apresentando .topo,
+body.apresentando .regua{display:none}
+body.apresentando .sair-apresentacao{display:block}
+.sair-apresentacao{
+  display:none;position:absolute;right:12px;top:12px;z-index:30;
+  background:rgba(21,15,46,.82);border:1px solid var(--linha);border-radius:7px;padding:7px 13px;
+  backdrop-filter:blur(6px);
+}
+
+/* ---------- impressão ---------- */
+#laudo{display:none}
+@media print{
+  body{display:block;overflow:visible;background:#fff;color:#000}
+  .topo,.corpo,.regua,.aviso,.toast,.veu{display:none !important}
+  #laudo{display:block;font-family:var(--serif);color:#000}
+  #laudo h1{font-size:22px;margin:0 0 2px;font-weight:normal}
+  #laudo .sub{font-family:var(--sans);font-size:11px;color:#555;margin-bottom:16px}
+  #laudo .campo-impresso{border:1px solid #C9BEE4;border-radius:4px;overflow:hidden;margin-bottom:18px}
+  #laudo .campo-impresso svg{display:block;width:100%;height:auto}
+  #laudo h2{
+    font-family:var(--sans);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+    color:#5B4A7A;margin:16px 0 6px;border-bottom:1px solid #DCD3EC;padding-bottom:3px;font-weight:600;
+  }
+  #laudo .mov{display:flex;gap:12px;margin-bottom:11px;break-inside:avoid;page-break-inside:avoid}
+  #laudo .mov svg{width:112px;height:62px;border:1px solid #DCD3EC;flex:0 0 auto}
+  #laudo .mov .n{font-family:var(--mono);font-size:10px;color:#7A6A99}
+  #laudo .mov p{margin:2px 0 0;font-size:12.5px;line-height:1.45}
+  #laudo .txt{font-size:13px;line-height:1.55;white-space:pre-wrap;margin:0 0 10px}
+  #laudo .ponto{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:-1px}
+  #laudo .assina{margin-top:44px;border-top:1px solid #000;width:290px;font-size:11px;padding-top:5px;font-family:var(--sans)}
+  @page{margin:15mm}
+}
+
+@media (max-width:900px){
+  .lateral{width:172px;padding:9px}
+  .lateral.dir{width:212px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition:none !important}
+}
+</style>
+</head>
+<body>
+
+<div class="aviso" id="aviso" hidden>
+  <span id="aviso-txt"></span>
+  <button onclick="document.getElementById('aviso').hidden=true">fechar</button>
+</div>
+
+<header class="topo">
+  <div class="marca">mesa<em>.</em></div>
+
+  <div class="campo-sessao">
+    <select class="ipt" id="sel-sessao" title="Sessão" style="max-width:200px"></select>
+    <input class="ipt cliente" id="in-cliente" placeholder="Constelado" autocomplete="off">
+    <input class="ipt tema" id="in-tema" placeholder="Tema trazido" autocomplete="off">
+    <input class="ipt" id="in-data" type="date" style="width:145px">
+  </div>
+
+  <div class="acoes">
+    <button class="btn principal" id="btn-cena">Salvar movimento</button>
+    <button class="btn" onclick="apresentar(true)">Apresentar</button>
+    <div class="menu">
+      <button class="btn" id="btn-menu">Mais ▾</button>
+      <div class="menu-lista" id="menu" hidden>
+        <button onclick="novaSessao()">Nova sessão</button>
+        <button onclick="renomearSessao()">Renomear sessão</button>
+        <button onclick="duplicarSessao()">Duplicar sessão</button>
+        <button onclick="apagarSessao()">Apagar sessão</button>
+        <hr>
+        <button onclick="baixarPNG()">Exportar imagem do campo</button>
+        <button onclick="imprimir()">Imprimir registro da sessão</button>
+        <hr>
+        <button onclick="exportarJSON()">Backup — salvar arquivo</button>
+        <button onclick="importarJSON()">Backup — abrir arquivo</button>
+        <hr>
+        <button onclick="limparCampo()">Limpar o campo</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="corpo">
+
+  <aside class="lateral">
+    <div id="paleta"></div>
+    <div class="rotulo">Representante livre</div>
+    <div class="livre">
+      <input class="ipt" id="in-livre" placeholder="Nome ou papel" autocomplete="off">
+      <button class="btn" onclick="addLivre()">+</button>
+    </div>
+  </aside>
+
+  <div class="palco">
+    <svg id="campo" xmlns="http://www.w3.org/2000/svg"></svg>
+    <button class="sair-apresentacao btn" onclick="apresentar(false)">Sair da apresentação</button>
+    <div class="zoom">
+      <button onclick="zoom(.8)" title="Aproximar">+</button>
+      <button onclick="zoom(1.25)" title="Afastar">−</button>
+      <button onclick="enquadrar()" title="Enquadrar tudo" style="font-size:12px">⤢</button>
+    </div>
+    <div class="dica" id="dica">Escolha um representante à esquerda para começar</div>
+  </div>
+
+  <aside class="lateral dir">
+    <div class="rotulo">Representante</div>
+    <div id="props"></div>
+
+    <div class="rotulo">Campo</div>
+    <label class="marcar"><input type="checkbox" id="ck-raios"> Mostrar direção do olhar</label>
+    <label class="marcar"><input type="checkbox" id="ck-circulo"> Mostrar ondas do campo</label>
+    <label class="marcar"><input type="checkbox" id="ck-nomes"> Mostrar nomes</label>
+    <label class="marcar"><input type="checkbox" id="ck-agua"> Água em movimento</label>
+    <label class="marcar"><input type="checkbox" id="ck-claro"> Água clara</label>
+
+    <div class="rotulo">Fechamento</div>
+    <label class="mini">Frase de força</label>
+    <textarea class="ipt" id="in-frase" placeholder="O que foi dito e sustentado"></textarea>
+    <label class="mini" style="margin-top:9px">Movimento final</label>
+    <textarea class="ipt" id="in-final" placeholder="Como o campo se organizou ao término"></textarea>
+    <label class="mini" style="margin-top:9px">Tarefa ou ritual</label>
+    <textarea class="ipt" id="in-tarefa" placeholder="O que o constelado leva"></textarea>
+    <label class="mini" style="margin-top:9px">Retorno</label>
+    <input class="ipt" id="in-retorno" type="date" style="width:100%">
+  </aside>
+</div>
+
+<div class="regua">
+  <div class="regua-cab">
+    <div class="rotulo">Movimentos</div>
+    <button class="btn" id="btn-reproduzir">▸ Reproduzir</button>
+  </div>
+  <div class="trilho" id="trilho"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+<div id="laudo"></div>
+<input type="file" id="arquivo" accept="application/json" hidden>
+
+<script>
+"use strict";
+
+/* ============================================================
+   1. Persistência — IndexedDB com queda para memória
+   ============================================================ */
+const Banco = (() => {
+  let db = null, persiste = false;
+  const memoria = {};
+
+  function abrir(){
+    return new Promise(res => {
+      let respondeu = false;
+      const fim = ok => { if(!respondeu){ respondeu = true; persiste = ok; res(ok); } };
+      setTimeout(() => fim(false), 1800);
+      try{
+        const req = indexedDB.open("mesa_constelacao", 1);
+        req.onupgradeneeded = e => {
+          const d = e.target.result;
+          if(!d.objectStoreNames.contains("kv")) d.createObjectStore("kv");
+        };
+        req.onsuccess = e => { db = e.target.result; fim(true); };
+        req.onerror = () => fim(false);
+        req.onblocked = () => fim(false);
+      }catch(e){ fim(false); }
+    });
+  }
+  function ler(chave){
+    return new Promise(res => {
+      if(!persiste || !db) return res(memoria[chave] ?? null);
+      try{
+        const t = db.transaction("kv","readonly").objectStore("kv").get(chave);
+        t.onsuccess = () => res(t.result ?? null);
+        t.onerror = () => res(null);
+      }catch(e){ res(null); }
+    });
+  }
+  function gravar(chave, valor){
+    memoria[chave] = valor;
+    return new Promise(res => {
+      if(!persiste || !db) return res(false);
+      try{
+        const t = db.transaction("kv","readwrite").objectStore("kv").put(valor, chave);
+        t.onsuccess = () => res(true);
+        t.onerror = () => res(false);
+      }catch(e){ res(false); }
+    });
+  }
+  return { abrir, ler, gravar, get persiste(){ return persiste; } };
+})();
+
+/* ============================================================
+   2. Cores — fortes, uma leitura por elemento
+   ============================================================ */
+const CORES = {
+  constelado:{ nome:"Constelado",     hex:"#FF3D9A" },
+  paterna:   { nome:"Linha paterna",  hex:"#2E7BF6" },
+  materna:   { nome:"Linha materna",  hex:"#A855F7" },
+  irmaos:    { nome:"Irmãos",         hex:"#12C9C9" },
+  filhos:    { nome:"Filhos",         hex:"#C77DFF" },
+  conjugal:  { nome:"Conjugal",       hex:"#FFB020" },
+  excluido:  { nome:"Excluído",       hex:"#8A82B8" },
+  morto:     { nome:"Falecido",       hex:"#6C7BA8" },
+  sintoma:   { nome:"Sintoma, força", hex:"#F5455C" },
+  recurso:   { nome:"Recurso",        hex:"#17B978" },
+  luz:       { nome:"Luz, solução",   hex:"#EFE8FF" }
+};
+
+/* tintas oferecidas ao paciente, na ordem do espectro */
+const TINTAS = ["#FF3D9A","#FF6FB5","#C77DFF","#A855F7","#7B5BF2","#2E7BF6",
+                "#12C9C9","#17B978","#FFB020","#F5455C","#EFE8FF","#6C7BA8"];
+
+const PALETA = [
+  { grupo:"Sistema familiar", itens:[
+    { papel:"Constelado", forma:"n", cor:"constelado" },
+    { papel:"Pai",        forma:"m", cor:"paterna" },
+    { papel:"Mãe",        forma:"f", cor:"materna" },
+    { papel:"Avô",        forma:"m", cor:"paterna" },
+    { papel:"Avó",        forma:"f", cor:"materna" },
+    { papel:"Irmão",      forma:"m", cor:"irmaos" },
+    { papel:"Irmã",       forma:"f", cor:"irmaos" },
+    { papel:"Filho",      forma:"m", cor:"filhos" },
+    { papel:"Filha",      forma:"f", cor:"filhos" },
+    { papel:"Cônjuge",    forma:"n", cor:"conjugal" },
+    { papel:"Ex-cônjuge", forma:"n", cor:"conjugal" }
+  ]},
+  { grupo:"Excluídos e mortos", itens:[
+    { papel:"Excluído",   forma:"n", cor:"excluido", estado:"excluido" },
+    { papel:"Falecido",   forma:"n", cor:"morto",    estado:"morto" },
+    { papel:"Aborto",     forma:"d", cor:"morto",    estado:"morto", raio:17 },
+    { papel:"Natimorto",  forma:"d", cor:"morto",    estado:"morto", raio:17 },
+    { papel:"Segredo",    forma:"d", cor:"excluido", estado:"excluido" }
+  ]},
+  { grupo:"Forças e recursos", itens:[
+    { papel:"Sintoma",  forma:"d", cor:"sintoma" },
+    { papel:"Doença",   forma:"d", cor:"sintoma" },
+    { papel:"Destino",  forma:"d", cor:"materna" },
+    { papel:"Morte",    forma:"d", cor:"morto" },
+    { papel:"Dinheiro", forma:"d", cor:"recurso" },
+    { papel:"Empresa",  forma:"d", cor:"recurso" },
+    { papel:"Trabalho", forma:"d", cor:"recurso" },
+    { papel:"Vida",     forma:"d", cor:"luz" },
+    { papel:"Solução",  forma:"d", cor:"luz" }
+  ]}
+];
+
+const RAIO = 27;
+const LARG = 1400, ALT = 900;
+
+/* ângulo de (x1,y1) olhando para (x2,y2); 0° = norte do campo */
+function anguloEntre(x1, y1, x2, y2){
+  const a = Math.atan2(x2 - x1, -(y2 - y1)) * 180 / Math.PI;
+  return Math.round((a + 360) % 360);
+}
+
+function misturar(hex, alvo, f){
+  const n = parseInt(hex.slice(1), 16), m = parseInt(alvo.slice(1), 16);
+  const c = i => Math.round((((n >> i) & 255) * (1-f)) + (((m >> i) & 255) * f));
+  return "#" + ((1<<24) + (c(16)<<16) + (c(8)<<8) + c(0)).toString(16).slice(1);
+}
+const escurecer = (hex, f=.45) => misturar(hex, "#000000", f);
+const clarear   = (hex, f=.4)  => misturar(hex, "#FFFFFF", f);
+
+/* cor efetiva de uma figura: a livre escolhida vence a do papel */
+function corDe(fig){
+  const base = fig.corLivre || (CORES[fig.cor] || CORES.materna).hex;
+  return { base, borda: escurecer(base, .42), claro: clarear(base, .45) };
+}
+
+/* ============================================================
+   3. Estado
+   ============================================================ */
+let dados = {
+  sessoes:[], atual:null,
+  opcoes:{ raios:true, circulo:true, nomes:true, agua:true, claro:false }
+};
+let selecionado = null;
+let cenaAtiva = null;
+let vista = { x:0, y:0, l:LARG, a:ALT };
+let reproduzindo = false;
+
+const $  = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+const id = () => Math.random().toString(36).slice(2,10);
+const svg = $("#campo");
+const NS = "http://www.w3.org/2000/svg";
+const el = n => document.createElementNS(NS, n);
+
+function sessao(){ return dados.sessoes.find(s => s.id === dados.atual) || null; }
+
+function sessaoNova(nome){
+  return {
+    id:id(), nome: nome || "Sessão sem título",
+    cliente:"", tema:"", data:new Date().toISOString().slice(0,10),
+    frase:"", final:"", tarefa:"", retorno:"",
+    figuras:[], cenas:[]
+  };
+}
+
+/* ============================================================
+   4. A água
+   ============================================================ */
+function tintas(){
+  return dados.opcoes.claro
+    ? { texto:"#241C40", apoio:"#6B5F91", onda:"#B9A8E8", halo:.30 }
+    : { texto:"#F2ECFF", apoio:"#A99BD6", onda:"#8E7BE0", halo:.55 };
+}
+
+function semMovimento(){
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+/* profundidade, cáusticas e ondas concêntricas */
+function montarAgua(destino, claro, cores){
+  const defs = el("defs");
+
+  const fundo = el("linearGradient");
+  fundo.id = "agua-fundo";
+  fundo.setAttribute("x1","0"); fundo.setAttribute("y1","0");
+  fundo.setAttribute("x2","0"); fundo.setAttribute("y2","1");
+  const paradas = claro
+    ? [["0","#F4F1FE"],["0.55","#EAE6FB"],["1","#DFE3FA"]]
+    : [["0","#2A1B78"],["0.45","#1B1252"],["1","#0D0828"]];
+  paradas.forEach(([o,c]) => {
+    const s = el("stop"); s.setAttribute("offset", o); s.setAttribute("stop-color", c);
+    fundo.appendChild(s);
+  });
+  defs.appendChild(fundo);
+
+  // feixe de luz atravessando a água
+  const feixe = el("radialGradient");
+  feixe.id = "agua-luz";
+  [["0", claro ? "#FFFFFF" : "#6B4FD8", claro ? ".55" : ".55"],
+   ["1", claro ? "#FFFFFF" : "#6B4FD8", "0"]].forEach(([o,c,a]) => {
+    const s = el("stop");
+    s.setAttribute("offset", o); s.setAttribute("stop-color", c); s.setAttribute("stop-opacity", a);
+    feixe.appendChild(s);
+  });
+  defs.appendChild(feixe);
+
+  if(!claro){
+    const f = el("filter");
+    f.id = "agua-causticas";
+    f.setAttribute("x","0"); f.setAttribute("y","0");
+    f.setAttribute("width","100%"); f.setAttribute("height","100%");
+    const turb = el("feTurbulence");
+    turb.setAttribute("type","fractalNoise");
+    turb.setAttribute("baseFrequency","0.006 0.016");
+    turb.setAttribute("numOctaves","3");
+    turb.setAttribute("seed","11");
+    turb.setAttribute("result","n");
+    if(dados.opcoes.agua && !semMovimento()){
+      const an = el("animate");
+      an.setAttribute("attributeName","baseFrequency");
+      an.setAttribute("dur","28s");
+      an.setAttribute("repeatCount","indefinite");
+      an.setAttribute("values","0.006 0.016;0.009 0.013;0.005 0.018;0.006 0.016");
+      an.setAttribute("calcMode","spline");
+      an.setAttribute("keyTimes","0;0.33;0.66;1");
+      an.setAttribute("keySplines",".42 0 .58 1;.42 0 .58 1;.42 0 .58 1");
+      turb.appendChild(an);
+    }
+    f.appendChild(turb);
+    // tinge o ruído de azul-violeta e recorta os brilhos
+    const cm = el("feColorMatrix");
+    cm.setAttribute("in","n");
+    cm.setAttribute("type","matrix");
+    cm.setAttribute("values",
+      "0 0 0 0 0.42  0 0 0 0 0.34  0 0 0 0 0.95  0.9 0.4 0 0 -0.42");
+    f.appendChild(cm);
+    defs.appendChild(f);
+  }
+  destino.appendChild(defs);
+
+  const base = el("rect");
+  base.setAttribute("x", -LARG); base.setAttribute("y", -ALT);
+  base.setAttribute("width", LARG*3); base.setAttribute("height", ALT*3);
+  base.setAttribute("fill","url(#agua-fundo)");
+  destino.appendChild(base);
+
+  const luz = el("ellipse");
+  luz.setAttribute("cx", LARG/2); luz.setAttribute("cy", ALT/2);
+  luz.setAttribute("rx", LARG*0.42); luz.setAttribute("ry", ALT*0.46);
+  luz.setAttribute("fill","url(#agua-luz)");
+  destino.appendChild(luz);
+
+  if(!claro){
+    const caust = el("rect");
+    caust.setAttribute("x", -LARG); caust.setAttribute("y", -ALT);
+    caust.setAttribute("width", LARG*3); caust.setAttribute("height", ALT*3);
+    caust.setAttribute("filter","url(#agua-causticas)");
+    caust.setAttribute("opacity", ".5");
+    destino.appendChild(caust);
+  }
+
+  // ondas concêntricas — a superfície tocada no centro
+  if(dados.opcoes.circulo){
+    [0.30, 0.45, 0.60, 0.76, 0.93].forEach((k, i) => {
+      const c = el("circle");
+      c.setAttribute("cx", LARG/2); c.setAttribute("cy", ALT/2);
+      c.setAttribute("r", (Math.min(LARG, ALT)/2) * (k*1.05));
+      c.setAttribute("fill","none");
+      c.setAttribute("stroke", cores.onda);
+      c.setAttribute("stroke-width", i === 2 ? 1.8 : 1.1);
+      c.setAttribute("opacity", (0.30 - i*0.045).toFixed(2));
+      destino.appendChild(c);
+    });
+    const cruz = el("path");
+    cruz.setAttribute("d", `M${LARG/2-10} ${ALT/2} H${LARG/2+10} M${LARG/2} ${ALT/2-10} V${ALT/2+10}`);
+    cruz.setAttribute("stroke", cores.onda);
+    cruz.setAttribute("stroke-width", 1.4);
+    cruz.setAttribute("opacity",".4");
+    destino.appendChild(cruz);
+  }
+}
+
+/* ============================================================
+   5. As figuras
+   ============================================================ */
+function formaDe(f, r){
+  if(f === "f"){ const c = el("circle"); c.setAttribute("r", r); return c; }
+  if(f === "d"){
+    const p = el("polygon");
+    p.setAttribute("points", `0,${-r*1.18} ${r*1.18},0 0,${r*1.18} ${-r*1.18},0`);
+    return p;
+  }
+  const q = el("rect");
+  q.setAttribute("x", -r); q.setAttribute("y", -r);
+  q.setAttribute("width", r*2); q.setAttribute("height", r*2);
+  if(f === "n") q.setAttribute("rx", r*0.34);
+  return q;
+}
+
+/* um halo por cor usada — a luz da figura difundida na água */
+function halosNecessarios(destino, figuras, t){
+  const vistos = new Set();
+  let defs = destino.querySelector("defs");
+  if(!defs){ defs = el("defs"); destino.appendChild(defs); }
+  figuras.forEach(f => {
+    const c = corDe(f).base;
+    const chave = "halo-" + c.replace("#","");
+    if(vistos.has(chave)) return;
+    vistos.add(chave);
+    if(destino.querySelector("#" + chave)) return;
+    const g = el("radialGradient");
+    g.id = chave;
+    [["0", c, (t.halo * 1.0).toFixed(2)],
+     ["0.45", c, (t.halo * 0.42).toFixed(2)],
+     ["1", c, "0"]].forEach(([o,cor,a]) => {
+      const s = el("stop");
+      s.setAttribute("offset", o); s.setAttribute("stop-color", cor); s.setAttribute("stop-opacity", a);
+      g.appendChild(s);
+    });
+    defs.appendChild(g);
+  });
+}
+
+function desenharFigura(fig, t, opts){
+  const c = corDe(fig);
+  const r = fig.raio || RAIO;
+  const fantasma = fig.estado === "morto" || fig.estado === "excluido";
+
+  const g = el("g");
+  g.setAttribute("class","fig");
+  g.dataset.id = fig.id;
+  g.style.transform = `translate(${fig.x}px, ${fig.y}px)`;
+
+  // halo difuso na água
+  const halo = el("circle");
+  halo.setAttribute("r", r * 2.7);
+  halo.setAttribute("fill", `url(#halo-${c.base.replace("#","")})`);
+  halo.setAttribute("opacity", fantasma ? .45 : 1);
+  halo.style.pointerEvents = "none";
+  g.appendChild(halo);
+
+  const giro = el("g");
+  giro.setAttribute("class","giro");
+  giro.style.transform = `rotate(${fig.ang}deg)`;
+
+  if(dados.opcoes.raios){
+    const raio = el("line");
+    raio.setAttribute("x1", 0); raio.setAttribute("y1", -r);
+    raio.setAttribute("x2", 0); raio.setAttribute("y2", -r - 200);
+    raio.setAttribute("stroke", c.base);
+    raio.setAttribute("stroke-width", 2);
+    raio.setAttribute("stroke-linecap","round");
+    raio.setAttribute("stroke-dasharray","2 9");
+    raio.setAttribute("opacity", .72);
+    raio.style.pointerEvents = "none";
+    giro.appendChild(raio);
+  }
+
+  const corpo = formaDe(fig.forma, r);
+  corpo.setAttribute("fill", c.base);
+  corpo.setAttribute("stroke", dados.opcoes.claro ? c.borda : c.claro);
+  corpo.setAttribute("stroke-width", 2.4);
+  if(fantasma){
+    corpo.setAttribute("stroke-dasharray","5 4");
+    corpo.setAttribute("fill-opacity", .55);
+  }
+  giro.appendChild(corpo);
+
+  // proa — para onde a figura olha
+  const proa = el("polygon");
+  proa.setAttribute("points", `0,${-r-12} ${-8},${-r+2} ${8},${-r+2}`);
+  proa.setAttribute("fill", dados.opcoes.claro ? c.borda : c.claro);
+  giro.appendChild(proa);
+
+  if(fig.estado === "morto"){
+    [[-1,-1,1,1],[-1,1,1,-1]].forEach(([a,b,d,e]) => {
+      const l = el("line");
+      l.setAttribute("x1", a*r*.62); l.setAttribute("y1", b*r*.62);
+      l.setAttribute("x2", d*r*.62); l.setAttribute("y2", e*r*.62);
+      l.setAttribute("stroke", dados.opcoes.claro ? c.borda : c.claro);
+      l.setAttribute("stroke-width", 2.2);
+      giro.appendChild(l);
+    });
+  }
+  g.appendChild(giro);
+
+  if(opts.selecionado){
+    const anel = el("circle");
+    anel.setAttribute("r", r + 14);
+    anel.setAttribute("fill","none");
+    anel.setAttribute("stroke", t.texto);
+    anel.setAttribute("stroke-width", 1.6);
+    anel.setAttribute("stroke-dasharray","2 5");
+    anel.setAttribute("opacity",".85");
+    g.appendChild(anel);
+
+    const px = Math.sin(fig.ang*Math.PI/180) * (r+36);
+    const py = -Math.cos(fig.ang*Math.PI/180) * (r+36);
+
+    const braco = el("line");
+    braco.setAttribute("x1", 0); braco.setAttribute("y1", 0);
+    braco.setAttribute("x2", px); braco.setAttribute("y2", py);
+    braco.setAttribute("stroke", t.texto);
+    braco.setAttribute("stroke-width", 1.2);
+    braco.setAttribute("opacity",".55");
+    g.appendChild(braco);
+
+    const punho = el("circle");
+    punho.setAttribute("class","punho");
+    punho.setAttribute("r", 8.5);
+    punho.setAttribute("cx", px); punho.setAttribute("cy", py);
+    punho.setAttribute("fill", t.texto);
+    punho.setAttribute("stroke", c.base);
+    punho.setAttribute("stroke-width", 2.5);
+    punho.style.cursor = "grab";
+    g.appendChild(punho);
+  }
+
+  if(dados.opcoes.nomes){
+    const nome = el("text");
+    nome.setAttribute("y", r + 21);
+    nome.setAttribute("text-anchor","middle");
+    nome.setAttribute("font-family","Charter, Georgia, serif");
+    nome.setAttribute("font-size", 16);
+    nome.setAttribute("fill", t.texto);
+    nome.textContent = fig.nome;
+    g.appendChild(nome);
+
+    if(fig.papel && fig.papel !== fig.nome){
+      const papel = el("text");
+      papel.setAttribute("y", r + 36);
+      papel.setAttribute("text-anchor","middle");
+      papel.setAttribute("font-family","Avenir Next, Segoe UI, system-ui, sans-serif");
+      papel.setAttribute("font-size", 11.5);
+      papel.setAttribute("fill", t.apoio);
+      papel.textContent = fig.papel;
+      g.appendChild(papel);
+    }
+  }
+  return g;
+}
+
+/* a água é cara de compor: fica numa camada fixa, refeita só quando muda */
+let camadaAgua = null, camadaFig = null;
+
+function montarPalco(){
+  svg.innerHTML = "";
+  camadaAgua = el("g"); camadaAgua.setAttribute("class","agua");
+  camadaFig  = el("g"); camadaFig.setAttribute("class","figuras");
+  svg.appendChild(camadaAgua);
+  svg.appendChild(camadaFig);
+  montarAgua(camadaAgua, dados.opcoes.claro, tintas());
+}
+
+function refazerAgua(){ montarPalco(); render(); }
+
+function render(){
+  const s = sessao();
+  const t = tintas();
+  if(!camadaFig || !camadaFig.isConnected) montarPalco();
+  svg.setAttribute("viewBox", `${vista.x} ${vista.y} ${vista.l} ${vista.a}`);
+  camadaFig.innerHTML = "";
+  if(!s) return;
+  halosNecessarios(camadaFig, s.figuras, t);
+  s.figuras.forEach(f => {
+    camadaFig.appendChild(desenharFigura(f, t, { selecionado: f.id === selecionado }));
+  });
+  $("#dica").hidden = s.figuras.length > 0;
+}
+
+/* miniatura de uma cena — água e figuras reduzidas, sem filtros */
+function miniatura(snap, figuras, escuro = true){
+  const mapa = Object.fromEntries(figuras.map(f => [f.id, f]));
+  const corpos = snap.map(p => {
+    const f = mapa[p.id];
+    if(!f) return "";
+    const c = corDe(f);
+    const rx = 27, x = p.x, y = p.y;
+    const dx = Math.sin(p.ang*Math.PI/180)*50, dy = -Math.cos(p.ang*Math.PI/180)*50;
+    const forma = f.forma === "f"
+      ? `<circle cx="${x}" cy="${y}" r="${rx}" fill="${c.base}"/>`
+      : f.forma === "d"
+        ? `<polygon points="${x},${y-rx*1.2} ${x+rx*1.2},${y} ${x},${y+rx*1.2} ${x-rx*1.2},${y}" fill="${c.base}"/>`
+        : `<rect x="${x-rx}" y="${y-rx}" width="${rx*2}" height="${rx*2}" rx="${f.forma==='n'?9:0}" fill="${c.base}"/>`;
+    return `<line x1="${x}" y1="${y}" x2="${x+dx}" y2="${y+dy}" stroke="${c.base}" stroke-width="5" opacity=".7"/>` + forma;
+  }).join("");
+  const fundo = escuro ? "#1C1350" : "#EDEAFB";
+  return `<svg viewBox="0 0 ${LARG} ${ALT}" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet"><rect width="${LARG}" height="${ALT}" fill="${fundo}"/>${corpos}</svg>`;
+}
+
+/* ============================================================
+   6. Interação no campo
+   ============================================================ */
+function paraCampo(evt){
+  const p = svg.createSVGPoint();
+  p.x = evt.clientX; p.y = evt.clientY;
+  return p.matrixTransform(svg.getScreenCTM().inverse());
+}
+
+let arraste = null;
+
+svg.addEventListener("pointerdown", e => {
+  const s = sessao(); if(!s) return;
+  const p = paraCampo(e);
+  const punho = e.target.closest(".punho");
+  const grupo = e.target.closest(".fig");
+
+  if(punho && grupo){
+    arraste = { modo:"girar", id: grupo.dataset.id };
+  } else if(grupo){
+    const f = s.figuras.find(x => x.id === grupo.dataset.id);
+    if(!f) return;
+    selecionar(f.id);
+    arraste = { modo:"mover", id:f.id, dx: p.x - f.x, dy: p.y - f.y };
+  } else {
+    selecionar(null);
+    arraste = { modo:"campo", x:e.clientX, y:e.clientY, vx:vista.x, vy:vista.y };
+    svg.classList.add("arrastando-campo");
+  }
+  svg.setPointerCapture(e.pointerId);
+});
+
+svg.addEventListener("pointermove", e => {
+  if(!arraste) return;
+  const s = sessao(); if(!s) return;
+
+  if(arraste.modo === "campo"){
+    const escala = vista.l / svg.clientWidth;
+    vista.x = arraste.vx - (e.clientX - arraste.x) * escala;
+    vista.y = arraste.vy - (e.clientY - arraste.y) * escala;
+    render();
+    return;
+  }
+
+  const f = s.figuras.find(x => x.id === arraste.id); if(!f) return;
+  const p = paraCampo(e);
+
+  if(arraste.modo === "mover"){
+    f.x = Math.round(p.x - arraste.dx);
+    f.y = Math.round(p.y - arraste.dy);
+  } else {
+    const a = anguloEntre(f.x, f.y, p.x, p.y);
+    f.ang = e.shiftKey ? (Math.round(a/15) * 15) % 360 : a;
+    const r = $("#in-ang"); if(r){ r.value = f.ang; $("#out-ang").value = f.ang + "°"; }
+  }
+  render();
+});
+
+function soltar(){
+  if(!arraste) return;
+  arraste = null;
+  svg.classList.remove("arrastando-campo");
+  cenaAtiva = null;
+  desenharTrilho();
+  salvar();
+}
+svg.addEventListener("pointerup", soltar);
+svg.addEventListener("pointercancel", soltar);
+
+svg.addEventListener("wheel", e => {
+  e.preventDefault();
+  zoom(e.deltaY > 0 ? 1.12 : 0.89, paraCampo(e));
+}, { passive:false });
+
+function zoom(fator, centro){
+  const c = centro || { x: vista.x + vista.l/2, y: vista.y + vista.a/2 };
+  const nl = Math.max(320, Math.min(4200, vista.l * fator));
+  const razao = nl / vista.l;
+  vista.x = c.x - (c.x - vista.x) * razao;
+  vista.y = c.y - (c.y - vista.y) * razao;
+  vista.l = nl;
+  vista.a = nl * (ALT/LARG);
+  render();
+}
+
+function enquadrar(){
+  const s = sessao();
+  if(!s || !s.figuras.length){
+    vista = { x:0, y:0, l:LARG, a:ALT };
+    return render();
+  }
+  const xs = s.figuras.map(f => f.x), ys = s.figuras.map(f => f.y);
+  const m = 150;
+  const x1 = Math.min(...xs)-m, x2 = Math.max(...xs)+m;
+  const y1 = Math.min(...ys)-m, y2 = Math.max(...ys)+m;
+  const l = Math.max(x2-x1, (y2-y1) * (LARG/ALT), 520);
+  vista = { x:(x1+x2)/2 - l/2, y:(y1+y2)/2 - l*(ALT/LARG)/2, l, a:l*(ALT/LARG) };
+  render();
+}
+
+/* ============================================================
+   7. Representantes
+   ============================================================ */
+function addFigura(base){
+  const s = sessao(); if(!s) return;
+  const n = s.figuras.length;
+  const anel = 185 + Math.floor(n/8) * 105;
+  const passo = (n % 8) * (Math.PI*2/8) + (Math.floor(n/8) * 0.4);
+  const x = Math.round(LARG/2 + Math.cos(passo) * anel);
+  const y = Math.round(ALT/2 + Math.sin(passo) * anel);
+
+  const f = {
+    id:id(),
+    nome: base.nome || base.papel,
+    papel: base.papel || "",
+    forma: base.forma || "n",
+    cor: base.cor || "materna",
+    corLivre: null,
+    estado: base.estado || "vivo",
+    raio: base.raio || RAIO,
+    x, y,
+    ang: anguloEntre(x, y, LARG/2, ALT/2)
+  };
+  s.figuras.push(f);
+  selecionar(f.id);
+  cenaAtiva = null;
+  salvar();
+  return f;
+}
+
+function addLivre(){
+  const campo = $("#in-livre");
+  const nome = campo.value.trim();
+  if(!nome) return campo.focus();
+  addFigura({ nome, papel:"", forma:"n", cor:"filhos" });
+  campo.value = "";
+  campo.focus();
+}
+
+function selecionar(fid){
+  selecionado = fid;
+  render();
+  painelProps();
+}
+
+function figSel(){
+  const s = sessao();
+  return s ? s.figuras.find(f => f.id === selecionado) : null;
+}
+
+function painelProps(){
+  const alvo = $("#props");
+  const f = figSel();
+  const s = sessao();
+
+  if(!f){
+    alvo.innerHTML = `<p class="vazio">Nenhum representante selecionado.<br>Toque numa figura na água para editar nome, cor, estado e direção do olhar.</p>`;
+    return;
+  }
+
+  const atual = corDe(f).base.toUpperCase();
+  const opcoesCor = Object.entries(CORES).map(([k,v]) =>
+    `<option value="${k}" ${f.cor===k && !f.corLivre ? "selected":""}>${v.nome}</option>`).join("");
+  const outros = s.figuras.filter(x => x.id !== f.id)
+    .map(x => `<option value="${x.id}">${escapar(x.nome)}</option>`).join("");
+
+  alvo.innerHTML = `
+    <div class="grupo">
+      <label class="mini">Nome</label>
+      <input class="ipt" id="p-nome" value="${escapar(f.nome)}" style="width:100%">
+    </div>
+    <div class="grupo">
+      <label class="mini">Papel no sistema</label>
+      <input class="ipt" id="p-papel" value="${escapar(f.papel)}" placeholder="Pai, Sintoma, Empresa…" style="width:100%">
+    </div>
+
+    <div class="grupo">
+      <label class="mini">Cor — deixe o constelado escolher</label>
+      <div class="tintas">
+        ${TINTAS.map(c => `<button class="tinta ${c.toUpperCase()===atual?"ativa":""}"
+          data-tinta="${c}" title="${c}" style="background:${c};color:${c}"></button>`).join("")}
+        <button class="tinta-livre" id="p-abrir-cor" title="Qualquer outra cor"></button>
+        <input type="color" id="p-corlivre" value="${atual}">
+      </div>
+      ${f.corLivre ? `<button class="btn" id="p-limpar-cor" style="width:100%;font-size:12px;padding:4px">Voltar à cor do papel</button>` : ""}
+    </div>
+
+    <div class="grupo">
+      <label class="mini">Pertencimento</label>
+      <select class="ipt" id="p-cor" style="width:100%">
+        ${f.corLivre ? `<option value="" selected>Cor escolhida à mão</option>` : ""}
+        ${opcoesCor}
+      </select>
+    </div>
+
+    <div class="linha">
+      <div style="flex:1">
+        <label class="mini">Figura</label>
+        <select class="ipt" id="p-forma">
+          <option value="m" ${f.forma==="m"?"selected":""}>Masculino</option>
+          <option value="f" ${f.forma==="f"?"selected":""}>Feminino</option>
+          <option value="n" ${f.forma==="n"?"selected":""}>Neutro</option>
+          <option value="d" ${f.forma==="d"?"selected":""}>Força</option>
+        </select>
+      </div>
+      <div style="flex:1">
+        <label class="mini">Estado</label>
+        <select class="ipt" id="p-estado">
+          <option value="vivo" ${f.estado==="vivo"?"selected":""}>Presente</option>
+          <option value="morto" ${f.estado==="morto"?"selected":""}>Falecido</option>
+          <option value="excluido" ${f.estado==="excluido"?"selected":""}>Excluído</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="grupo">
+      <label class="mini">Direção do olhar</label>
+      <div class="angulo">
+        <input type="range" id="in-ang" min="0" max="359" value="${f.ang}">
+        <output id="out-ang">${f.ang}°</output>
+      </div>
+    </div>
+    ${outros ? `<div class="grupo">
+      <label class="mini">Virar o olhar para</label>
+      <select class="ipt" id="p-olhar" style="width:100%">
+        <option value="">—</option>${outros}
+      </select>
+    </div>` : ""}
+    <div class="linha" style="margin-top:11px">
+      <button class="btn" style="flex:1" id="p-dup">Duplicar</button>
+      <button class="btn" style="flex:1" id="p-del">Remover</button>
+    </div>`;
+
+  const mudou = () => { cenaAtiva = null; render(); salvar(); desenharTrilho(); };
+
+  $("#p-nome").oninput  = e => { f.nome = e.target.value; render(); salvar(); };
+  $("#p-papel").oninput = e => { f.papel = e.target.value; render(); salvar(); };
+
+  $$("#props .tinta").forEach(b => {
+    b.onclick = () => { f.corLivre = b.dataset.tinta; mudou(); painelProps(); };
+  });
+  $("#p-abrir-cor").onclick = () => $("#p-corlivre").click();
+  $("#p-corlivre").oninput = e => { f.corLivre = e.target.value; render(); salvar(); };
+  $("#p-corlivre").onchange = () => { mudou(); painelProps(); };
+  if($("#p-limpar-cor")) $("#p-limpar-cor").onclick = () => { f.corLivre = null; mudou(); painelProps(); };
+
+  $("#p-cor").onchange = e => {
+    if(!e.target.value) return;
+    f.cor = e.target.value; f.corLivre = null; mudou(); painelProps();
+  };
+  $("#p-forma").onchange = e => { f.forma = e.target.value; mudou(); };
+  $("#p-estado").onchange = e => {
+    f.estado = e.target.value;
+    if(!f.corLivre){
+      if(f.estado === "morto") f.cor = "morto";
+      if(f.estado === "excluido") f.cor = "excluido";
+    }
+    mudou(); painelProps();
+  };
+  $("#in-ang").oninput = e => {
+    f.ang = +e.target.value;
+    $("#out-ang").value = f.ang + "°";
+    render();
+  };
+  $("#in-ang").onchange = () => { cenaAtiva = null; salvar(); desenharTrilho(); };
+
+  if($("#p-olhar")) $("#p-olhar").onchange = e => {
+    const alvoFig = s.figuras.find(x => x.id === e.target.value);
+    if(!alvoFig) return;
+    f.ang = anguloEntre(f.x, f.y, alvoFig.x, alvoFig.y);
+    e.target.value = "";
+    mudou(); painelProps();
+  };
+
+  $("#p-dup").onclick = () => {
+    const copia = { ...f, id:id(), x:f.x + 70, y:f.y + 44 };
+    s.figuras.push(copia); selecionar(copia.id); mudou();
+  };
+  $("#p-del").onclick = () => {
+    s.figuras = s.figuras.filter(x => x.id !== f.id);
+    selecionar(null); mudou();
+  };
+}
+
+function escapar(t){
+  return String(t ?? "").replace(/[&<>"]/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[c]));
+}
+
+/* ============================================================
+   8. Movimentos
+   ============================================================ */
+function salvarCena(){
+  const s = sessao();
+  if(!s || !s.figuras.length) return aviso("Coloque representantes na água antes de salvar um movimento.");
+  abrirCaixa({
+    titulo:"Salvar movimento",
+    texto:"O campo será congelado como está. Descreva o que aconteceu — é isso que aparece no registro impresso.",
+    valor:"", campo:"O que se moveu, o que foi dito", ok:"Salvar movimento",
+    aoConfirmar: texto => {
+      s.cenas.push({
+        id:id(),
+        titulo: texto.trim() || `Movimento ${s.cenas.length + 1}`,
+        t: new Date().toISOString(),
+        snap: s.figuras.map(f => ({ id:f.id, x:f.x, y:f.y, ang:f.ang }))
+      });
+      cenaAtiva = s.cenas[s.cenas.length - 1].id;
+      salvar(); desenharTrilho();
+      toast("Movimento salvo");
+      $("#trilho").scrollLeft = 99999;
+    }
+  });
+}
+
+function aplicarCena(cena, anima = true){
+  const s = sessao(); if(!s) return;
+
+  cena.snap.forEach(p => {
+    const f = s.figuras.find(x => x.id === p.id);
+    if(f){ f.x = p.x; f.y = p.y; f.ang = p.ang; }
+  });
+  cenaAtiva = cena.id;
+
+  const tinhaSelecao = selecionado;
+  selecionado = null;
+
+  const nos = cena.snap.map(p => svg.querySelector(`.fig[data-id="${p.id}"]`));
+  const podeAnimar = anima && !tinhaSelecao && nos.every(Boolean) && !semMovimento();
+
+  if(podeAnimar){
+    const curva = "transform .8s cubic-bezier(.4,0,.2,1)";
+    cena.snap.forEach((p, i) => {
+      const g = nos[i];
+      g.style.transition = curva;
+      g.style.transform = `translate(${p.x}px, ${p.y}px)`;
+      const giro = g.querySelector(".giro");
+      if(giro){ giro.style.transition = curva; giro.style.transform = `rotate(${p.ang}deg)`; }
+    });
+    setTimeout(() => { if(cenaAtiva === cena.id) render(); }, 850);
+  } else {
+    render();
+  }
+
+  desenharTrilho();
+  painelProps();
+}
+
+function desenharTrilho(){
+  const s = sessao();
+  const t = $("#trilho");
+  if(!s || !s.cenas.length){
+    t.innerHTML = `<p class="vazio">Nenhum movimento salvo. Organize o campo e use “Salvar movimento” a cada reorganização.</p>`;
+    return;
+  }
+  t.innerHTML = s.cenas.map((c, i) => `
+    <div class="cena ${c.id===cenaAtiva?"ativa":""}" data-id="${c.id}" role="button" tabindex="0">
+      ${miniatura(c.snap, s.figuras, !dados.opcoes.claro)}
+      <div class="num">${String(i+1).padStart(2,"0")}</div>
+      <div class="tit">${escapar(c.titulo)}</div>
+      <button class="x" data-x="${c.id}" title="Apagar movimento">×</button>
+    </div>`).join("");
+
+  t.querySelectorAll(".cena").forEach(elm => {
+    elm.onclick = e => {
+      if(e.target.dataset.x) return;
+      aplicarCena(s.cenas.find(c => c.id === elm.dataset.id));
+    };
+    elm.onkeydown = e => {
+      if(e.key === "Enter" || e.key === " "){
+        e.preventDefault();
+        aplicarCena(s.cenas.find(c => c.id === elm.dataset.id));
+      }
+    };
+  });
+  t.querySelectorAll("[data-x]").forEach(b => {
+    b.onclick = e => {
+      e.stopPropagation();
+      s.cenas = s.cenas.filter(c => c.id !== b.dataset.x);
+      salvar(); desenharTrilho();
+    };
+  });
+}
+
+function reproduzir(){
+  const s = sessao();
+  if(!s || !s.cenas.length) return;
+  if(reproduzindo){ reproduzindo = false; $("#btn-reproduzir").textContent = "▸ Reproduzir"; return; }
+  reproduzindo = true;
+  $("#btn-reproduzir").textContent = "■ Parar";
+  let i = 0;
+  const passo = () => {
+    if(!reproduzindo || i >= s.cenas.length){
+      reproduzindo = false;
+      $("#btn-reproduzir").textContent = "▸ Reproduzir";
+      return;
+    }
+    aplicarCena(s.cenas[i], true);
+    i++;
+    setTimeout(passo, 1700);
+  };
+  passo();
+}
+
+/* ============================================================
+   9. Sessões
+   ============================================================ */
+function listarSessoes(){
+  $("#sel-sessao").innerHTML = dados.sessoes.map(s =>
+    `<option value="${s.id}" ${s.id===dados.atual?"selected":""}>${escapar(s.nome)}</option>`).join("");
+}
+
+function carregarSessao(){
+  const s = sessao(); if(!s) return;
+  $("#in-cliente").value = s.cliente;
+  $("#in-tema").value = s.tema;
+  $("#in-data").value = s.data;
+  $("#in-frase").value = s.frase;
+  $("#in-final").value = s.final;
+  $("#in-tarefa").value = s.tarefa;
+  $("#in-retorno").value = s.retorno;
+  selecionado = null; cenaAtiva = null;
+  vista = { x:0, y:0, l:LARG, a:ALT };
+  render(); painelProps(); desenharTrilho(); listarSessoes();
+}
+
+function novaSessao(){
+  const s = sessaoNova("Sessão " + (dados.sessoes.length + 1));
+  dados.sessoes.push(s);
+  dados.atual = s.id;
+  salvar(); carregarSessao();
+  toast("Sessão criada");
+}
+
+function renomearSessao(){
+  const s = sessao(); if(!s) return;
+  abrirCaixa({
+    titulo:"Renomear sessão", texto:"", valor:s.nome, campo:"Nome da sessão", ok:"Renomear",
+    aoConfirmar: v => { s.nome = v.trim() || s.nome; salvar(); listarSessoes(); }
+  });
+}
+
+function duplicarSessao(){
+  const s = sessao(); if(!s) return;
+  const copia = JSON.parse(JSON.stringify(s));
+  copia.id = id(); copia.nome = s.nome + " (cópia)";
+  dados.sessoes.push(copia); dados.atual = copia.id;
+  salvar(); carregarSessao();
+  toast("Sessão duplicada");
+}
+
+function apagarSessao(){
+  const s = sessao(); if(!s) return;
+  if(!confirm(`Apagar “${s.nome}” e todos os seus movimentos? Não há como desfazer.`)) return;
+  dados.sessoes = dados.sessoes.filter(x => x.id !== s.id);
+  if(!dados.sessoes.length) dados.sessoes.push(sessaoNova("Sessão 1"));
+  dados.atual = dados.sessoes[0].id;
+  salvar(); carregarSessao();
+}
+
+function limparCampo(){
+  const s = sessao(); if(!s) return;
+  if(!confirm("Remover todos os representantes da água? Os movimentos salvos permanecem.")) return;
+  s.figuras = []; selecionar(null); salvar(); render();
+}
+
+/* ============================================================
+   10. Saídas — imagem, impressão, backup
+   ============================================================ */
+/* ids únicos por cópia, para o SVG exportado não puxar defs da tela */
+function reidentificar(raiz){
+  const sufixo = "-" + Math.random().toString(36).slice(2,7);
+  const mapa = {};
+  raiz.querySelectorAll("[id]").forEach(e => { mapa[e.id] = e.id + sufixo; e.id = mapa[e.id]; });
+  const troca = txt => txt.replace(/url\(#([^)]+)\)/g, (m,k) => mapa[k] ? `url(#${mapa[k]})` : m);
+  raiz.querySelectorAll("*").forEach(e => {
+    ["fill","stroke","filter","mask","clip-path"].forEach(a => {
+      const v = e.getAttribute(a);
+      if(v && v.includes("url(")) e.setAttribute(a, troca(v));
+    });
+  });
+}
+
+function svgLimpo(claro){
+  const antesClaro = dados.opcoes.claro, antesSel = selecionado, antesVista = { ...vista };
+  dados.opcoes.claro = !!claro;
+  selecionado = null;
+  vista = { x:0, y:0, l:LARG, a:ALT };
+  refazerAgua();
+  const copia = svg.cloneNode(true);
+  dados.opcoes.claro = antesClaro;
+  selecionado = antesSel;
+  vista = antesVista;
+  refazerAgua();
+
+  copia.setAttribute("xmlns", NS);
+  copia.setAttribute("width", LARG);
+  copia.setAttribute("height", ALT);
+  copia.setAttribute("viewBox", `0 0 ${LARG} ${ALT}`);
+  copia.removeAttribute("style");
+
+  // transform inline vira atributo; o resto do style é descartado
+  copia.querySelectorAll("[style]").forEach(e => {
+    const tr = e.style.transform;
+    if(tr){
+      const t = tr.match(/translate\(([-\d.]+)px,\s*([-\d.]+)px\)/);
+      const r = tr.match(/rotate\(([-\d.]+)deg\)/);
+      if(t) e.setAttribute("transform", `translate(${t[1]},${t[2]})`);
+      else if(r) e.setAttribute("transform", `rotate(${r[1]})`);
+    }
+    e.removeAttribute("style");
+  });
+  reidentificar(copia);
+  return copia;
+}
+
+function baixarPNG(){
+  const s = sessao(); if(!s) return;
+  const copia = svgLimpo(dados.opcoes.claro);
+  const texto = new XMLSerializer().serializeToString(copia);
+  const img = new Image();
+  img.onload = () => {
+    const cv = document.createElement("canvas");
+    cv.width = LARG * 2; cv.height = ALT * 2;
+    const cx = cv.getContext("2d");
+    cx.scale(2,2);
+    cx.drawImage(img, 0, 0);
+    cv.toBlob(b => {
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(b);
+      a.download = `constelacao-${(s.cliente||"sessao").toLowerCase().replace(/\s+/g,"-")}-${s.data}.png`;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+      toast("Imagem exportada");
+    }, "image/png");
+  };
+  img.onerror = () => aviso("Não foi possível gerar a imagem neste navegador.");
+  img.src = "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(texto)));
+}
+
+function imprimir(){
+  const s = sessao(); if(!s) return;
+  const copia = svgLimpo(true);
+  const bloco = (rot, txt) => txt && txt.trim() ? `<h2>${rot}</h2><p class="txt">${escapar(txt)}</p>` : "";
+
+  $("#laudo").innerHTML = `
+    <h1>${escapar(s.cliente || "Constelado não identificado")}</h1>
+    <div class="sub">
+      ${escapar(s.tema || "Tema não registrado")} ·
+      ${s.data ? s.data.split("-").reverse().join("/") : ""} ·
+      ${s.figuras.length} representantes · ${s.cenas.length} movimentos
+    </div>
+    <div class="campo-impresso">${new XMLSerializer().serializeToString(copia)}</div>
+
+    <h2>Representantes do campo</h2>
+    <div class="txt">${s.figuras.map(f =>
+      `<span class="ponto" style="background:${corDe(f).base}"></span>${escapar(f.nome)}` +
+      `${f.papel && f.papel !== f.nome ? " — " + escapar(f.papel) : ""}` +
+      `${f.estado !== "vivo" ? " (" + (f.estado === "morto" ? "falecido" : "excluído") + ")" : ""}`
+    ).join("<br>") || "—"}</div>
+
+    ${s.cenas.length ? `<h2>Sequência dos movimentos</h2>` + s.cenas.map((c,i) => `
+      <div class="mov">
+        ${miniatura(c.snap, s.figuras, false)}
+        <div>
+          <div class="n">MOVIMENTO ${String(i+1).padStart(2,"0")} · ${new Date(c.t).toLocaleString("pt-BR")}</div>
+          <p>${escapar(c.titulo)}</p>
+        </div>
+      </div>`).join("") : ""}
+
+    ${bloco("Frase de força", s.frase)}
+    ${bloco("Movimento final", s.final)}
+    ${bloco("Tarefa ou ritual", s.tarefa)}
+    ${s.retorno ? `<h2>Retorno</h2><p class="txt">${s.retorno.split("-").reverse().join("/")}</p>` : ""}
+
+    <div class="assina">Terapeuta responsável</div>`;
+  setTimeout(() => window.print(), 60);
+}
+
+function exportarJSON(){
+  const b = new Blob([JSON.stringify(dados, null, 2)], { type:"application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(b);
+  a.download = `mesa-backup-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+  toast("Backup salvo");
+}
+
+function importarJSON(){ $("#arquivo").click(); }
+
+$("#arquivo").onchange = e => {
+  const f = e.target.files[0]; if(!f) return;
+  const leitor = new FileReader();
+  leitor.onload = () => {
+    try{
+      const novo = JSON.parse(leitor.result);
+      if(!novo.sessoes) throw new Error("formato");
+      if(!confirm("Substituir todas as sessões atuais pelo conteúdo do arquivo?")) return;
+      dados = novo;
+      normalizar();
+      salvar(); aplicarOpcoes(); carregarSessao();
+      toast("Backup restaurado");
+    }catch(err){
+      aviso("Arquivo não reconhecido. Escolha um backup gerado por esta mesa.");
+    }
+  };
+  leitor.readAsText(f);
+  e.target.value = "";
+};
+
+/* compatibilidade com backups da versão anterior */
+function normalizar(){
+  const padrao = { raios:true, circulo:true, nomes:true, agua:true, claro:false };
+  dados.opcoes = Object.assign({}, padrao, dados.opcoes || {});
+  const antigas = { origem:"paterna", conjuge:"conjugal", abstrato:"sintoma", solucao:"luz", neutro:"filhos" };
+  (dados.sessoes || []).forEach(s => {
+    (s.figuras || []).forEach(f => {
+      if(antigas[f.cor]) f.cor = antigas[f.cor];
+      if(!CORES[f.cor]) f.cor = "materna";
+      if(f.corLivre === undefined) f.corLivre = null;
+    });
+  });
+  if(!sessao()) dados.atual = dados.sessoes[0]?.id;
+}
+
+/* ============================================================
+   11. Apresentação, avisos, caixa de texto
+   ============================================================ */
+function apresentar(ligar){
+  document.body.classList.toggle("apresentando", ligar);
+  selecionar(ligar ? null : selecionado);
+  if(ligar && document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(()=>{});
+  else if(!ligar && document.fullscreenElement) document.exitFullscreen().catch(()=>{});
+  setTimeout(render, 120);
+}
+
+let tempoToast;
+function toast(t){
+  const e = $("#toast");
+  e.textContent = t;
+  e.classList.add("ver");
+  clearTimeout(tempoToast);
+  tempoToast = setTimeout(() => e.classList.remove("ver"), 2200);
+}
+
+function aviso(t){
+  $("#aviso-txt").textContent = t;
+  $("#aviso").hidden = false;
+}
+
+function abrirCaixa({ titulo, texto, valor, campo, ok, aoConfirmar }){
+  const veu = document.createElement("div");
+  veu.className = "veu";
+  veu.innerHTML = `
+    <div class="caixa">
+      <h2>${escapar(titulo)}</h2>
+      ${texto ? `<p>${escapar(texto)}</p>` : ""}
+      <input class="ipt" id="cx-in" placeholder="${escapar(campo||"")}" value="${escapar(valor||"")}">
+      <div class="fim">
+        <button class="btn" id="cx-nao">Cancelar</button>
+        <button class="btn principal" id="cx-sim">${escapar(ok)}</button>
+      </div>
+    </div>`;
+  document.body.appendChild(veu);
+  const inp = veu.querySelector("#cx-in");
+  inp.focus(); inp.select();
+  const fechar = () => veu.remove();
+  const confirmar = () => { aoConfirmar(inp.value); fechar(); };
+  veu.querySelector("#cx-nao").onclick = fechar;
+  veu.querySelector("#cx-sim").onclick = confirmar;
+  inp.onkeydown = e => {
+    if(e.key === "Enter") confirmar();
+    if(e.key === "Escape") fechar();
+  };
+  veu.onclick = e => { if(e.target === veu) fechar(); };
+}
+
+/* ============================================================
+   12. Ligações de interface
+   ============================================================ */
+function montarPaleta(){
+  $("#paleta").innerHTML = PALETA.map((g, gi) => `
+    <div class="rotulo">${g.grupo}</div>
+    <div class="fichas">
+      ${g.itens.map((it,i) => {
+        const c = CORES[it.cor].hex;
+        return `<button class="ficha" data-g="${gi}" data-i="${i}">
+          <i class="${it.forma}" style="background:${c};color:${c}"></i>${it.papel}
+        </button>`;
+      }).join("")}
+    </div>`).join("");
+
+  $$("#paleta .ficha").forEach(b => {
+    b.onclick = () => addFigura(PALETA[+b.dataset.g].itens[+b.dataset.i]);
+  });
+}
+
+function aplicarOpcoes(){
+  ["raios","circulo","nomes","agua","claro"].forEach(k => { $("#ck-" + k).checked = !!dados.opcoes[k]; });
+}
+
+["raios","circulo","nomes","agua","claro"].forEach(k => {
+  $("#ck-" + k).onchange = e => {
+    dados.opcoes[k] = e.target.checked;
+    salvar();
+    if(k === "circulo" || k === "agua" || k === "claro") refazerAgua();
+    else render();
+    desenharTrilho();
+  };
+});
+
+["cliente","tema","data","frase","final","tarefa","retorno"].forEach(k => {
+  $("#in-" + k).oninput = e => {
+    const s = sessao(); if(!s) return;
+    s[k] = e.target.value;
+    if(k === "cliente" && (s.nome.startsWith("Sessão ") || !s.nome.trim())){
+      s.nome = e.target.value || s.nome;
+      listarSessoes();
+    }
+    salvar();
+  };
+});
+
+$("#sel-sessao").onchange = e => { dados.atual = e.target.value; salvar(); carregarSessao(); };
+$("#btn-cena").onclick = salvarCena;
+$("#btn-reproduzir").onclick = reproduzir;
+$("#in-livre").onkeydown = e => { if(e.key === "Enter") addLivre(); };
+
+$("#btn-menu").onclick = e => { e.stopPropagation(); $("#menu").hidden = !$("#menu").hidden; };
+document.addEventListener("click", () => { $("#menu").hidden = true; });
+$("#menu").onclick = () => { $("#menu").hidden = true; };
+
+document.addEventListener("keydown", e => {
+  const editando = /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName);
+  if(e.key === "Escape"){
+    if(document.body.classList.contains("apresentando")) return apresentar(false);
+    if(!editando) selecionar(null);
+    return;
+  }
+  if((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s"){ e.preventDefault(); return salvarCena(); }
+  if(editando) return;
+
+  const f = figSel(); if(!f) return;
+  const s = sessao();
+
+  if(e.key === "Delete" || e.key === "Backspace"){
+    e.preventDefault();
+    s.figuras = s.figuras.filter(x => x.id !== f.id);
+    selecionar(null); cenaAtiva = null; salvar(); desenharTrilho(); return;
+  }
+  if((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "d"){
+    e.preventDefault();
+    const copia = { ...f, id:id(), x:f.x+70, y:f.y+44 };
+    s.figuras.push(copia); selecionar(copia.id); salvar(); return;
+  }
+  const setas = { ArrowUp:[0,-1], ArrowDown:[0,1], ArrowLeft:[-1,0], ArrowRight:[1,0] };
+  if(setas[e.key]){
+    e.preventDefault();
+    if(e.shiftKey){
+      f.ang = (f.ang + (e.key === "ArrowRight" || e.key === "ArrowDown" ? 5 : -5) + 360) % 360;
+    } else {
+      f.x += setas[e.key][0] * 12;
+      f.y += setas[e.key][1] * 12;
+    }
+    cenaAtiva = null; render(); painelProps(); salvar();
+  }
+});
+
+/* ============================================================
+   13. Salvamento e partida
+   ============================================================ */
+let tempoSalvar;
+function salvar(){
+  clearTimeout(tempoSalvar);
+  tempoSalvar = setTimeout(() => Banco.gravar("dados", dados), 260);
+}
+
+(async function iniciar(){
+  const ok = await Banco.abrir();
+  const guardado = await Banco.ler("dados");
+
+  if(guardado && guardado.sessoes && guardado.sessoes.length){
+    dados = guardado;
+  } else {
+    const s = sessaoNova("Sessão 1");
+    dados.sessoes = [s];
+    dados.atual = s.id;
+  }
+  normalizar();
+
+  if(!ok){
+    aviso("Este ambiente não permite armazenamento local — o trabalho desta sessão não será salvo ao fechar a aba. Publique o arquivo para gravar, e use Mais ▸ Backup enquanto isso.");
+  }
+
+  montarPaleta();
+  aplicarOpcoes();
+  montarPalco();
+  carregarSessao();
+})();
+
+window.addEventListener("resize", () => render());
+</script>
+</body>
+</html>
