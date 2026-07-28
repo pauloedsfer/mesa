@@ -299,6 +299,30 @@ body.gaveta-esq .cortina,body.gaveta-dir .cortina,body.gaveta-baixo .cortina{dis
 .tri button.on.sim{background:var(--acento)}
 .perg-baixo{display:flex;gap:6px;margin-top:8px}
 .perg-baixo .ipt{flex:1}
+.percurso{display:flex;flex-direction:column;gap:7px}
+.etapa{
+  display:flex;gap:11px;padding:10px 11px;border:1px solid var(--linha);
+  border-radius:10px;background:var(--painel);cursor:pointer;text-align:left;
+}
+.etapa:hover{border-color:var(--acento)}
+.etapa.aqui{border-color:var(--acento);background:var(--realce)}
+.etapa-marca{
+  font-family:var(--mono);font-size:11px;color:var(--acento-texto);background:var(--acento);
+  width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:0 0 auto;
+}
+.etapa-corpo{flex:1;min-width:0}
+.etapa-topo{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.etapa-topo b{font-size:13.5px;font-weight:600;line-height:1.35}
+.etapa-data{font-family:var(--mono);font-size:11px;color:var(--texto-fraco);flex:0 0 auto}
+.etapa-dados{font-size:11.5px;color:var(--texto-fraco);margin-top:3px}
+.etapa-frase{font-family:var(--serif);font-size:13.5px;font-style:italic;margin-top:6px;line-height:1.4}
+.etapa-tarefa{font-size:11.5px;color:var(--texto-fraco);margin-top:3px}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{
+  display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:16px;
+  border:1px solid var(--linha);background:var(--campo-ipt);font-size:12.5px;
+}
+.tag b{font-family:var(--mono);font-size:10.5px;color:var(--acento)}
 .leitura-lista{margin:0;padding-left:0;list-style:none;font-size:12.8px;line-height:1.5}
 .leitura-lista li{
   padding:5px 0 5px 15px;position:relative;border-bottom:1px solid var(--linha);
@@ -495,6 +519,7 @@ body.apresentando{--barra:0px}
       <button class="btn" id="btn-menu">⋯</button>
       <div class="menu-lista" id="menu" hidden>
         <button onclick="abrirAnamnese()">Anamnese sistêmica</button>
+        <button onclick="abrirFicha()">Ficha do constelado</button>
         <hr>
         <button onclick="novaSessao()">Nova sessão</button>
         <button onclick="renomearSessao()">Renomear sessão</button>
@@ -557,6 +582,9 @@ body.apresentando{--barra:0px}
     <div class="grupo">
       <button class="btn" id="btn-anamnese-painel" style="width:100%">Anamnese sistêmica</button>
     </div>
+    <div class="grupo">
+      <button class="btn" id="btn-ficha-painel" style="width:100%">Ficha do constelado</button>
+    </div>
 
     <div class="rotulo">Representante</div>
     <div id="props"></div>
@@ -583,6 +611,9 @@ body.apresentando{--barra:0px}
         <input type="color" id="in-corfundo">
         <span id="txt-corfundo"></span>
       </div>
+    </div>
+    <div class="grupo">
+      <button class="btn" id="btn-restaurar-campo" style="width:100%">Restaurar aparência de origem</button>
     </div>
     <div class="grupo" id="bloco-degrade" hidden>
       <label class="marcar"><input type="checkbox" id="ck-degrade"> Degradê</label>
@@ -629,6 +660,8 @@ body.apresentando{--barra:0px}
     <label class="marcar"><input type="checkbox" id="ck-raios"> Direção do olhar</label>
     <label class="marcar"><input type="checkbox" id="ck-nomes"> Nomes</label>
     <label class="marcar"><input type="checkbox" id="ck-relogio"> Cronômetro à vista</label>
+    <label class="marcar"><input type="checkbox" id="ck-geracoes"> Faixas geracionais</label>
+    <label class="marcar"><input type="checkbox" id="ck-ordemVisivel"> Ordem de entrada</label>
     <label class="marcar"><input type="checkbox" id="ck-leitura"> Leitura do campo</label>
     <label class="marcar"><input type="checkbox" id="ck-leituraLaudo"> Incluir a leitura no laudo</label>
     <div class="grupo" style="margin-top:6px">
@@ -750,23 +783,23 @@ const TINTAS = ["#FF3D9A","#FF6FB5","#C77DFF","#A855F7","#7B5BF2","#2E7BF6",
 
 const PALETA = [
   { grupo:"Sistema familiar", itens:[
-    { papel:"Constelado", forma:"n", cor:"constelado", emoji:"🧑" , icone:"pessoa"},
-    { papel:"Pai",        forma:"m", cor:"paterna",    emoji:"👨" , icone:"homem"},
-    { papel:"Mãe",        forma:"f", cor:"materna",    emoji:"👩" , icone:"mulher"},
-    { papel:"Avô",        forma:"m", cor:"paterna",    emoji:"👴" , icone:"idoso"},
-    { papel:"Avó",        forma:"f", cor:"materna",    emoji:"👵" , icone:"idosa"},
-    { papel:"Irmão",      forma:"m", cor:"irmaos",     emoji:"👦" , icone:"homem"},
-    { papel:"Irmã",       forma:"f", cor:"irmaos",     emoji:"👧" , icone:"mulher"},
-    { papel:"Filho",      forma:"m", cor:"filhos",     emoji:"🧒" , icone:"crianca"},
-    { papel:"Filha",      forma:"f", cor:"filhos",     emoji:"👧" , icone:"crianca"},
-    { papel:"Cônjuge",    forma:"n", cor:"conjugal",   emoji:"💑" , icone:"casal"},
-    { papel:"Ex-cônjuge", forma:"n", cor:"conjugal",   emoji:"💔" , icone:"elo"}
+    { papel:"Constelado", forma:"n", cor:"constelado", emoji:"🧑" , icone:"pessoa", ger:2},
+    { papel:"Pai",        forma:"m", cor:"paterna",    emoji:"👨" , icone:"homem", ger:1},
+    { papel:"Mãe",        forma:"f", cor:"materna",    emoji:"👩" , icone:"mulher", ger:1},
+    { papel:"Avô",        forma:"m", cor:"paterna",    emoji:"👴" , icone:"idoso", ger:0},
+    { papel:"Avó",        forma:"f", cor:"materna",    emoji:"👵" , icone:"idosa", ger:0},
+    { papel:"Irmão",      forma:"m", cor:"irmaos",     emoji:"👦" , icone:"homem", ger:2},
+    { papel:"Irmã",       forma:"f", cor:"irmaos",     emoji:"👧" , icone:"mulher", ger:2},
+    { papel:"Filho",      forma:"m", cor:"filhos",     emoji:"🧒" , icone:"crianca", ger:3},
+    { papel:"Filha",      forma:"f", cor:"filhos",     emoji:"👧" , icone:"crianca", ger:3},
+    { papel:"Cônjuge",    forma:"n", cor:"conjugal",   emoji:"💑" , icone:"casal", ger:2},
+    { papel:"Ex-cônjuge", forma:"n", cor:"conjugal",   emoji:"💔" , icone:"elo", ger:2}
   ]},
   { grupo:"Excluídos e mortos", itens:[
     { papel:"Excluído",   forma:"n", cor:"excluido", estado:"excluido", emoji:"🚪" , icone:"porta"},
     { papel:"Falecido",   forma:"n", cor:"morto",    estado:"morto", emoji:"🕯️" , icone:"vela"},
-    { papel:"Aborto",     forma:"d", cor:"morto",    estado:"morto", raio:17, emoji:"👼" , icone:"estrela"},
-    { papel:"Natimorto",  forma:"d", cor:"morto",    estado:"morto", raio:17, emoji:"👼" , icone:"estrela"},
+    { papel:"Aborto",     forma:"d", cor:"morto",    estado:"morto", raio:17, emoji:"👼" , icone:"estrela", ger:3},
+    { papel:"Natimorto",  forma:"d", cor:"morto",    estado:"morto", raio:17, emoji:"👼" , icone:"estrela", ger:3},
     { papel:"Segredo",    forma:"d", cor:"excluido", estado:"excluido", emoji:"🔒" , icone:"cadeado"}
   ]},
   { grupo:"Forças e recursos", itens:[
@@ -849,6 +882,8 @@ const EMOJIS = [
   ["Marcas",         ["🚪","🪞","🧩","❓","🔒","📿","🎭","⚔️","🛡️","🧿"]]
 ];
 const FONTE_EMOJI = '"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';
+
+const GERACOES = ["Avós","Pais","Constelado","Filhos"];
 
 const RAIO = 27;
 const LARG = 1400, ALT = 900;
@@ -1186,6 +1221,33 @@ function montarFundo(destino){
     panoDeFundo(destino, { filter:"url(#fundo-tex2)", opacity:.32 });
   }
 
+  // faixas geracionais — a ordem é a espinha do método
+  if(o.geracoes){
+    const t = tintas();
+    const altura = ALT / GERACOES.length;
+    GERACOES.forEach((nome, i) => {
+      if(i > 0){
+        const l = el("line");
+        l.setAttribute("x1", -LARG); l.setAttribute("x2", LARG*2);
+        l.setAttribute("y1", i*altura); l.setAttribute("y2", i*altura);
+        l.setAttribute("stroke", t.texto);
+        l.setAttribute("stroke-width", 1.2);
+        l.setAttribute("stroke-dasharray","10 12");
+        l.setAttribute("opacity",".22");
+        destino.appendChild(l);
+      }
+      const r = el("text");
+      r.setAttribute("x", 30); r.setAttribute("y", i*altura + 30);
+      r.setAttribute("font-family","Avenir Next, Segoe UI, system-ui, sans-serif");
+      r.setAttribute("font-size", 15);
+      r.setAttribute("letter-spacing", 3);
+      r.setAttribute("fill", t.texto);
+      r.setAttribute("opacity",".4");
+      r.textContent = nome.toUpperCase();
+      destino.appendChild(r);
+    });
+  }
+
   // ondas concêntricas
   if(o.ondas && o.qtdOndas > 0){
     const forca = o.forcaOndas / 100;
@@ -1213,12 +1275,18 @@ function montarFundo(destino){
 /* ============================================================
    4. Estado
    ============================================================ */
+/* aparência de origem do campo — o botão "Restaurar" devolve exatamente isto */
+const CAMPO_PADRAO = {
+  fundo:"cor", tomFundo:62, animar:true,
+  corFundo:"#D64FD8", corFundo2:"#1C098B", degrade:true,
+  ondas:true, forcaOndas:100, qtdOndas:5, corOndas:"#FFFFFF"
+};
+
 const OPCOES_PADRAO = {
   raios:true, nomes:true, relogio:true, tema:"claro", figuraPadrao:"icone",
   leitura:true, leituraLaudo:true,
-  fundo:"nevoa", tomFundo:62, animar:true,
-  corFundo:"#6B4FD8", corFundo2:"#0D0828", degrade:true,
-  ondas:true, forcaOndas:62, qtdOndas:5, corOndas:"#B9A3FF"
+  ...CAMPO_PADRAO,
+  geracoes:false, ordemVisivel:false
 };
 
 let dados = { sessoes:[], atual:null, opcoes:{ ...OPCOES_PADRAO }, laudo:{} };
@@ -1446,6 +1514,29 @@ function desenharFigura(fig, t, opts){
     punho.setAttribute("stroke-width", 2.5);
     punho.style.cursor = "grab";
     g.appendChild(punho);
+  }
+
+  if(dados.opcoes.ordemVisivel && fig.ordem){
+    const bx = -(r + 6), by = -(r + 6);
+    const sel = el("circle");
+    sel.setAttribute("cx", bx); sel.setAttribute("cy", by);
+    sel.setAttribute("r", 10.5);
+    sel.setAttribute("fill", t.claro ? "#FFFFFF" : "#1A1330");
+    sel.setAttribute("stroke", c.base);
+    sel.setAttribute("stroke-width", 2);
+    sel.style.pointerEvents = "none";
+    g.appendChild(sel);
+    const num = el("text");
+    num.setAttribute("x", bx); num.setAttribute("y", by);
+    num.setAttribute("text-anchor","middle");
+    num.setAttribute("dominant-baseline","central");
+    num.setAttribute("font-family","ui-monospace, SFMono-Regular, Menlo, monospace");
+    num.setAttribute("font-size", 11);
+    num.setAttribute("font-weight","600");
+    num.setAttribute("fill", t.texto);
+    num.style.pointerEvents = "none";
+    num.textContent = fig.ordem;
+    g.appendChild(num);
   }
 
   if(dados.opcoes.nomes){
@@ -1677,13 +1768,26 @@ function formaInicial(base){
   return base.forma || "n";
 }
 
-function addFigura(base){
-  const s = sessao(); if(!s) return;
+/* com faixas ligadas o representante entra na sua geração;
+   sem faixas, segue o anel em volta do centro */
+function posicaoInicial(base, s){
+  if(dados.opcoes.geracoes && base.ger != null){
+    const altura = ALT / GERACOES.length;
+    const y = Math.round((base.ger + 0.5) * altura);
+    const k = s.figuras.filter(f => f.ger === base.ger).length;
+    const dx = k === 0 ? 0 : (k % 2 === 1 ? 1 : -1) * Math.ceil(k/2) * 165;
+    return { x: Math.round(LARG/2 + dx), y };
+  }
   const n = s.figuras.length;
   const anel = 185 + Math.floor(n/8) * 105;
   const passo = (n % 8) * (Math.PI*2/8) + (Math.floor(n/8) * 0.4);
-  const x = Math.round(LARG/2 + Math.cos(passo) * anel);
-  const y = Math.round(ALT/2 + Math.sin(passo) * anel);
+  return { x: Math.round(LARG/2 + Math.cos(passo) * anel),
+           y: Math.round(ALT/2 + Math.sin(passo) * anel) };
+}
+
+function addFigura(base){
+  const s = sessao(); if(!s) return;
+  const { x, y } = posicaoInicial(base, s);
 
   const f = {
     id:id(),
@@ -1696,6 +1800,9 @@ function addFigura(base){
     corLivre: null,
     estado: base.estado || "vivo",
     raio: base.raio || RAIO,
+    ger: base.ger != null ? base.ger : null,
+    ordem: (s.proxOrdem = (s.proxOrdem || 0) + 1),
+    relato: "",
     x, y,
     ang: anguloEntre(x, y, LARG/2, ALT/2)
   };
@@ -1822,6 +1929,20 @@ function painelProps(){
         <option value="">—</option>${outros}
       </select>
     </div>` : ""}
+    <div class="grupo">
+      <label class="mini">Geração</label>
+      <select class="ipt" id="p-ger" style="width:100%">
+        <option value="">Fora das faixas</option>
+        ${GERACOES.map((n,i) => `<option value="${i}" ${f.ger===i?"selected":""}>${n}</option>`).join("")}
+      </select>
+    </div>
+
+    <div class="grupo">
+      <label class="mini">Relato do representante${f.ordem ? ` — entrou em ${String(f.ordem).padStart(2,"0")}º` : ""}</label>
+      <textarea class="ipt" id="p-relato" rows="3"
+        placeholder="O que este representante disse sentir">${escapar(f.relato || "")}</textarea>
+    </div>
+
     <div class="linha" style="margin-top:11px">
       <button class="btn" style="flex:1" id="p-dup">Duplicar</button>
       <button class="btn" style="flex:1" id="p-del">Remover</button>
@@ -1884,8 +2005,18 @@ function painelProps(){
     mudou(); painelProps();
   };
 
+  $("#p-relato").oninput = e => { f.relato = e.target.value; salvar(); };
+  $("#p-ger").onchange = e => {
+    f.ger = e.target.value === "" ? null : +e.target.value;
+    if(f.ger != null && dados.opcoes.geracoes){
+      f.y = Math.round((f.ger + 0.5) * (ALT / GERACOES.length));
+    }
+    mudou(); painelProps();
+  };
+
   $("#p-dup").onclick = () => {
-    const copia = { ...f, id:id(), x:f.x + 70, y:f.y + 44 };
+    const copia = { ...f, id:id(), x:f.x + 70, y:f.y + 44,
+                    ordem:(s.proxOrdem = (s.proxOrdem || 0) + 1) };
     s.figuras.push(copia); selecionar(copia.id); mudou();
   };
   $("#p-del").onclick = () => {
@@ -2383,6 +2514,142 @@ function pintarLeitura(){
 }
 
 /* ============================================================
+   Ficha do constelado — as sessões da mesma pessoa em sequência,
+   e o que se repetiu de uma para a outra.
+   ============================================================ */
+const chaveCliente = n => (n || "").trim().toLowerCase().replace(/\s+/g, " ");
+
+function sessoesDe(nome){
+  const k = chaveCliente(nome);
+  if(!k) return [];
+  return dados.sessoes
+    .filter(s => chaveCliente(s.cliente) === k)
+    .sort((a,b) => (a.data || "").localeCompare(b.data || ""));
+}
+
+/* representantes e temas que voltaram em mais de uma sessão */
+function recorrencias(lista){
+  const conta = {};
+  lista.forEach(s => {
+    const vistos = new Set();
+    (s.figuras || []).forEach(f => {
+      const nome = (f.papel || f.nome || "").trim();
+      if(!nome || vistos.has(nome.toLowerCase())) return;
+      vistos.add(nome.toLowerCase());
+      conta[nome] = (conta[nome] || 0) + 1;
+    });
+  });
+  return Object.entries(conta)
+    .filter(([, n]) => n > 1)
+    .sort((a,b) => b[1] - a[1]);
+}
+
+function abrirFicha(){
+  const atual = sessao();
+  const nome = (atual && atual.cliente || "").trim();
+  const lista = sessoesDe(nome);
+  const dataBR = d => d ? d.split("-").reverse().join("/") : "—";
+
+  const veu = document.createElement("div");
+  veu.className = "veu";
+  veu.id = "veu-ficha";
+
+  if(!nome){
+    veu.innerHTML = `<div class="caixa">
+      <h2>Ficha do constelado</h2>
+      <p>Preencha o nome do constelado na sessão atual para reunir os atendimentos dessa pessoa.</p>
+      <div class="fim"><button class="btn principal" id="fi-fechar">Entendi</button></div>
+    </div>`;
+    document.body.appendChild(veu);
+    $("#fi-fechar").onclick = () => veu.remove();
+    veu.onclick = e => { if(e.target === veu) veu.remove(); };
+    return;
+  }
+
+  const rec = recorrencias(lista);
+  const totalMin = lista.reduce((n,s) => n + Math.round(segundosDe(s)/60), 0);
+
+  veu.innerHTML = `
+    <div class="caixa larga">
+      <div class="caixa-topo">
+        <div>
+          <h2>${escapar(nome)}</h2>
+          <p style="margin:0">${lista.length} atendimento${lista.length>1?"s":""}
+            ${lista.length>1 ? `· de ${dataBR(lista[0].data)} a ${dataBR(lista[lista.length-1].data)}` : ""}
+            ${totalMin ? `· ${totalMin} min no total` : ""}</p>
+        </div>
+        <button class="btn" id="fi-fechar" aria-label="Fechar">✕</button>
+      </div>
+
+      <div class="an-corpo" style="margin-top:14px">
+        <div class="rotulo">Percurso</div>
+        <div class="percurso">
+          ${lista.map((s,i) => {
+            const n = contarAnamnese(s);
+            return `<div class="etapa ${s.id===dados.atual?"aqui":""}" data-ir="${s.id}" role="button" tabindex="0">
+              <div class="etapa-marca">${String(i+1).padStart(2,"0")}</div>
+              <div class="etapa-corpo">
+                <div class="etapa-topo">
+                  <b>${escapar(s.tema || "Sem tema registrado")}</b>
+                  <span class="etapa-data">${dataBR(s.data)}</span>
+                </div>
+                <div class="etapa-dados">
+                  ${(s.figuras||[]).length} representantes ·
+                  ${(s.cenas||[]).length} movimentos ·
+                  ${escapar(s.modalidade || "—")}
+                  ${n.sins ? ` · ${n.sins} ponto${n.sins>1?"s":""} de atenção` : ""}
+                  ${segundosDe(s) ? " · " + comoRelogio(segundosDe(s)) : ""}
+                </div>
+                ${s.frase ? `<div class="etapa-frase">${escapar(s.frase.split("\n")[0])}</div>` : ""}
+                ${s.tarefa ? `<div class="etapa-tarefa">Levou: ${escapar(s.tarefa)}</div>` : ""}
+                ${s.retorno ? `<div class="etapa-tarefa">Retorno previsto: ${dataBR(s.retorno)}</div>` : ""}
+              </div>
+            </div>`;
+          }).join("")}
+        </div>
+
+        <div class="rotulo" style="margin-top:18px">O que se repete</div>
+        ${rec.length
+          ? `<div class="tags">${rec.map(([n,q]) =>
+              `<span class="tag">${escapar(n)}<b>${q}×</b></span>`).join("")}</div>
+             <p class="leitura-rodape" style="border:none;padding:0">
+               Representantes que voltaram ao campo em mais de um atendimento.</p>`
+          : `<p class="vazio">${lista.length < 2
+              ? "Com dois ou mais atendimentos, o que se repete aparece aqui."
+              : "Nenhum representante voltou ao campo em mais de um atendimento."}</p>`}
+      </div>
+
+      <div class="fim">
+        <button class="btn" id="fi-nova">Novo atendimento para ${escapar(nome.split(" ")[0])}</button>
+        <button class="btn principal" id="fi-ok">Fechar</button>
+      </div>
+    </div>`;
+  document.body.appendChild(veu);
+
+  veu.querySelectorAll("[data-ir]").forEach(elm => {
+    const ir = () => {
+      dados.atual = elm.dataset.ir;
+      salvar(); carregarSessao(); veu.remove();
+      toast("Atendimento aberto");
+    };
+    elm.onclick = ir;
+    elm.onkeydown = e => { if(e.key === "Enter" || e.key === " "){ e.preventDefault(); ir(); } };
+  });
+  $("#fi-nova").onclick = () => {
+    const s = sessaoNova(nome);
+    s.cliente = nome;
+    dados.sessoes.push(s);
+    dados.atual = s.id;
+    salvar(); carregarSessao(); veu.remove();
+    toast("Novo atendimento criado");
+  };
+  const fechar = () => veu.remove();
+  $("#fi-fechar").onclick = fechar;
+  $("#fi-ok").onclick = fechar;
+  veu.onclick = e => { if(e.target === veu) fechar(); };
+}
+
+/* ============================================================
    Anamnese sistêmica — o levantamento que faz emergir quem
    está fora. Toda pergunta é formulada para que "sim" seja a
    resposta que pede atenção.
@@ -2810,13 +3077,26 @@ function imprimir(){
 
     <h2>Composição do campo</h2>
     <table class="reps">
-      <tr><th style="width:44%">Representante</th><th style="width:36%">Papel no sistema</th><th>Situação</th></tr>
-      ${s.figuras.map(f => `<tr>
+      <tr><th style="width:6%">Nº</th><th style="width:34%">Representante</th>
+          <th style="width:28%">Papel no sistema</th><th style="width:16%">Geração</th><th>Situação</th></tr>
+      ${[...s.figuras].sort((a,b) => (a.ordem||0) - (b.ordem||0)).map(f => `<tr>
+        <td>${f.ordem ? String(f.ordem).padStart(2,"0") : "—"}</td>
         <td><span class="ponto" style="background:${corDe(f).base}"></span>${escapar(f.nome)}</td>
         <td>${escapar(f.papel || "—")}</td>
+        <td>${f.ger != null ? escapar(GERACOES[f.ger]) : "—"}</td>
         <td>${estados[f.estado] || "—"}</td>
-      </tr>`).join("") || `<tr><td colspan="3">Nenhum representante registrado.</td></tr>`}
+      </tr>`).join("") || `<tr><td colspan="5">Nenhum representante registrado.</td></tr>`}
     </table>
+    <div class="legenda" style="text-align:left">A numeração indica a ordem em que cada representante entrou no campo.</div>
+
+    ${(() => {
+      const com = s.figuras.filter(f => (f.relato || "").trim());
+      if(!com.length) return "";
+      return `<h2>Relatos dos representantes</h2>` + com
+        .sort((a,b) => (a.ordem||0) - (b.ordem||0))
+        .map(f => `<p class="txt"><b><span class="ponto" style="background:${corDe(f).base}"></span>${escapar(f.nome)}</b><br>${escapar(f.relato)}</p>`)
+        .join("");
+    })()}
 
     <h2>Configuração final do campo</h2>
     <div class="campo-impresso">${new XMLSerializer().serializeToString(copia)}</div>
@@ -2854,6 +3134,26 @@ function imprimir(){
     ${bloco("Observações da terapeuta", s.obs)}
     ${bloco("Encaminhamento e tarefa", s.tarefa)}
     ${s.retorno ? `<h2>Retorno sugerido</h2><p class="txt">${dataBR(s.retorno)}</p>` : ""}
+
+    ${(() => {
+      const lista = sessoesDe(s.cliente);
+      if(lista.length < 2) return "";
+      const i = lista.findIndex(x => x.id === s.id);
+      const dbr = d => d ? d.split("-").reverse().join("/") : "—";
+      const rec = recorrencias(lista);
+      return `<h2>Histórico do constelado</h2>
+        <p class="txt">Este é o ${i+1}º atendimento registrado de ${escapar(s.cliente)}, de um total de ${lista.length}.</p>
+        <table class="reps">
+          <tr><th style="width:8%">Nº</th><th style="width:16%">Data</th><th>Tema trazido</th><th style="width:22%">Registro</th></tr>
+          ${lista.map((x,k) => `<tr${x.id === s.id ? ' style="font-weight:600"' : ""}>
+            <td>${String(k+1).padStart(2,"0")}</td><td>${dbr(x.data)}</td>
+            <td>${escapar(x.tema || "—")}</td>
+            <td>${(x.figuras||[]).length} repr. · ${(x.cenas||[]).length} mov.</td>
+          </tr>`).join("")}
+        </table>
+        ${rec.length ? `<p class="txt" style="margin-top:8px"><b>Presenças recorrentes no campo:</b> ${
+          rec.map(([n,q]) => `${escapar(n)} (${q}×)`).join("; ")}.</p>` : ""}`;
+    })()}
 
     <div class="fecho">${escapar(l.local || "")}${l.local ? ", " : ""}${dataBR(s.data)}.</div>
     <div class="assinaturas">
@@ -2917,6 +3217,13 @@ function normalizar(){
   (dados.sessoes || []).forEach(s => {
     s.modalidade = s.modalidade || "Individual presencial";
     s.anamnese = s.anamnese || {};
+    s.proxOrdem = s.proxOrdem || 0;
+    (s.figuras || []).forEach((f, i) => {
+      if(f.ger === undefined) f.ger = null;
+      if(f.relato === undefined) f.relato = "";
+      if(!f.ordem){ f.ordem = i + 1; }
+      if(f.ordem > s.proxOrdem) s.proxOrdem = f.ordem;
+    });
     s.obs = s.obs ?? "";
     s.segundos = s.segundos || 0;
     s.correndo = !!s.correndo;
@@ -3050,7 +3357,8 @@ function montarFundos(){
 
 function aplicarOpcoes(){
   const o = dados.opcoes;
-  ["raios","nomes","relogio","ondas","degrade","leitura","leituraLaudo"].forEach(k => { $("#ck-" + k).checked = !!o[k]; });
+  ["raios","nomes","relogio","ondas","degrade","leitura","leituraLaudo","geracoes","ordemVisivel"]
+    .forEach(k => { $("#ck-" + k).checked = !!o[k]; });
   $("#in-aparencia").value = o.tema;
   $("#in-figpadrao").value = o.figuraPadrao;
   document.body.dataset.tema = o.tema;
@@ -3110,6 +3418,11 @@ $("#in-fundo").onchange = e => {
   $("#in-" + k).onchange = () => { salvar(); aplicarOpcoes(); desenharTrilho(); };
 });
 
+$("#btn-restaurar-campo").onclick = () => {
+  Object.assign(dados.opcoes, CAMPO_PADRAO);
+  salvar(); aplicarOpcoes(); refazerFundo(); desenharTrilho();
+  toast("Aparência de origem restaurada");
+};
 $("#ck-ondas").onchange = e => { dados.opcoes.ondas = e.target.checked; salvar(); refazerFundo(); };
 $("#ck-degrade").onchange = e => { dados.opcoes.degrade = e.target.checked; salvar(); aplicarOpcoes(); refazerFundo(); };
 ["raios","nomes"].forEach(k => {
@@ -3122,6 +3435,8 @@ $("#in-aparencia").onchange = e => {
   salvar(); desenharTrilho();
 };
 $("#in-figpadrao").onchange = e => { dados.opcoes.figuraPadrao = e.target.value; salvar(); };
+$("#ck-geracoes").onchange = e => { dados.opcoes.geracoes = e.target.checked; salvar(); refazerFundo(); };
+$("#ck-ordemVisivel").onchange = e => { dados.opcoes.ordemVisivel = e.target.checked; salvar(); render(); };
 $("#ck-leitura").onchange = e => { dados.opcoes.leitura = e.target.checked; salvar(); pintarLeitura(); };
 $("#ck-leituraLaudo").onchange = e => { dados.opcoes.leituraLaudo = e.target.checked; salvar(); };
 
@@ -3141,6 +3456,7 @@ $("#sel-sessao").onchange = e => { dados.atual = e.target.value; salvar(); carre
 $("#btn-cena").onclick = salvarCena;
 $("#btn-carta").onclick = () => abrirCarta(null);
 $("#btn-anamnese-painel").onclick = () => { fecharGavetas(); abrirAnamnese(); };
+$("#btn-ficha-painel").onclick = () => { fecharGavetas(); abrirFicha(); };
 $("#btn-reproduzir").onclick = reproduzir;
 $("#btn-play").onclick = alternarRelogio;
 $("#btn-zera").onclick = zerarRelogio;
@@ -3155,6 +3471,7 @@ document.addEventListener("keydown", e => {
   if(e.key === "Escape"){
     const carta = $("#veu-carta"); if(carta) return carta.remove();
     const an = $("#veu-anamnese"); if(an){ an.remove(); return pintarAnamnese(); }
+    const fi = $("#veu-ficha"); if(fi) return fi.remove();
     if(document.body.classList.contains("apresentando")) return apresentar(false);
     if(document.body.className.includes("gaveta-")) return fecharGavetas();
     if(!editando) selecionar(null);
