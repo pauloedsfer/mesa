@@ -660,6 +660,13 @@ body.apresentando{--barra:0px}
     <label class="marcar"><input type="checkbox" id="ck-raios"> Direção do olhar</label>
     <label class="marcar"><input type="checkbox" id="ck-nomes"> Nomes</label>
     <label class="marcar"><input type="checkbox" id="ck-relogio"> Cronômetro à vista</label>
+    <div class="grupo">
+      <label class="mini">Tamanho dos representantes</label>
+      <div class="deslize">
+        <input type="range" id="in-tamanho" min="80" max="220" step="5">
+        <output id="out-tamanho"></output>
+      </div>
+    </div>
     <label class="marcar"><input type="checkbox" id="ck-geracoes"> Faixas geracionais</label>
     <label class="marcar"><input type="checkbox" id="ck-ordemVisivel"> Ordem de entrada</label>
     <label class="marcar"><input type="checkbox" id="ck-leitura"> Leitura do campo</label>
@@ -887,6 +894,18 @@ const GERACOES = ["Avós","Pais","Constelado","Filhos"];
 
 const RAIO = 27;
 const LARG = 1400, ALT = 900;
+
+/* multiplicador de tamanho das figuras; 100 = medida de origem */
+const escala = () => (dados.opcoes.tamanho || 100) / 100;
+
+/* em tela estreita o campo entra mais aproximado, senão a figura
+   fica pequena demais para o dedo */
+function vistaInicial(){
+  const l = window.innerWidth < 700 ? 800 : LARG;
+  const a = l * (ALT / LARG);
+  return { x:(LARG - l)/2, y:(ALT - a)/2, l, a };
+}
+const raioDe = fig => (fig.raio || RAIO) * escala();
 
 function anguloEntre(x1, y1, x2, y2){
   const a = Math.atan2(x2 - x1, -(y2 - y1)) * 180 / Math.PI;
@@ -1284,7 +1303,7 @@ const CAMPO_PADRAO = {
 
 const OPCOES_PADRAO = {
   raios:true, nomes:true, relogio:true, tema:"claro", figuraPadrao:"icone",
-  leitura:true, leituraLaudo:true,
+  leitura:true, leituraLaudo:true, tamanho:145,
   ...CAMPO_PADRAO,
   geracoes:false, ordemVisivel:false
 };
@@ -1292,7 +1311,7 @@ const OPCOES_PADRAO = {
 let dados = { sessoes:[], atual:null, opcoes:{ ...OPCOES_PADRAO }, laudo:{} };
 let selecionado = null;
 let cenaAtiva = null;
-let vista = { x:0, y:0, l:LARG, a:ALT };
+let vista = { x:0, y:0, l:LARG, a:ALT };   // ajustada à tela em carregarSessao
 let reproduzindo = false;
 
 const $  = s => document.querySelector(s);
@@ -1357,7 +1376,8 @@ function halosNecessarios(destino, figuras, t){
 
 function desenharFigura(fig, t, opts){
   const c = corDe(fig);
-  const r = fig.raio || RAIO;
+  const e = escala();
+  const r = raioDe(fig);
   const fantasma = fig.estado === "morto" || fig.estado === "excluido";
   const contorno = t.claro ? c.borda : c.claro;
 
@@ -1380,9 +1400,9 @@ function desenharFigura(fig, t, opts){
   if(dados.opcoes.raios){
     const raio = el("line");
     raio.setAttribute("x1", 0); raio.setAttribute("y1", -r);
-    raio.setAttribute("x2", 0); raio.setAttribute("y2", -r - 200);
+    raio.setAttribute("x2", 0); raio.setAttribute("y2", -r - 200 * e);
     raio.setAttribute("stroke", c.base);
-    raio.setAttribute("stroke-width", 2);
+    raio.setAttribute("stroke-width", 2 * e);
     raio.setAttribute("stroke-linecap","round");
     raio.setAttribute("stroke-dasharray","2 9");
     raio.setAttribute("opacity", .75);
@@ -1399,7 +1419,7 @@ function desenharFigura(fig, t, opts){
     disco.setAttribute("r", r);
     disco.setAttribute("fill", c.base);
     disco.setAttribute("stroke", contorno);
-    disco.setAttribute("stroke-width", 2.2);
+    disco.setAttribute("stroke-width", 2.2 * e);
     if(fantasma){
       disco.setAttribute("stroke-dasharray","5 4");
       disco.setAttribute("fill-opacity", .58);
@@ -1412,14 +1432,14 @@ function desenharFigura(fig, t, opts){
     disco.setAttribute("fill", t.claro ? "#FFFFFF" : "#1A1330");
     disco.setAttribute("fill-opacity", .84);
     disco.setAttribute("stroke", c.base);
-    disco.setAttribute("stroke-width", 3.4);
+    disco.setAttribute("stroke-width", 3.4 * e);
     if(fantasma) disco.setAttribute("stroke-dasharray","5 4");
     giro.appendChild(disco);
   } else {
     const corpo = formaDe(fig.forma, r);
     corpo.setAttribute("fill", c.base);
     corpo.setAttribute("stroke", contorno);
-    corpo.setAttribute("stroke-width", 2.4);
+    corpo.setAttribute("stroke-width", 2.4 * e);
     if(fantasma){
       corpo.setAttribute("stroke-dasharray","5 4");
       corpo.setAttribute("fill-opacity", .55);
@@ -1428,7 +1448,7 @@ function desenharFigura(fig, t, opts){
   }
 
   const proa = el("polygon");
-  proa.setAttribute("points", `0,${-r-12} ${-8},${-r+2} ${8},${-r+2}`);
+  proa.setAttribute("points", `0,${-r-12*e} ${-8*e},${-r+2*e} ${8*e},${-r+2*e}`);
   proa.setAttribute("fill", comEmoji ? c.base : contorno);
   giro.appendChild(proa);
 
@@ -1438,7 +1458,7 @@ function desenharFigura(fig, t, opts){
       l.setAttribute("x1", a*r*.62); l.setAttribute("y1", b*r*.62);
       l.setAttribute("x2", d*r*.62); l.setAttribute("y2", e*r*.62);
       l.setAttribute("stroke", contorno);
-      l.setAttribute("stroke-width", 2.2);
+      l.setAttribute("stroke-width", 2.2 * e);
       giro.appendChild(l);
     });
   }
@@ -1486,44 +1506,44 @@ function desenharFigura(fig, t, opts){
 
   if(opts.selecionado){
     const anel = el("circle");
-    anel.setAttribute("r", r + 14);
+    anel.setAttribute("r", r + 14 * e);
     anel.setAttribute("fill","none");
     anel.setAttribute("stroke", t.texto);
-    anel.setAttribute("stroke-width", 1.6);
+    anel.setAttribute("stroke-width", 1.6 * e);
     anel.setAttribute("stroke-dasharray","2 5");
     anel.setAttribute("opacity",".85");
     g.appendChild(anel);
 
-    const px = Math.sin(fig.ang*Math.PI/180) * (r+36);
-    const py = -Math.cos(fig.ang*Math.PI/180) * (r+36);
+    const px = Math.sin(fig.ang*Math.PI/180) * (r + 36 * e);
+    const py = -Math.cos(fig.ang*Math.PI/180) * (r + 36 * e);
 
     const braco = el("line");
     braco.setAttribute("x1", 0); braco.setAttribute("y1", 0);
     braco.setAttribute("x2", px); braco.setAttribute("y2", py);
     braco.setAttribute("stroke", t.texto);
-    braco.setAttribute("stroke-width", 1.2);
+    braco.setAttribute("stroke-width", 1.2 * e);
     braco.setAttribute("opacity",".55");
     g.appendChild(braco);
 
     const punho = el("circle");
     punho.setAttribute("class","punho");
-    punho.setAttribute("r", 10);
+    punho.setAttribute("r", Math.max(10, 10 * e));
     punho.setAttribute("cx", px); punho.setAttribute("cy", py);
     punho.setAttribute("fill", t.texto);
     punho.setAttribute("stroke", c.base);
-    punho.setAttribute("stroke-width", 2.5);
+    punho.setAttribute("stroke-width", 2.5 * e);
     punho.style.cursor = "grab";
     g.appendChild(punho);
   }
 
   if(dados.opcoes.ordemVisivel && fig.ordem){
-    const bx = -(r + 6), by = -(r + 6);
+    const bx = -(r + 6 * e), by = -(r + 6 * e);
     const sel = el("circle");
     sel.setAttribute("cx", bx); sel.setAttribute("cy", by);
-    sel.setAttribute("r", 10.5);
+    sel.setAttribute("r", 10.5 * e);
     sel.setAttribute("fill", t.claro ? "#FFFFFF" : "#1A1330");
     sel.setAttribute("stroke", c.base);
-    sel.setAttribute("stroke-width", 2);
+    sel.setAttribute("stroke-width", 2 * e);
     sel.style.pointerEvents = "none";
     g.appendChild(sel);
     const num = el("text");
@@ -1531,7 +1551,7 @@ function desenharFigura(fig, t, opts){
     num.setAttribute("text-anchor","middle");
     num.setAttribute("dominant-baseline","central");
     num.setAttribute("font-family","ui-monospace, SFMono-Regular, Menlo, monospace");
-    num.setAttribute("font-size", 11);
+    num.setAttribute("font-size", 11 * e);
     num.setAttribute("font-weight","600");
     num.setAttribute("fill", t.texto);
     num.style.pointerEvents = "none";
@@ -1541,20 +1561,20 @@ function desenharFigura(fig, t, opts){
 
   if(dados.opcoes.nomes){
     const nome = el("text");
-    nome.setAttribute("y", r + 21);
+    nome.setAttribute("y", r + 21 * e);
     nome.setAttribute("text-anchor","middle");
     nome.setAttribute("font-family","Charter, Georgia, serif");
-    nome.setAttribute("font-size", 16);
+    nome.setAttribute("font-size", 16 * e);
     nome.setAttribute("fill", t.texto);
     nome.textContent = fig.nome;
     g.appendChild(nome);
 
     if(fig.papel && fig.papel !== fig.nome){
       const papel = el("text");
-      papel.setAttribute("y", r + 36);
+      papel.setAttribute("y", r + 36 * e);
       papel.setAttribute("text-anchor","middle");
       papel.setAttribute("font-family","Avenir Next, Segoe UI, system-ui, sans-serif");
-      papel.setAttribute("font-size", 11.5);
+      papel.setAttribute("font-size", 11.5 * e);
       papel.setAttribute("fill", t.apoio);
       papel.textContent = fig.papel;
       g.appendChild(papel);
@@ -1597,8 +1617,8 @@ function miniatura(snap, figuras, escuro = true){
     const f = mapa[p.id];
     if(!f) return "";
     const c = corDe(f);
-    const rx = 27, x = p.x, y = p.y;
-    const dx = Math.sin(p.ang*Math.PI/180)*50, dy = -Math.cos(p.ang*Math.PI/180)*50;
+    const rx = raioDe(f), x = p.x, y = p.y;
+    const dx = Math.sin(p.ang*Math.PI/180) * rx * 1.85, dy = -Math.cos(p.ang*Math.PI/180) * rx * 1.85;
     if(f.forma === "i" && MAPA_ICONES[f.icone]){
       const def = MAPA_ICONES[f.icone];
       const tinta = luminancia(c.base) > .55 ? "#221C36" : "#FFFFFF";
@@ -1746,7 +1766,7 @@ function zoom(fator, centro){
 function enquadrar(){
   const s = sessao();
   if(!s || !s.figuras.length){
-    vista = { x:0, y:0, l:LARG, a:ALT };
+    vista = vistaInicial();
     return render();
   }
   const xs = s.figuras.map(f => f.x), ys = s.figuras.map(f => f.y);
@@ -1775,11 +1795,11 @@ function posicaoInicial(base, s){
     const altura = ALT / GERACOES.length;
     const y = Math.round((base.ger + 0.5) * altura);
     const k = s.figuras.filter(f => f.ger === base.ger).length;
-    const dx = k === 0 ? 0 : (k % 2 === 1 ? 1 : -1) * Math.ceil(k/2) * 165;
+    const dx = k === 0 ? 0 : (k % 2 === 1 ? 1 : -1) * Math.ceil(k/2) * (165 * escala());
     return { x: Math.round(LARG/2 + dx), y };
   }
   const n = s.figuras.length;
-  const anel = 185 + Math.floor(n/8) * 105;
+  const anel = (185 + Math.floor(n/8) * 105) * escala();
   const passo = (n % 8) * (Math.PI*2/8) + (Math.floor(n/8) * 0.4);
   return { x: Math.round(LARG/2 + Math.cos(passo) * anel),
            y: Math.round(ALT/2 + Math.sin(passo) * anel) };
@@ -2321,7 +2341,7 @@ function abrirCarta(filtro){
    O sistema diz o que está lá; o sentido é da terapeuta.
    ============================================================ */
 const CONE_OLHAR = 20;        // graus de tolerância do olhar
-const CORPO = RAIO * 2;       // unidade de distância: uma figura
+const corpo = () => RAIO * 2 * escala();   // unidade de distância: uma figura
 
 function difAng(a, b){
   const d = Math.abs(a - b) % 360;
@@ -2385,7 +2405,7 @@ function lerCampo(pos){
            foraDoCirculo, deCostas, perto, longe, centro:{ x:gx, y:gy } };
 }
 
-const emCorpos = d => (d / CORPO);
+const emCorpos = d => (d / corpo());
 function distTexto(d){
   const c = emCorpos(d);
   if(c < 1.5) return "lado a lado";
@@ -2892,7 +2912,7 @@ function carregarSessao(){
     $("#in-" + k).value = s[k] ?? "";
   });
   selecionado = null; cenaAtiva = null;
-  vista = { x:0, y:0, l:LARG, a:ALT };
+  vista = vistaInicial();
   render(); painelProps(); desenharTrilho(); listarSessoes(); pintarRelogio(); pintarAnamnese();
 }
 
@@ -3210,6 +3230,8 @@ function normalizar(){
   delete dados.opcoes.emojiNovo;
   if(!["claro","neutro","violeta"].includes(dados.opcoes.tema)) dados.opcoes.tema = "claro";
   if(!["icone","emoji","geometria"].includes(dados.opcoes.figuraPadrao)) dados.opcoes.figuraPadrao = "icone";
+  const tm = +dados.opcoes.tamanho;
+  dados.opcoes.tamanho = (tm >= 80 && tm <= 220) ? tm : 145;
   if(!FUNDOS[dados.opcoes.fundo]) dados.opcoes.fundo = "nevoa";
   if(dados.opcoes.agua === false) dados.opcoes.animar = false;   // nome antigo
   dados.laudo = dados.laudo || {};
@@ -3363,6 +3385,7 @@ function aplicarOpcoes(){
   $("#in-figpadrao").value = o.figuraPadrao;
   document.body.dataset.tema = o.tema;
   $("#in-fundo").value = o.fundo;
+  $("#in-tamanho").value = o.tamanho; $("#out-tamanho").value = o.tamanho + "%";
   $("#in-tom").value = o.tomFundo;   $("#out-tom").value = o.tomFundo + "%";
   $("#in-forca").value = o.forcaOndas; $("#out-forca").value = o.forcaOndas + "%";
   $("#in-qtd").value = o.qtdOndas;   $("#out-qtd").value = o.qtdOndas;
@@ -3435,6 +3458,12 @@ $("#in-aparencia").onchange = e => {
   salvar(); desenharTrilho();
 };
 $("#in-figpadrao").onchange = e => { dados.opcoes.figuraPadrao = e.target.value; salvar(); };
+$("#in-tamanho").oninput = e => {
+  dados.opcoes.tamanho = +e.target.value;
+  $("#out-tamanho").value = e.target.value + "%";
+  render();
+};
+$("#in-tamanho").onchange = () => { salvar(); desenharTrilho(); };
 $("#ck-geracoes").onchange = e => { dados.opcoes.geracoes = e.target.checked; salvar(); refazerFundo(); };
 $("#ck-ordemVisivel").onchange = e => { dados.opcoes.ordemVisivel = e.target.checked; salvar(); render(); };
 $("#ck-leitura").onchange = e => { dados.opcoes.leitura = e.target.checked; salvar(); pintarLeitura(); };
