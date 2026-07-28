@@ -3,28 +3,52 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#150F2E">
-<title>Mesa — Constelação Familiar</title>
+<meta name="theme-color" content="#F1F1F5">
+<title>Campo — Constelação Familiar</title>
 <style>
 :root{
-  --noite:#150F2E;
-  --noite-2:#1E1642;
-  --noite-3:#2B2059;
-  --linha:#413173;
-  --luz:#EBE4FF;
-  --luz-fraca:#A99BD6;
-  --acento:#C77DFF;
-  --acento-claro:#DDA9FF;
-  --rosa:#FF6FB5;
   --serif: Charter, "Bitstream Charter", "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
   --sans: "Avenir Next", "Segoe UI", Inter, system-ui, -apple-system, sans-serif;
   --mono: ui-monospace, "SF Mono", "Roboto Mono", Menlo, Consolas, monospace;
   --barra:0px;
 }
+/* claro — o padrão: a interface recua, o campo aparece */
+body[data-tema="claro"]{
+  --fundo:#F1F1F5;  --painel:#FFFFFF;  --campo-ipt:#F5F5F9;
+  --linha:#E0DFE9;  --texto:#22212B;   --texto-fraco:#6C6A7C;
+  --acento:#6A3FD0; --acento-claro:#7B52E0; --acento-texto:#FFFFFF;
+  --rosa:#C4306E;   --realce:#EDE9FA;  --placeholder:#9A97AC;
+  --flutuante:rgba(255,255,255,.9);  --sombra:rgba(45,35,80,.16);
+  --veu:rgba(38,32,58,.5);  --palco:#E8E6F0;
+  --aviso-bg:#F3EAFB; --aviso-linha:#D8C2F0; --aviso-texto:#4A2C74;
+  --carta-1:#FFFFFF; --carta-2:#F6F3FD; --carta-texto:#241C40;
+}
+/* neutro — cinza profissional, sem estridência */
+body[data-tema="neutro"]{
+  --fundo:#17171B;  --painel:#1E1E24;  --campo-ipt:#26262E;
+  --linha:#33333D;  --texto:#E8E7ED;   --texto-fraco:#93919E;
+  --acento:#A98CFF; --acento-claro:#BCA4FF; --acento-texto:#1A1330;
+  --rosa:#F08BB8;   --realce:#2C2C36;  --placeholder:#77758A;
+  --flutuante:rgba(23,23,27,.86);  --sombra:rgba(0,0,0,.5);
+  --veu:rgba(10,10,14,.72);  --palco:#101014;
+  --aviso-bg:#2B2438; --aviso-linha:#453A5C; --aviso-texto:#DCC8F5;
+  --carta-1:#23232B; --carta-2:#191920; --carta-texto:#F1EFF6;
+}
+/* violeta — o visual anterior, mantido como opção */
+body[data-tema="violeta"]{
+  --fundo:#150F2E;  --painel:#1E1642;  --campo-ipt:#2B2059;
+  --linha:#413173;  --texto:#EBE4FF;   --texto-fraco:#A99BD6;
+  --acento:#C77DFF; --acento-claro:#DDA9FF; --acento-texto:#1A1030;
+  --rosa:#FF6FB5;   --realce:#352A6B;  --placeholder:#8A7CB8;
+  --flutuante:rgba(21,15,46,.84);  --sombra:rgba(10,4,30,.6);
+  --veu:rgba(10,6,26,.76);  --palco:#191141;
+  --aviso-bg:#3A2159; --aviso-linha:#5C3A85; --aviso-texto:#EBCBFF;
+  --carta-1:#241A50; --carta-2:#170F38; --carta-texto:#F6F1FF;
+}
 *{box-sizing:border-box}
 html,body{height:100%;margin:0}
 body{
-  background:var(--noite);color:var(--luz);
+  background:var(--fundo);color:var(--texto);
   font-family:var(--sans);font-size:14px;
   display:flex;flex-direction:column;overflow:hidden;
   -webkit-text-size-adjust:100%;
@@ -36,67 +60,67 @@ button{cursor:pointer;background:none;border:none}
 .topo{
   display:flex;align-items:center;gap:10px;padding:9px 12px;
   padding-top:calc(9px + env(safe-area-inset-top));
-  background:var(--noite-2);border-bottom:1px solid var(--linha);flex:0 0 auto;
+  background:var(--painel);border-bottom:1px solid var(--linha);flex:0 0 auto;
 }
 .marca{font-family:var(--serif);font-size:19px;letter-spacing:.02em;flex:0 0 auto}
 .marca em{font-style:normal;color:var(--acento)}
 .topo .espaco{flex:1;min-width:0}
 .ipt{
-  background:var(--noite-3);border:1px solid var(--linha);border-radius:6px;
+  background:var(--campo-ipt);border:1px solid var(--linha);border-radius:6px;
   padding:7px 9px;min-width:0;
 }
-.ipt::placeholder{color:#8A7CB8}
+.ipt::placeholder{color:var(--placeholder)}
 .ipt:focus{outline:2px solid var(--acento);outline-offset:1px}
 select.ipt{cursor:pointer}
 .acoes{display:flex;gap:6px;align-items:center;flex:0 0 auto}
 .btn{
   padding:7px 11px;border:1px solid var(--linha);border-radius:6px;
-  background:var(--noite-3);white-space:nowrap;
+  background:var(--campo-ipt);white-space:nowrap;
 }
-.btn:hover{border-color:var(--acento);background:#332764}
+.btn:hover{border-color:var(--acento);background:var(--realce)}
 .btn:focus-visible{outline:2px solid var(--acento);outline-offset:1px}
-.btn.principal{background:var(--acento);color:#1A1030;border-color:var(--acento);font-weight:600}
+.btn.principal{background:var(--acento);color:var(--acento-texto);border-color:var(--acento);font-weight:600}
 .btn.principal:hover{background:var(--acento-claro)}
 .btn.pequeno{padding:4px 8px;font-size:12px}
 .menu{position:relative}
 .menu-lista{
   position:absolute;right:0;top:calc(100% + 5px);z-index:60;min-width:210px;
-  background:var(--noite-2);border:1px solid var(--linha);border-radius:8px;
-  padding:5px;box-shadow:0 14px 34px rgba(10,4,30,.65);
+  background:var(--painel);border:1px solid var(--linha);border-radius:8px;
+  padding:5px;box-shadow:0 14px 34px var(--sombra);
 }
 .menu-lista button{display:block;width:100%;text-align:left;padding:8px 9px;border-radius:5px}
-.menu-lista button:hover{background:var(--noite-3)}
+.menu-lista button:hover{background:var(--campo-ipt)}
 .menu-lista hr{border:none;border-top:1px solid var(--linha);margin:5px 2px}
 [hidden]{display:none !important}
 
 /* cronômetro */
 .relogio{
-  display:flex;align-items:center;gap:2px;background:var(--noite-3);
+  display:flex;align-items:center;gap:2px;background:var(--campo-ipt);
   border:1px solid var(--linha);border-radius:20px;padding:3px 4px 3px 10px;flex:0 0 auto;
 }
 .relogio .tempo{font-family:var(--mono);font-size:14px;letter-spacing:.04em;min-width:52px;text-align:center}
 .relogio.correndo .tempo{color:var(--acento)}
 .relogio button{width:27px;height:27px;border-radius:50%;font-size:12px;line-height:1}
-.relogio button:hover{background:var(--noite-2)}
+.relogio button:hover{background:var(--painel)}
 
 /* ---------- corpo ---------- */
 .corpo{flex:1;display:flex;min-height:0;position:relative}
 .lateral{
-  width:216px;flex:0 0 auto;background:var(--noite-2);overflow-y:auto;
+  width:216px;flex:0 0 auto;background:var(--painel);overflow-y:auto;
   border-right:1px solid var(--linha);padding:12px;
 }
 .lateral.dir{border-right:none;border-left:1px solid var(--linha);width:272px}
 .rotulo{
   font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
-  color:var(--luz-fraca);margin:16px 0 7px;
+  color:var(--texto-fraco);margin:16px 0 7px;
 }
 .rotulo:first-child{margin-top:0}
 .fichas{display:flex;flex-wrap:wrap;gap:5px}
 .ficha{
   display:flex;align-items:center;gap:6px;padding:6px 10px 6px 7px;
-  border:1px solid var(--linha);border-radius:20px;background:var(--noite-3);font-size:12.5px;
+  border:1px solid var(--linha);border-radius:20px;background:var(--campo-ipt);font-size:12.5px;
 }
-.ficha:hover{border-color:var(--acento);background:#352A6B}
+.ficha:hover{border-color:var(--acento);background:var(--realce)}
 .ficha i{width:11px;height:11px;flex:0 0 auto;display:block;box-shadow:0 0 7px currentColor}
 .ficha i.f{border-radius:50%}
 .ficha i.d{transform:rotate(45deg)}
@@ -109,24 +133,24 @@ select.ipt{cursor:pointer}
 .cab-gaveta strong{font-family:var(--serif);font-weight:normal;font-size:17px}
 .cab-gaveta button{
   width:32px;height:32px;border-radius:50%;border:1px solid var(--linha);
-  background:var(--noite-3);font-size:15px;line-height:1;flex:0 0 auto;
+  background:var(--campo-ipt);font-size:15px;line-height:1;flex:0 0 auto;
 }
 .livre .ipt{flex:1;font-size:12.5px;padding:6px 8px}
 
 /* ---------- campo ---------- */
-.palco{flex:1;position:relative;min-width:0;background:#191141;display:flex}
+.palco{flex:1;position:relative;min-width:0;background:var(--palco);display:flex}
 svg#campo{flex:1;display:block;touch-action:none;cursor:default}
 svg#campo.arrastando-campo{cursor:grabbing}
 .zoom{
   position:absolute;left:12px;bottom:calc(12px + var(--barra));display:flex;gap:4px;
-  background:rgba(21,15,46,.8);border:1px solid var(--linha);border-radius:8px;padding:4px;
+  background:var(--flutuante);border:1px solid var(--linha);border-radius:8px;padding:4px;
   backdrop-filter:blur(6px);
 }
 .zoom button{width:31px;height:31px;border-radius:5px;font-size:15px;line-height:1}
-.zoom button:hover{background:var(--noite-3)}
+.zoom button:hover{background:var(--campo-ipt)}
 .dica{
   position:absolute;left:50%;transform:translateX(-50%);bottom:calc(16px + var(--barra));
-  font-size:12px;color:var(--luz-fraca);background:rgba(21,15,46,.8);
+  font-size:12px;color:var(--texto-fraco);background:var(--flutuante);
   padding:6px 12px;border-radius:16px;border:1px solid var(--linha);pointer-events:none;
   backdrop-filter:blur(6px);max-width:78%;text-align:center;
 }
@@ -135,19 +159,19 @@ svg#campo.arrastando-campo{cursor:grabbing}
 .grupo{margin-bottom:7px}
 .linha{display:flex;gap:7px;margin-bottom:7px}
 .linha .ipt{flex:1;width:100%}
-label.mini{display:block;font-size:11px;color:var(--luz-fraca);margin-bottom:3px}
+label.mini{display:block;font-size:11px;color:var(--texto-fraco);margin-bottom:3px}
 .marcar{display:flex;align-items:center;gap:8px;padding:6px 0;font-size:13px;cursor:pointer}
 .marcar input{accent-color:var(--acento);width:16px;height:16px}
 .deslize{display:flex;align-items:center;gap:9px}
 .deslize input[type=range]{flex:1;accent-color:var(--acento);min-width:0}
 .deslize output{font-family:var(--mono);font-size:11.5px;color:var(--acento);width:46px;text-align:right}
 textarea.ipt{width:100%;resize:vertical;min-height:54px;line-height:1.45}
-.vazio{color:var(--luz-fraca);font-size:13px;line-height:1.5;padding:10px 0}
+.vazio{color:var(--texto-fraco);font-size:13px;line-height:1.5;padding:10px 0}
 .cor-linha{display:flex;align-items:center;gap:8px}
 .cor-linha input[type=color]{
   width:34px;height:30px;padding:0;border:1px solid var(--linha);border-radius:6px;background:none;cursor:pointer;
 }
-.cor-linha span{font-family:var(--mono);font-size:11px;color:var(--luz-fraca)}
+.cor-linha span{font-family:var(--mono);font-size:11px;color:var(--texto-fraco)}
 
 /* tintas — o paciente escolhe */
 .tintas{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:8px}
@@ -156,31 +180,35 @@ textarea.ipt{width:100%;resize:vertical;min-height:54px;line-height:1.45}
   box-shadow:0 0 0 1px rgba(255,255,255,.16), 0 0 9px -1px currentColor;
 }
 .tinta:hover{transform:scale(1.1)}
-.tinta.ativa{border-color:var(--luz);box-shadow:0 0 0 1px var(--luz), 0 0 13px currentColor}
+.tinta.ativa{border-color:var(--texto);box-shadow:0 0 0 1px var(--texto), 0 0 13px currentColor}
 .tinta-livre{
-  width:27px;height:27px;padding:0;border:1px dashed var(--luz-fraca);border-radius:50%;
+  width:27px;height:27px;padding:0;border:1px dashed var(--texto-fraco);border-radius:50%;
   background:conic-gradient(#FF3D9A,#C77DFF,#2E7BF6,#12C9C9,#17B978,#FFB020,#FF3D9A);
 }
 input#p-corlivre{position:absolute;opacity:0;width:0;height:0;pointer-events:none}
 .emojis{
   display:flex;flex-wrap:wrap;gap:4px;max-height:208px;overflow-y:auto;
-  padding:7px;border:1px solid var(--linha);border-radius:8px;background:var(--noite);
+  padding:7px;border:1px solid var(--linha);border-radius:8px;background:var(--fundo);
 }
 .emojis .cat{
   width:100%;font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;
-  color:var(--luz-fraca);margin:5px 0 1px;
+  color:var(--texto-fraco);margin:5px 0 1px;
 }
 .emojis .cat:first-child{margin-top:0}
 .emojis button{
   width:31px;height:31px;font-size:17px;line-height:1;border-radius:7px;
   font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;
 }
-.emojis button:hover{background:var(--noite-3)}
+.emojis button:hover{background:var(--campo-ipt)}
 .emojis button.ativo{background:var(--acento);box-shadow:0 0 0 2px var(--acento-claro)}
+.emojis.icones button{color:var(--texto);display:flex;align-items:center;justify-content:center}
+.emojis.icones button.ativo{color:var(--acento-texto)}
+.emojis.icones button svg{display:block}
+.ficha i.i{border-radius:50%}
 
 /* ---------- régua de cenas ---------- */
 .regua{
-  flex:0 0 auto;background:var(--noite-2);border-top:1px solid var(--linha);
+  flex:0 0 auto;background:var(--painel);border-top:1px solid var(--linha);
   padding:9px 12px;display:flex;align-items:center;gap:12px;
 }
 .regua-cab{display:flex;flex-direction:column;gap:5px;flex:0 0 auto}
@@ -188,19 +216,19 @@ input#p-corlivre{position:absolute;opacity:0;width:0;height:0;pointer-events:non
 .trilho{display:flex;gap:8px;overflow-x:auto;padding:2px;flex:1}
 .cena{
   flex:0 0 auto;width:106px;border:1px solid var(--linha);border-radius:8px;
-  background:var(--noite-3);padding:5px;text-align:left;position:relative;
+  background:var(--campo-ipt);padding:5px;text-align:left;position:relative;
 }
 .cena:hover{border-color:var(--acento)}
 .cena.ativa{border-color:var(--acento);box-shadow:0 0 0 1px var(--acento)}
 .cena svg{display:block;width:100%;height:56px;border-radius:5px}
 .cena .num{font-family:var(--mono);font-size:10px;color:var(--acento);letter-spacing:.1em;margin-top:5px}
 .cena .tit{
-  font-size:11.5px;line-height:1.3;margin-top:1px;color:var(--luz);
+  font-size:11.5px;line-height:1.3;margin-top:1px;color:var(--texto);
   display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
 }
 .cena .x{
   position:absolute;top:3px;right:3px;width:20px;height:20px;border-radius:5px;
-  background:rgba(21,15,46,.82);color:var(--luz-fraca);font-size:13px;line-height:20px;text-align:center;opacity:0;
+  background:var(--flutuante);color:var(--texto-fraco);font-size:13px;line-height:20px;text-align:center;opacity:0;
 }
 .cena:hover .x,.cena:focus-within .x{opacity:1}
 .cena .x:hover{color:var(--rosa)}
@@ -209,42 +237,42 @@ input#p-corlivre{position:absolute;opacity:0;width:0;height:0;pointer-events:non
 /* ---------- barra mobile e cortina ---------- */
 .barra-mobile{
   display:none;position:fixed;left:0;right:0;bottom:0;z-index:48;
-  background:var(--noite-2);border-top:1px solid var(--linha);
+  background:var(--painel);border-top:1px solid var(--linha);
   padding:6px 6px calc(6px + env(safe-area-inset-bottom));
 }
 .barra-mobile .fila{display:flex;gap:4px}
 .barra-mobile button{
   flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;
-  padding:7px 2px;border-radius:8px;font-size:10.5px;color:var(--luz-fraca);
+  padding:7px 2px;border-radius:8px;font-size:10.5px;color:var(--texto-fraco);
 }
 .barra-mobile button b{font-size:16px;line-height:1;font-weight:normal}
-.barra-mobile button.ligado{background:var(--noite-3);color:var(--acento)}
-.cortina{position:fixed;inset:0;background:rgba(10,6,26,.6);z-index:44;display:none}
+.barra-mobile button.ligado{background:var(--campo-ipt);color:var(--acento)}
+.cortina{position:fixed;inset:0;background:var(--veu);z-index:44;display:none}
 body.gaveta-esq .cortina,body.gaveta-dir .cortina,body.gaveta-baixo .cortina{display:block}
 
 /* ---------- avisos e modais ---------- */
 .aviso{
-  flex:0 0 auto;background:#3A2159;border-bottom:1px solid #5C3A85;color:#EBCBFF;
+  flex:0 0 auto;background:var(--aviso-bg);border-bottom:1px solid var(--aviso-linha);color:var(--aviso-texto);
   padding:7px 14px;font-size:12.5px;display:flex;gap:10px;align-items:center;
 }
-.aviso button{margin-left:auto;color:#EBCBFF;text-decoration:underline;flex:0 0 auto}
+.aviso button{margin-left:auto;color:var(--aviso-texto);text-decoration:underline;flex:0 0 auto}
 .toast{
   position:fixed;left:50%;bottom:calc(96px + var(--barra));transform:translateX(-50%);z-index:80;
-  background:var(--noite-2);border:1px solid var(--acento);border-radius:20px;
-  padding:9px 18px;font-size:13px;box-shadow:0 12px 30px rgba(10,4,30,.6);
+  background:var(--painel);border:1px solid var(--acento);border-radius:20px;
+  padding:9px 18px;font-size:13px;box-shadow:0 12px 30px var(--sombra);
   opacity:0;transition:opacity .2s,transform .2s;pointer-events:none;max-width:88vw;text-align:center;
 }
 .toast.ver{opacity:1;transform:translateX(-50%) translateY(-6px)}
 .veu{
-  position:fixed;inset:0;z-index:70;background:rgba(10,6,26,.76);
+  position:fixed;inset:0;z-index:70;background:var(--veu);
   display:flex;align-items:center;justify-content:center;padding:18px;overflow-y:auto;
 }
 .caixa{
-  background:var(--noite-2);border:1px solid var(--linha);border-radius:12px;
+  background:var(--painel);border:1px solid var(--linha);border-radius:12px;
   padding:20px;width:min(440px,100%);
 }
 .caixa h2{font-family:var(--serif);font-weight:normal;font-size:21px;margin:0 0 4px}
-.caixa p{color:var(--luz-fraca);font-size:13px;line-height:1.5;margin:0 0 14px}
+.caixa p{color:var(--texto-fraco);font-size:13px;line-height:1.5;margin:0 0 14px}
 .caixa .ipt{width:100%}
 .caixa .fim{display:flex;justify-content:flex-end;gap:7px;margin-top:16px}
 
@@ -252,10 +280,10 @@ body.gaveta-esq .cortina,body.gaveta-dir .cortina,body.gaveta-baixo .cortina{dis
 .carta{
   width:min(430px,100%);border-radius:18px;padding:2px;
   background:linear-gradient(150deg,#FF6FB5,#C77DFF 42%,#6E8BFF 78%,#12C9C9);
-  box-shadow:0 22px 60px rgba(10,4,30,.7);
+  box-shadow:0 18px 50px var(--sombra);
 }
 .carta-dentro{
-  background:linear-gradient(165deg,#241A50,#170F38);border-radius:16px;
+  background:linear-gradient(165deg,var(--carta-1),var(--carta-2));border-radius:16px;
   padding:30px 26px 22px;text-align:center;position:relative;min-height:250px;
   display:flex;flex-direction:column;justify-content:center;gap:16px;
 }
@@ -263,7 +291,7 @@ body.gaveta-esq .cortina,body.gaveta-dir .cortina,body.gaveta-baixo .cortina{dis
   font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--acento);
 }
 .carta .frase{
-  font-family:var(--serif);font-size:25px;line-height:1.36;color:#F6F1FF;margin:0;
+  font-family:var(--serif);font-size:25px;line-height:1.36;color:var(--carta-texto);margin:0;
 }
 .carta .frase.longa{font-size:21px}
 .carta .fim{display:flex;gap:7px;justify-content:center;flex-wrap:wrap;margin-top:6px}
@@ -282,7 +310,7 @@ body.apresentando .sair-apresentacao{display:block}
 body.apresentando{--barra:0px}
 .sair-apresentacao{
   display:none;position:absolute;right:12px;top:calc(12px + env(safe-area-inset-top));z-index:30;
-  background:rgba(21,15,46,.82);border:1px solid var(--linha);border-radius:8px;padding:8px 13px;
+  background:var(--flutuante);border:1px solid var(--linha);border-radius:8px;padding:8px 13px;
   backdrop-filter:blur(6px);
 }
 
@@ -352,16 +380,16 @@ body.apresentando{--barra:0px}
     position:fixed;top:0;bottom:0;z-index:46;width:min(310px,88vw);
     padding:14px 14px calc(14px + var(--barra));
     transform:translateX(-101%);transition:transform .26s cubic-bezier(.4,0,.2,1);
-    box-shadow:14px 0 40px rgba(8,4,22,.6);
+    box-shadow:14px 0 40px var(--sombra);
   }
-  .lateral.dir{left:auto;right:0;width:min(330px,92vw);transform:translateX(101%);box-shadow:-14px 0 40px rgba(8,4,22,.6)}
+  .lateral.dir{left:auto;right:0;width:min(330px,92vw);transform:translateX(101%);box-shadow:-14px 0 40px var(--sombra)}
   body.gaveta-esq .lateral:not(.dir){transform:none}
   body.gaveta-dir .lateral.dir{transform:none}
   .regua{
     position:fixed;left:0;right:0;bottom:var(--barra);z-index:46;
     flex-direction:column;align-items:stretch;gap:8px;
     transform:translateY(115%);transition:transform .26s cubic-bezier(.4,0,.2,1);
-    box-shadow:0 -14px 40px rgba(8,4,22,.6);
+    box-shadow:0 -14px 40px var(--sombra);
   }
   body.gaveta-baixo .regua{transform:none}
   .regua-cab{flex-direction:row;align-items:center;justify-content:space-between}
@@ -385,7 +413,7 @@ body.apresentando{--barra:0px}
 </div>
 
 <header class="topo">
-  <div class="marca">mesa<em>.</em></div>
+  <div class="marca">campo<em>.</em></div>
   <select class="ipt" id="sel-sessao" title="Sessão" style="max-width:170px"></select>
   <div class="espaco"></div>
 
@@ -512,11 +540,28 @@ body.apresentando{--barra:0px}
       </div>
     </div>
 
+    <div class="rotulo">Aparência</div>
+    <div class="grupo">
+      <label class="mini">Tema da interface</label>
+      <select class="ipt" id="in-aparencia" style="width:100%">
+        <option value="claro">Claro — consultório</option>
+        <option value="neutro">Neutro escuro</option>
+        <option value="violeta">Violeta</option>
+      </select>
+    </div>
+
     <div class="rotulo">Exibição</div>
     <label class="marcar"><input type="checkbox" id="ck-raios"> Direção do olhar</label>
     <label class="marcar"><input type="checkbox" id="ck-nomes"> Nomes</label>
     <label class="marcar"><input type="checkbox" id="ck-relogio"> Cronômetro à vista</label>
-    <label class="marcar"><input type="checkbox" id="ck-emojiNovo"> Novos representantes com emoji</label>
+    <div class="grupo" style="margin-top:6px">
+      <label class="mini">Novos representantes entram como</label>
+      <select class="ipt" id="in-figpadrao" style="width:100%">
+        <option value="icone">Ícone</option>
+        <option value="emoji">Emoji</option>
+        <option value="geometria">Geometria</option>
+      </select>
+    </div>
 
     <div class="rotulo">Fechamento</div>
     <label class="mini">Frase de força</label>
@@ -628,37 +673,93 @@ const TINTAS = ["#FF3D9A","#FF6FB5","#C77DFF","#A855F7","#7B5BF2","#2E7BF6",
 
 const PALETA = [
   { grupo:"Sistema familiar", itens:[
-    { papel:"Constelado", forma:"n", cor:"constelado", emoji:"🧑" },
-    { papel:"Pai",        forma:"m", cor:"paterna",    emoji:"👨" },
-    { papel:"Mãe",        forma:"f", cor:"materna",    emoji:"👩" },
-    { papel:"Avô",        forma:"m", cor:"paterna",    emoji:"👴" },
-    { papel:"Avó",        forma:"f", cor:"materna",    emoji:"👵" },
-    { papel:"Irmão",      forma:"m", cor:"irmaos",     emoji:"👦" },
-    { papel:"Irmã",       forma:"f", cor:"irmaos",     emoji:"👧" },
-    { papel:"Filho",      forma:"m", cor:"filhos",     emoji:"🧒" },
-    { papel:"Filha",      forma:"f", cor:"filhos",     emoji:"👧" },
-    { papel:"Cônjuge",    forma:"n", cor:"conjugal",   emoji:"💑" },
-    { papel:"Ex-cônjuge", forma:"n", cor:"conjugal",   emoji:"💔" }
+    { papel:"Constelado", forma:"n", cor:"constelado", emoji:"🧑" , icone:"pessoa"},
+    { papel:"Pai",        forma:"m", cor:"paterna",    emoji:"👨" , icone:"homem"},
+    { papel:"Mãe",        forma:"f", cor:"materna",    emoji:"👩" , icone:"mulher"},
+    { papel:"Avô",        forma:"m", cor:"paterna",    emoji:"👴" , icone:"idoso"},
+    { papel:"Avó",        forma:"f", cor:"materna",    emoji:"👵" , icone:"idosa"},
+    { papel:"Irmão",      forma:"m", cor:"irmaos",     emoji:"👦" , icone:"homem"},
+    { papel:"Irmã",       forma:"f", cor:"irmaos",     emoji:"👧" , icone:"mulher"},
+    { papel:"Filho",      forma:"m", cor:"filhos",     emoji:"🧒" , icone:"crianca"},
+    { papel:"Filha",      forma:"f", cor:"filhos",     emoji:"👧" , icone:"crianca"},
+    { papel:"Cônjuge",    forma:"n", cor:"conjugal",   emoji:"💑" , icone:"casal"},
+    { papel:"Ex-cônjuge", forma:"n", cor:"conjugal",   emoji:"💔" , icone:"elo"}
   ]},
   { grupo:"Excluídos e mortos", itens:[
-    { papel:"Excluído",   forma:"n", cor:"excluido", estado:"excluido", emoji:"🚪" },
-    { papel:"Falecido",   forma:"n", cor:"morto",    estado:"morto", emoji:"🕯️" },
-    { papel:"Aborto",     forma:"d", cor:"morto",    estado:"morto", raio:17, emoji:"👼" },
-    { papel:"Natimorto",  forma:"d", cor:"morto",    estado:"morto", raio:17, emoji:"👼" },
-    { papel:"Segredo",    forma:"d", cor:"excluido", estado:"excluido", emoji:"🔒" }
+    { papel:"Excluído",   forma:"n", cor:"excluido", estado:"excluido", emoji:"🚪" , icone:"porta"},
+    { papel:"Falecido",   forma:"n", cor:"morto",    estado:"morto", emoji:"🕯️" , icone:"vela"},
+    { papel:"Aborto",     forma:"d", cor:"morto",    estado:"morto", raio:17, emoji:"👼" , icone:"estrela"},
+    { papel:"Natimorto",  forma:"d", cor:"morto",    estado:"morto", raio:17, emoji:"👼" , icone:"estrela"},
+    { papel:"Segredo",    forma:"d", cor:"excluido", estado:"excluido", emoji:"🔒" , icone:"cadeado"}
   ]},
   { grupo:"Forças e recursos", itens:[
-    { papel:"Sintoma",  forma:"d", cor:"sintoma", emoji:"🩹" },
-    { papel:"Doença",   forma:"d", cor:"sintoma", emoji:"🩺" },
-    { papel:"Destino",  forma:"d", cor:"materna", emoji:"⏳" },
-    { papel:"Morte",    forma:"d", cor:"morto",   emoji:"⚰️" },
-    { papel:"Dinheiro", forma:"d", cor:"recurso", emoji:"💰" },
-    { papel:"Empresa",  forma:"d", cor:"recurso", emoji:"🏢" },
-    { papel:"Trabalho", forma:"d", cor:"recurso", emoji:"💼" },
-    { papel:"Vida",     forma:"d", cor:"luz",     emoji:"🌱" },
-    { papel:"Solução",  forma:"d", cor:"luz",     emoji:"✨" }
+    { papel:"Sintoma",  forma:"d", cor:"sintoma", emoji:"🩹" , icone:"pulso"},
+    { papel:"Doença",   forma:"d", cor:"sintoma", emoji:"🩺" , icone:"cruz"},
+    { papel:"Destino",  forma:"d", cor:"materna", emoji:"⏳" , icone:"ampulheta"},
+    { papel:"Morte",    forma:"d", cor:"morto",   emoji:"⚰️" , icone:"caixao"},
+    { papel:"Dinheiro", forma:"d", cor:"recurso", emoji:"💰" , icone:"moeda"},
+    { papel:"Empresa",  forma:"d", cor:"recurso", emoji:"🏢" , icone:"predio"},
+    { papel:"Trabalho", forma:"d", cor:"recurso", emoji:"💼" , icone:"maleta"},
+    { papel:"Vida",     forma:"d", cor:"luz",     emoji:"🌱" , icone:"broto"},
+    { papel:"Solução",  forma:"d", cor:"luz",     emoji:"✨" , icone:"sol"}
   ]}
 ];
+
+/* pictogramas próprios, desenhados em caixa 24×24.
+   "s" = silhueta preenchida; "t" = traço. "extra" acrescenta traço sobre silhueta. */
+const ICONES = [
+  ["Pessoas", [
+    ["pessoa",  "Pessoa",  "s", "M12 3.4a3.7 3.7 0 1 1 0 7.4 3.7 3.7 0 0 1 0-7.4Z M6.3 21v-6.2c0-2 1.6-3.6 3.6-3.6h4.2c2 0 3.6 1.6 3.6 3.6V21Z"],
+    ["homem",   "Homem",   "s", "M12 3.2a3.6 3.6 0 1 1 0 7.2 3.6 3.6 0 0 1 0-7.2Z M6.6 21v-6.1c0-1.9 1.5-3.4 3.4-3.4h4c1.9 0 3.4 1.5 3.4 3.4V21Z"],
+    ["mulher",  "Mulher",  "s", "M12 3.2a3.6 3.6 0 1 1 0 7.2 3.6 3.6 0 0 1 0-7.2Z M10.9 11.5h2.2c1.8 0 3.3 1.2 3.7 2.9L18.6 21H5.4l1.8-6.6c.4-1.7 1.9-2.9 3.7-2.9Z"],
+    ["crianca", "Criança", "s", "M12 5.6a3.3 3.3 0 1 1 0 6.6 3.3 3.3 0 0 1 0-6.6Z M8.2 21v-4.5c0-1.6 1.3-2.9 2.9-2.9h1.8c1.6 0 2.9 1.3 2.9 2.9V21Z"],
+    ["bebe",    "Bebê",    "s", "M12 4.2a4.1 4.1 0 1 1 0 8.2 4.1 4.1 0 0 1 0-8.2Z M9.6 13.8h4.8c1.3 0 2.3 1 2.3 2.3V21H7.3v-4.9c0-1.3 1-2.3 2.3-2.3Z"],
+    ["idoso",   "Idoso",   "s", "M10.8 3.4a3.4 3.4 0 1 1 0 6.8 3.4 3.4 0 0 1 0-6.8Z M5.6 21v-6c0-1.9 1.5-3.4 3.4-3.4h3.6c1.9 0 3.4 1.5 3.4 3.4v6Z", "M18.6 11.4v9.6M17 11.4h3.2"],
+    ["idosa",   "Idosa",   "s", "M10.8 3.4a3.4 3.4 0 1 1 0 6.8 3.4 3.4 0 0 1 0-6.8Z M9.8 11.6h2c1.7 0 3.1 1.1 3.5 2.7L16.8 21H4.8l1.5-6.7c.4-1.6 1.8-2.7 3.5-2.7Z", "M19.4 11.4v9.6M17.9 11.4h3"],
+    ["casal",   "Casal",   "s", "M7.8 4.8a2.8 2.8 0 1 1 0 5.6 2.8 2.8 0 0 1 0-5.6Z M3.4 20.6v-4.4c0-1.6 1.3-2.9 2.9-2.9h3c1.6 0 2.9 1.3 2.9 2.9v4.4Z M16.2 4.8a2.8 2.8 0 1 1 0 5.6 2.8 2.8 0 0 1 0-5.6Z M11.8 20.6v-4.4c0-1.6 1.3-2.9 2.9-2.9h3c1.6 0 2.9 1.3 2.9 2.9v4.4Z"],
+    ["familia", "Família", "s", "M6.4 4.4a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5Z M2.6 19.4v-4c0-1.4 1.2-2.6 2.6-2.6h2.4c1.4 0 2.6 1.2 2.6 2.6v4Z M17.6 4.4a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5Z M13.8 19.4v-4c0-1.4 1.2-2.6 2.6-2.6h2.4c1.4 0 2.6 1.2 2.6 2.6v4Z M12 11.6a2 2 0 1 1 0 4 2 2 0 0 1 0-4Z M9.2 21.4v-2.6c0-1.1.9-2 2-2h1.6c1.1 0 2 .9 2 2v2.6Z"]
+  ]],
+  ["Vínculo e afeto", [
+    ["coracao", "Coração", "t", "M12 20.3 4.6 13a4.6 4.6 0 0 1 6.5-6.5l.9.9.9-.9A4.6 4.6 0 0 1 19.4 13Z"],
+    ["elo",     "Vínculo rompido", "t", "M9.6 14.4 14.4 9.6M8.4 11.2 6.6 13a3.4 3.4 0 0 0 4.8 4.8l1.8-1.8M15.6 12.8l1.8-1.8a3.4 3.4 0 0 0-4.8-4.8l-1.8 1.8"],
+    ["maos",    "Acolhimento", "t", "M12 20.4c-3.4 0-6.2-2.1-6.2-4.7V9.4a1.5 1.5 0 0 1 3 0v3M18.2 15.7V9.4a1.5 1.5 0 0 0-3 0v3M8.8 12.4V6.6a1.5 1.5 0 0 1 3 0v5.8M12.2 12.4V7.4a1.5 1.5 0 0 1 3 0v5"],
+    ["berco",   "Gestação", "t", "M12 3.4a8.6 8.6 0 1 1 0 17.2 8.6 8.6 0 0 1 0-17.2ZM12 9.4a3 3 0 1 1 0 6 3 3 0 0 1 0-6Z"]
+  ]],
+  ["Perda e exclusão", [
+    ["vela",    "Vela",     "t", "M12 3.2c1.7 1.5 1.7 3.1.1 4.1M12 7.6v1.6M9.4 9.2h5.2v11.4H9.4Z"],
+    ["caixao",  "Morte",    "t", "M10 3.6h4l3.1 7.6-2 9.2H8.9l-2-9.2Z"],
+    ["estrela", "Vida breve","t", "m12 3.6 2.6 5.5 6 .8-4.3 4.2 1 6-5.3-2.9-5.3 2.9 1-6-4.3-4.2 6-.8Z"],
+    ["porta",   "Excluído", "t", "M6.6 20.6V4.4a1 1 0 0 1 1-1h8.8a1 1 0 0 1 1 1v16.2ZM14.4 12.4h.02"],
+    ["cadeado", "Segredo",  "t", "M6.6 10.4h10.8v10H6.6ZM9.2 10.4V7.8a2.8 2.8 0 0 1 5.6 0v2.6"],
+    ["ampulheta","Destino", "t", "M7.4 3.6h9.2M7.4 20.4h9.2M8.6 3.6v3.1c0 2 3.4 3.4 3.4 5.3s-3.4 3.3-3.4 5.3v3.1M15.4 3.6v3.1c0 2-3.4 3.4-3.4 5.3s3.4 3.3 3.4 5.3v3.1"]
+  ]],
+  ["Corpo e sintoma", [
+    ["pulso",   "Sintoma", "t", "M2.8 12h4.1l2.4-6.2L13.4 18l2.3-6h5.5"],
+    ["cruz",    "Doença",  "t", "M12 4.6v14.8M4.6 12h14.8"],
+    ["gota",    "Sangue, linhagem", "t", "M12 3.6c3.3 4.1 5.1 6.7 5.1 9a5.1 5.1 0 0 1-10.2 0c0-2.3 1.8-4.9 5.1-9Z"],
+    ["cerebro", "Mente", "t", "M12 5.4v13.2M12 7.4a3 3 0 0 0-5.6 1.5A2.6 2.6 0 0 0 5 13a2.8 2.8 0 0 0 2.4 3.4A2.6 2.6 0 0 0 12 17.4M12 7.4a3 3 0 0 1 5.6 1.5A2.6 2.6 0 0 1 19 13a2.8 2.8 0 0 1-2.4 3.4A2.6 2.6 0 0 1 12 17.4"]
+  ]],
+  ["Recursos", [
+    ["moeda",   "Dinheiro", "t", "M12 3.6a8.4 8.4 0 1 1 0 16.8 8.4 8.4 0 0 1 0-16.8ZM12 6.8v10.4M14.5 9.6c-.5-.9-1.4-1.4-2.5-1.4-1.5 0-2.6.9-2.6 2.1s1 1.8 2.6 2.1 2.6.9 2.6 2.1-1.1 2.1-2.6 2.1c-1.1 0-2-.5-2.5-1.4"],
+    ["predio",  "Empresa",  "t", "M5.6 20.6V4.4h12.8v16.2M9 8h2M13 8h2M9 12h2M13 12h2M9 16h2M13 16h2"],
+    ["maleta",  "Trabalho", "t", "M3.6 8.6h16.8v11.8H3.6ZM9 8.6V6.2a1.6 1.6 0 0 1 1.6-1.6h2.8A1.6 1.6 0 0 1 15 6.2v2.4M3.6 13.4h16.8"],
+    ["casa",    "Casa",     "t", "M3.6 11.4 12 4.2l8.4 7.2M6.2 9.6v10.8h11.6V9.6"],
+    ["chave",   "Chave",    "t", "M15.4 4.4a4.6 4.6 0 1 0 0 9.2 4.6 4.6 0 0 0 0-9.2ZM11.6 12.6 4.4 19.8M7.2 16.6l2 2M9.4 14.4l2 2"],
+    ["livro",   "Estudo",   "t", "M4.4 5.2h5.2c1.3 0 2.4 1.1 2.4 2.4v11.2c0-1-.8-1.8-1.8-1.8H4.4ZM19.6 5.2h-5.2c-1.3 0-2.4 1.1-2.4 2.4v11.2c0-1 .8-1.8 1.8-1.8h5.8Z"]
+  ]],
+  ["Forças", [
+    ["broto",   "Vida",    "t", "M12 20.6v-7.2M12 13.4c0-3 2.4-5.4 5.4-5.4 0 3-2.4 5.4-5.4 5.4ZM12 13.4c0-2.4-1.9-4.3-4.3-4.3 0 2.4 1.9 4.3 4.3 4.3Z"],
+    ["arvore",  "Raiz",    "t", "M12 20.6v-5.2M12 15.4c-3.6 0-6.4-2.5-6.4-5.6S8.5 3.6 12 3.6s6.4 3.1 6.4 6.2-2.8 5.6-6.4 5.6Z"],
+    ["sol",     "Solução", "t", "M12 7.6a4.4 4.4 0 1 1 0 8.8 4.4 4.4 0 0 1 0-8.8ZM12 2.6v2.2M12 19.2v2.2M2.6 12h2.2M19.2 12h2.2M5.4 5.4l1.6 1.6M17 17l1.6 1.6M18.6 5.4 17 7M7 17l-1.6 1.6"],
+    ["lua",     "Sombra",  "t", "M15.6 3.8a8.4 8.4 0 1 0 4.6 12.6 8.9 8.9 0 0 1-4.6-12.6Z"],
+    ["chama",   "Força",   "t", "M12 3.6c3.9 4.3 5.8 6.9 5.8 9.4a5.8 5.8 0 1 1-11.6 0c0-1.5.6-2.9 1.8-4.3.3 1.6 1 2.4 2 2.4 1.3 0 1.5-2.5 2-7.5Z"],
+    ["onda",    "Movimento","t", "M3 9.4c1.9-2 3.8-2 5.7 0s3.8 2 5.7 0 3.8-2 5.6 0M3 14.6c1.9-2 3.8-2 5.7 0s3.8 2 5.7 0 3.8-2 5.6 0"],
+    ["balanca", "Ordem",   "t", "M12 4.4v16.2M7.2 20.6h9.6M12 7 5.2 8.6M12 7l6.8 1.6M5.2 8.6 3 14a3 3 0 0 0 4.4 0ZM18.8 8.6 16.6 14a3 3 0 0 0 4.4 0Z"],
+    ["espiral", "Destino longo","t", "M13.4 12a1.4 1.4 0 1 1-2.8 0 4.4 4.4 0 1 1 8.8 0 7.4 7.4 0 1 1-14.8 0c0-2 .8-3.8 2.1-5.2"],
+    ["duvida",  "Desconhecido","t", "M8.4 8.6a3.6 3.6 0 1 1 4.8 3.5c-.8.4-1.2 1.1-1.2 2v1.1M12 19.4h.02"]
+  ]]
+];
+const MAPA_ICONES = Object.fromEntries(ICONES.flatMap(([g,l]) => l.map(i => [i[0], i])));
 
 const EMOJIS = [
   ["Pessoas",        ["🧑","👨","👩","👴","👵","🧓","👦","👧","🧒","👶","🤰","🧔","👱‍♀️","🧕","🤵","👰"]],
@@ -1036,7 +1137,7 @@ function montarFundo(destino){
    4. Estado
    ============================================================ */
 const OPCOES_PADRAO = {
-  raios:true, nomes:true, relogio:true, emojiNovo:false,
+  raios:true, nomes:true, relogio:true, tema:"claro", figuraPadrao:"icone",
   fundo:"nevoa", tomFundo:62, animar:true,
   corFundo:"#6B4FD8", corFundo2:"#0D0828", degrade:true,
   ondas:true, forcaOndas:62, qtdOndas:5, corOndas:"#B9A3FF"
@@ -1143,8 +1244,21 @@ function desenharFigura(fig, t, opts){
   }
 
   const comEmoji = fig.forma === "e" && fig.emoji;
+  const comIcone = fig.forma === "i" && MAPA_ICONES[fig.icone];
 
-  if(comEmoji){
+  if(comIcone){
+    // disco cheio na cor do representante, pictograma vazado por cima
+    const disco = el("circle");
+    disco.setAttribute("r", r);
+    disco.setAttribute("fill", c.base);
+    disco.setAttribute("stroke", contorno);
+    disco.setAttribute("stroke-width", 2.2);
+    if(fantasma){
+      disco.setAttribute("stroke-dasharray","5 4");
+      disco.setAttribute("fill-opacity", .58);
+    }
+    giro.appendChild(disco);
+  } else if(comEmoji){
     // disco neutro para o emoji ficar legível; a cor fica no anel e no halo
     const disco = el("circle");
     disco.setAttribute("r", r);
@@ -1182,6 +1296,33 @@ function desenharFigura(fig, t, opts){
     });
   }
   g.appendChild(giro);
+
+  if(comIcone){
+    const def = MAPA_ICONES[fig.icone];
+    const tinta = luminancia(c.base) > .55 ? "#221C36" : "#FFFFFF";
+    const s = (r * 1.42) / 24;
+    const cx = el("g");
+    cx.setAttribute("transform", `translate(${(-12*s).toFixed(2)},${(-12*s).toFixed(2)}) scale(${s.toFixed(4)})`);
+    cx.setAttribute("opacity", fantasma ? .72 : 1);
+    cx.style.pointerEvents = "none";
+    const traco = (d, forcado) => {
+      const q = el("path");
+      q.setAttribute("d", d);
+      if(def[2] === "s" && !forcado){
+        q.setAttribute("fill", tinta);
+      } else {
+        q.setAttribute("fill","none");
+        q.setAttribute("stroke", tinta);
+        q.setAttribute("stroke-width", 1.9);
+        q.setAttribute("stroke-linecap","round");
+        q.setAttribute("stroke-linejoin","round");
+      }
+      cx.appendChild(q);
+    };
+    traco(def[3], false);
+    if(def[4]) traco(def[4], true);
+    g.appendChild(cx);
+  }
 
   if(comEmoji){
     const face = el("text");
@@ -1288,6 +1429,18 @@ function miniatura(snap, figuras, escuro = true){
     const c = corDe(f);
     const rx = 27, x = p.x, y = p.y;
     const dx = Math.sin(p.ang*Math.PI/180)*50, dy = -Math.cos(p.ang*Math.PI/180)*50;
+    if(f.forma === "i" && MAPA_ICONES[f.icone]){
+      const def = MAPA_ICONES[f.icone];
+      const tinta = luminancia(c.base) > .55 ? "#221C36" : "#FFFFFF";
+      const e2 = (rx * 1.42) / 24;
+      const tr = `translate(${(x - 12*e2).toFixed(1)},${(y - 12*e2).toFixed(1)}) scale(${e2.toFixed(3)})`;
+      const pintar = (d, forcado) => def[2] === "s" && !forcado
+        ? `<path d="${d}" fill="${tinta}"/>`
+        : `<path d="${d}" fill="none" stroke="${tinta}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>`;
+      return `<line x1="${x}" y1="${y}" x2="${x+dx}" y2="${y+dy}" stroke="${c.base}" stroke-width="5" opacity=".7"/>` +
+             `<circle cx="${x}" cy="${y}" r="${rx}" fill="${c.base}"/>` +
+             `<g transform="${tr}">${pintar(def[3], false)}${def[4] ? pintar(def[4], true) : ""}</g>`;
+    }
     if(f.forma === "e" && f.emoji){
       return `<circle cx="${x}" cy="${y}" r="${rx}" fill="${escuro ? "#1A1330" : "#FFFFFF"}" fill-opacity=".9" stroke="${c.base}" stroke-width="6"/>` +
              `<line x1="${x}" y1="${y}" x2="${x+dx}" y2="${y+dy}" stroke="${c.base}" stroke-width="5" opacity=".7"/>` +
@@ -1438,6 +1591,13 @@ function enquadrar(){
 /* ============================================================
    7. Representantes
    ============================================================ */
+function formaInicial(base){
+  const modo = dados.opcoes.figuraPadrao;
+  if(modo === "icone" && base.icone) return "i";
+  if(modo === "emoji" && base.emoji) return "e";
+  return base.forma || "n";
+}
+
 function addFigura(base){
   const s = sessao(); if(!s) return;
   const n = s.figuras.length;
@@ -1450,8 +1610,9 @@ function addFigura(base){
     id:id(),
     nome: base.nome || base.papel,
     papel: base.papel || "",
-    forma: (dados.opcoes.emojiNovo && base.emoji) ? "e" : (base.forma || "n"),
+    forma: formaInicial(base),
     emoji: base.emoji || null,
+    icone: base.icone || "pessoa",
     cor: base.cor || "materna",
     corLivre: null,
     estado: base.estado || "vivo",
@@ -1471,7 +1632,7 @@ function addLivre(){
   const campo = $("#in-livre");
   const nome = campo.value.trim();
   if(!nome) return campo.focus();
-  addFigura({ nome, papel:"", forma:"n", cor:"filhos", emoji:"🧑" });
+  addFigura({ nome, papel:"", forma:"n", cor:"filhos", emoji:"🧑", icone:"pessoa" });
   campo.value = "";
 }
 
@@ -1536,6 +1697,7 @@ function painelProps(){
           <option value="f" ${f.forma==="f"?"selected":""}>Feminino</option>
           <option value="n" ${f.forma==="n"?"selected":""}>Neutro</option>
           <option value="d" ${f.forma==="d"?"selected":""}>Força</option>
+          <option value="i" ${f.forma==="i"?"selected":""}>Ícone</option>
           <option value="e" ${f.forma==="e"?"selected":""}>Emoji</option>
         </select>
       </div>
@@ -1548,6 +1710,16 @@ function painelProps(){
         </select>
       </div>
     </div>
+    ${f.forma === "i" ? `<div class="grupo">
+      <label class="mini">Ícone</label>
+      <div class="emojis icones">
+        ${ICONES.map(([cat, lista]) => `<div class="cat">${cat}</div>` +
+          lista.map(ic => `<button data-icone="${ic[0]}" title="${escapar(ic[1])}" class="${ic[0]===f.icone?"ativo":""}">
+            ${svgIcone(ic, 21)}
+          </button>`).join("")).join("")}
+      </div>
+    </div>` : ""}
+
     ${f.forma === "e" ? `<div class="grupo">
       <label class="mini">Emoji</label>
       <div class="emojis">
@@ -1596,10 +1768,14 @@ function painelProps(){
   $("#p-forma").onchange = e => {
     f.forma = e.target.value;
     if(f.forma === "e" && !f.emoji) f.emoji = "🧑";
+    if(f.forma === "i" && !MAPA_ICONES[f.icone]) f.icone = "pessoa";
     mudou(); painelProps();
   };
-  $$("#props .emojis button").forEach(b => {
+  $$("#props .emojis button[data-emoji]").forEach(b => {
     b.onclick = () => { f.emoji = b.dataset.emoji; mudou(); painelProps(); };
+  });
+  $$("#props .emojis button[data-icone]").forEach(b => {
+    b.onclick = () => { f.icone = b.dataset.icone; mudou(); painelProps(); };
   });
   if($("#p-emoji-livre")) $("#p-emoji-livre").oninput = e => {
     const v = [...e.target.value.trim()].slice(0, 4).join("");
@@ -1637,6 +1813,15 @@ function painelProps(){
     s.figuras = s.figuras.filter(x => x.id !== f.id);
     selecionar(null); mudou();
   };
+}
+
+/* miniatura do pictograma para as grades da interface */
+function svgIcone(def, tam){
+  const pintar = (d, forcado) => def[2] === "s" && !forcado
+    ? `<path d="${d}" fill="currentColor"/>`
+    : `<path d="${d}" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>`;
+  return `<svg viewBox="0 0 24 24" width="${tam}" height="${tam}" aria-hidden="true">` +
+         pintar(def[3], false) + (def[4] ? pintar(def[4], true) : "") + `</svg>`;
 }
 
 function escapar(t){
@@ -2152,7 +2337,7 @@ function exportarJSON(){
   const b = new Blob([JSON.stringify(dados, null, 2)], { type:"application/json" });
   const a = document.createElement("a");
   a.href = URL.createObjectURL(b);
-  a.download = `mesa-backup-${new Date().toISOString().slice(0,10)}.json`;
+  a.download = `campo-backup-${new Date().toISOString().slice(0,10)}.json`;
   a.click();
   setTimeout(() => URL.revokeObjectURL(a.href), 4000);
   toast("Backup salvo");
@@ -2172,7 +2357,7 @@ $("#arquivo").onchange = e => {
       salvar(); aplicarOpcoes(); refazerFundo(); carregarSessao();
       toast("Backup restaurado");
     }catch(err){
-      aviso("Arquivo não reconhecido. Escolha um backup gerado por esta mesa.");
+      aviso("Arquivo não reconhecido. Escolha um backup gerado por este aplicativo.");
     }
   };
   leitor.readAsText(f);
@@ -2181,6 +2366,10 @@ $("#arquivo").onchange = e => {
 
 function normalizar(){
   dados.opcoes = Object.assign({}, OPCOES_PADRAO, dados.opcoes || {});
+  if(dados.opcoes.emojiNovo === true) dados.opcoes.figuraPadrao = "emoji";   // nome antigo
+  delete dados.opcoes.emojiNovo;
+  if(!["claro","neutro","violeta"].includes(dados.opcoes.tema)) dados.opcoes.tema = "claro";
+  if(!["icone","emoji","geometria"].includes(dados.opcoes.figuraPadrao)) dados.opcoes.figuraPadrao = "icone";
   if(!FUNDOS[dados.opcoes.fundo]) dados.opcoes.fundo = "nevoa";
   if(dados.opcoes.agua === false) dados.opcoes.animar = false;   // nome antigo
   dados.laudo = dados.laudo || {};
@@ -2196,6 +2385,7 @@ function normalizar(){
       if(!CORES[f.cor]) f.cor = "materna";
       if(f.corLivre === undefined) f.corLivre = null;
       if(f.emoji === undefined) f.emoji = null;
+      if(!MAPA_ICONES[f.icone]) f.icone = "pessoa";
       if(f.forma === "e" && !f.emoji) f.forma = "n";
     });
   });
@@ -2319,7 +2509,10 @@ function montarFundos(){
 
 function aplicarOpcoes(){
   const o = dados.opcoes;
-  ["raios","nomes","relogio","ondas","degrade","emojiNovo"].forEach(k => { $("#ck-" + k).checked = !!o[k]; });
+  ["raios","nomes","relogio","ondas","degrade"].forEach(k => { $("#ck-" + k).checked = !!o[k]; });
+  $("#in-aparencia").value = o.tema;
+  $("#in-figpadrao").value = o.figuraPadrao;
+  document.body.dataset.tema = o.tema;
   $("#in-fundo").value = o.fundo;
   $("#in-tom").value = o.tomFundo;   $("#out-tom").value = o.tomFundo + "%";
   $("#in-forca").value = o.forcaOndas; $("#out-forca").value = o.forcaOndas + "%";
@@ -2382,7 +2575,12 @@ $("#ck-degrade").onchange = e => { dados.opcoes.degrade = e.target.checked; salv
   $("#ck-" + k).onchange = e => { dados.opcoes[k] = e.target.checked; salvar(); render(); };
 });
 $("#ck-relogio").onchange = e => { dados.opcoes.relogio = e.target.checked; salvar(); pintarRelogio(); };
-$("#ck-emojiNovo").onchange = e => { dados.opcoes.emojiNovo = e.target.checked; salvar(); };
+$("#in-aparencia").onchange = e => {
+  dados.opcoes.tema = e.target.value;
+  document.body.dataset.tema = e.target.value;
+  salvar(); desenharTrilho();
+};
+$("#in-figpadrao").onchange = e => { dados.opcoes.figuraPadrao = e.target.value; salvar(); };
 
 ["cliente","tema","data","modalidade","frase","final","obs","tarefa","retorno"].forEach(k => {
   $("#in-" + k).oninput = e => {
