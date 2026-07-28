@@ -275,6 +275,60 @@ body.gaveta-esq .cortina,body.gaveta-dir .cortina,body.gaveta-baixo .cortina{dis
 .caixa p{color:var(--texto-fraco);font-size:13px;line-height:1.5;margin:0 0 14px}
 .caixa .ipt{width:100%}
 .caixa .fim{display:flex;justify-content:flex-end;gap:7px;margin-top:16px}
+.caixa.larga{width:min(760px,100%);display:flex;flex-direction:column;max-height:88vh}
+.caixa-topo{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
+.caixa-topo button{flex:0 0 auto;width:34px;height:34px;border-radius:50%;padding:0}
+.an-progresso{height:4px;border-radius:3px;background:var(--campo-ipt);margin:14px 0 6px;overflow:hidden}
+.an-progresso div{height:100%;background:var(--acento);transition:width .25s;width:0}
+.an-conta{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--texto-fraco);margin-bottom:8px}
+.an-corpo{overflow-y:auto;flex:1;padding-right:4px;margin-right:-4px}
+.an-bloco{margin-bottom:18px}
+.an-nota{font-size:12.5px;color:var(--texto-fraco);margin:-2px 0 9px;line-height:1.45}
+.perg{padding:9px 10px;border:1px solid var(--linha);border-radius:9px;margin-bottom:6px;background:var(--painel)}
+.perg.marcada{border-color:var(--acento);background:var(--realce)}
+.perg.texto{border-style:dashed}
+.perg-topo{display:flex;align-items:center;gap:12px;justify-content:space-between}
+.perg-txt{font-size:13.5px;line-height:1.4}
+.tri{display:flex;gap:3px;flex:0 0 auto}
+.tri button{
+  padding:4px 9px;font-size:11.5px;border:1px solid var(--linha);border-radius:14px;
+  background:var(--campo-ipt);color:var(--texto-fraco);
+}
+.tri button:hover{border-color:var(--acento)}
+.tri button.on{border-color:transparent;color:var(--acento-texto);background:var(--texto-fraco)}
+.tri button.on.sim{background:var(--acento)}
+.perg-baixo{display:flex;gap:6px;margin-top:8px}
+.perg-baixo .ipt{flex:1}
+.leitura-lista{margin:0;padding-left:0;list-style:none;font-size:12.8px;line-height:1.5}
+.leitura-lista li{
+  padding:5px 0 5px 15px;position:relative;border-bottom:1px solid var(--linha);
+}
+.leitura-lista li:last-child{border-bottom:none}
+.leitura-lista li::before{
+  content:"";position:absolute;left:0;top:11px;width:6px;height:6px;border-radius:50%;
+  background:var(--texto-fraco);
+}
+.leitura-lista li.olhar::before{background:var(--acento)}
+.leitura-lista li.atencao::before{background:var(--rosa)}
+.leitura-lista li.atencao{color:var(--texto)}
+.leitura-rodape{
+  font-size:11px;color:var(--texto-fraco);line-height:1.45;margin:10px 0 0;
+  padding-top:8px;border-top:1px dashed var(--linha);
+}
+.an-lista{margin:0;padding-left:18px;font-size:13px;line-height:1.55}
+.an-lista li{margin-bottom:3px}
+.an-lista b{font-weight:600}
+.selo{
+  display:inline-block;font-family:var(--mono);font-size:10px;padding:1px 6px;border-radius:9px;
+  background:var(--campo-ipt);color:var(--texto-fraco);margin-left:4px;
+}
+.selo.alerta{background:var(--acento);color:var(--acento-texto)}
+@media (max-width:880px){
+  .perg-topo{flex-direction:column;align-items:stretch;gap:8px}
+  .tri{justify-content:stretch}
+  .tri button{flex:1}
+  .caixa.larga{max-height:92vh}
+}
 
 /* ---------- carta sistêmica ---------- */
 .carta{
@@ -356,6 +410,16 @@ body.apresentando{--barra:0px}
   #laudo .mov .n{font-family:var(--sans);font-size:8pt;letter-spacing:.1em;color:#5B4A7A;font-weight:700}
   #laudo .mov p{margin:3px 0 0;font-size:10.5pt;line-height:1.45}
   #laudo .txt{font-size:11pt;line-height:1.55;white-space:pre-wrap;margin:0 0 8px;text-align:justify}
+  #laudo .mudou{
+    font-family:var(--sans);font-size:9pt;color:#5B4A7A;margin-top:4px;line-height:1.45;
+    border-left:1.5px solid #C9BEE4;padding-left:7px;
+  }
+  #laudo ul.leitura-laudo{margin:0 0 6px;padding-left:17px;font-size:10.5pt;line-height:1.5}
+  #laudo ul.leitura-laudo li{margin-bottom:2px}
+  #laudo .ressalva{
+    font-family:var(--sans);font-size:8pt;color:#777;line-height:1.5;
+    margin:6px 0 0;text-align:justify;font-style:italic;
+  }
   #laudo .frase-forca{
     font-size:13pt;font-style:italic;text-align:center;margin:6px 0;padding:10px 16px;
     border-left:2.5px solid #C77DFF;background:#F8F5FD;white-space:pre-wrap;text-align:left;
@@ -430,6 +494,8 @@ body.apresentando{--barra:0px}
     <div class="menu">
       <button class="btn" id="btn-menu">⋯</button>
       <div class="menu-lista" id="menu" hidden>
+        <button onclick="abrirAnamnese()">Anamnese sistêmica</button>
+        <hr>
         <button onclick="novaSessao()">Nova sessão</button>
         <button onclick="renomearSessao()">Renomear sessão</button>
         <button onclick="duplicarSessao()">Duplicar sessão</button>
@@ -488,8 +554,17 @@ body.apresentando{--barra:0px}
       </select>
     </div>
 
+    <div class="grupo">
+      <button class="btn" id="btn-anamnese-painel" style="width:100%">Anamnese sistêmica</button>
+    </div>
+
     <div class="rotulo">Representante</div>
     <div id="props"></div>
+
+    <div id="bloco-leitura">
+      <div class="rotulo">Leitura do campo</div>
+      <div id="leitura"></div>
+    </div>
 
     <div class="rotulo">Fundo do campo</div>
     <div class="grupo">
@@ -554,6 +629,8 @@ body.apresentando{--barra:0px}
     <label class="marcar"><input type="checkbox" id="ck-raios"> Direção do olhar</label>
     <label class="marcar"><input type="checkbox" id="ck-nomes"> Nomes</label>
     <label class="marcar"><input type="checkbox" id="ck-relogio"> Cronômetro à vista</label>
+    <label class="marcar"><input type="checkbox" id="ck-leitura"> Leitura do campo</label>
+    <label class="marcar"><input type="checkbox" id="ck-leituraLaudo"> Incluir a leitura no laudo</label>
     <div class="grupo" style="margin-top:6px">
       <label class="mini">Novos representantes entram como</label>
       <select class="ipt" id="in-figpadrao" style="width:100%">
@@ -1138,6 +1215,7 @@ function montarFundo(destino){
    ============================================================ */
 const OPCOES_PADRAO = {
   raios:true, nomes:true, relogio:true, tema:"claro", figuraPadrao:"icone",
+  leitura:true, leituraLaudo:true,
   fundo:"nevoa", tomFundo:62, animar:true,
   corFundo:"#6B4FD8", corFundo2:"#0D0828", degrade:true,
   ondas:true, forcaOndas:62, qtdOndas:5, corOndas:"#B9A3FF"
@@ -1165,6 +1243,7 @@ function sessaoNova(nome){
     modalidade:"Individual presencial",
     frase:"", final:"", obs:"", tarefa:"", retorno:"",
     segundos:0, correndo:false, desde:null,
+    anamnese:{},
     figuras:[], cenas:[]
   };
 }
@@ -1405,7 +1484,7 @@ function montarPalco(){
   montarFundo(camadaFundo);
 }
 
-function refazerFundo(){ montarPalco(); render(); }
+function refazerFundo(){ montarPalco(); render(); if(typeof pintarLeitura === "function") pintarLeitura(); }
 
 function render(){
   const s = sessao();
@@ -1886,6 +1965,8 @@ function aplicarCena(cena, anima = true){
 }
 
 function desenharTrilho(){
+  pintarLeitura();
+  pintarAnamnese();
   const s = sessao();
   const t = $("#trilho");
   if(!s || !s.cenas.length){
@@ -2105,6 +2186,432 @@ function abrirCarta(filtro){
 }
 
 /* ============================================================
+   Leitura do campo — descrição geométrica, nunca interpretação.
+   O sistema diz o que está lá; o sentido é da terapeuta.
+   ============================================================ */
+const CONE_OLHAR = 20;        // graus de tolerância do olhar
+const CORPO = RAIO * 2;       // unidade de distância: uma figura
+
+function difAng(a, b){
+  const d = Math.abs(a - b) % 360;
+  return d > 180 ? 360 - d : d;
+}
+
+/* aceita as figuras da sessão ou o instantâneo de uma cena */
+function posicoesDe(figuras, snap){
+  if(!snap) return figuras.map(f => ({ id:f.id, nome:f.nome, x:f.x, y:f.y, ang:f.ang }));
+  const mapa = Object.fromEntries(figuras.map(f => [f.id, f]));
+  return snap.filter(p => mapa[p.id])
+             .map(p => ({ id:p.id, nome:mapa[p.id].nome, x:p.x, y:p.y, ang:p.ang }));
+}
+
+function lerCampo(pos){
+  const n = pos.length;
+  const cx = LARG/2, cy = ALT/2;
+  const raioCampo = Math.min(LARG, ALT) / 2 * 1.02;
+  const dist = (a,b) => Math.hypot(a.x-b.x, a.y-b.y);
+
+  const olhares = [];
+  pos.forEach(a => pos.forEach(b => {
+    if(a.id === b.id) return;
+    const rumo = anguloEntre(a.x, a.y, b.x, b.y);
+    const desvio = difAng(a.ang, rumo);
+    if(desvio <= CONE_OLHAR) olhares.push({ de:a, para:b, desvio, d:dist(a,b) });
+  }));
+  // se olha para mais de um na mesma direção, vale o mais próximo
+  const porOlhante = {};
+  olhares.forEach(o => {
+    if(!porOlhante[o.de.id] || o.d < porOlhante[o.de.id].d) porOlhante[o.de.id] = o;
+  });
+  const olharPrincipal = Object.values(porOlhante);
+
+  const alvos = new Set(olharPrincipal.map(o => o.para.id));
+  const olhantes = new Set(olharPrincipal.map(o => o.de.id));
+
+  const reciprocos = [];
+  olharPrincipal.forEach(o => {
+    const volta = porOlhante[o.para.id];
+    if(volta && volta.para.id === o.de.id && o.de.id < o.para.id)
+      reciprocos.push([o.de, o.para]);
+  });
+
+  const ninguemOlha = pos.filter(f => !alvos.has(f.id));
+  const semOlhar    = pos.filter(f => !olhantes.has(f.id));
+  const foraDoCirculo = pos.filter(f => Math.hypot(f.x-cx, f.y-cy) > raioCampo);
+
+  const gx = pos.reduce((s,f) => s+f.x, 0) / (n||1);
+  const gy = pos.reduce((s,f) => s+f.y, 0) / (n||1);
+  const deCostas = pos.filter(f => difAng(f.ang, anguloEntre(f.x, f.y, gx, gy)) > 120);
+
+  let perto = null, longe = null;
+  pos.forEach((a,i) => pos.slice(i+1).forEach(b => {
+    const d = dist(a,b);
+    if(!perto || d < perto.d) perto = { a, b, d };
+    if(!longe || d > longe.d) longe = { a, b, d };
+  }));
+
+  return { pos, olhares:olharPrincipal, reciprocos, ninguemOlha, semOlhar,
+           foraDoCirculo, deCostas, perto, longe, centro:{ x:gx, y:gy } };
+}
+
+const emCorpos = d => (d / CORPO);
+function distTexto(d){
+  const c = emCorpos(d);
+  if(c < 1.5) return "lado a lado";
+  if(c < 3)   return "próximos";
+  if(c < 6)   return "à meia distância";
+  return "distantes";
+}
+const listar = arr => arr.length === 1 ? arr[0]
+  : arr.slice(0,-1).join(", ") + " e " + arr[arr.length-1];
+
+function frasesDaLeitura(l){
+  const f = [];
+  if(!l.pos.length) return f;
+
+  l.reciprocos.forEach(([a,b]) =>
+    f.push({ tipo:"olhar", t:`${a.nome} e ${b.nome} se olham.` }));
+
+  l.olhares.forEach(o => {
+    const jaRecip = l.reciprocos.some(([a,b]) =>
+      (a.id === o.de.id && b.id === o.para.id) || (b.id === o.de.id && a.id === o.para.id));
+    if(!jaRecip) f.push({ tipo:"olhar", t:`${o.de.nome} olha para ${o.para.nome}.` });
+  });
+
+  if(l.ninguemOlha.length && l.pos.length > 1)
+    f.push({ tipo:"atencao", t:`Ninguém olha para ${listar(l.ninguemOlha.map(x => x.nome))}.` });
+
+  if(l.semOlhar.length && l.pos.length > 1)
+    f.push({ tipo:"neutro", t:`${listar(l.semOlhar.map(x => x.nome))} não olha${l.semOlhar.length>1?"m":""} para ninguém do campo.` });
+
+  // só vale citar o círculo quando ele está visível no campo
+  if(l.foraDoCirculo.length && dados.opcoes.ondas){
+    const v = l.foraDoCirculo.length > 1 ? "estão" : "está";
+    f.push({ tipo:"atencao", t:`${listar(l.foraDoCirculo.map(x => x.nome))} ${v} fora do círculo.` });
+  }
+
+  if(l.deCostas.length){
+    const v = l.deCostas.length > 1 ? "estão" : "está";
+    f.push({ tipo:"neutro", t:`${listar(l.deCostas.map(x => x.nome))} ${v} de costas para o centro do grupo.` });
+  }
+
+  if(l.perto && l.pos.length > 1)
+    f.push({ tipo:"neutro", t:`Mais próximos: ${l.perto.a.nome} e ${l.perto.b.nome} (${distTexto(l.perto.d)}).` });
+  if(l.longe && l.pos.length > 2)
+    f.push({ tipo:"neutro", t:`Mais afastados: ${l.longe.a.nome} e ${l.longe.b.nome}.` });
+
+  return f;
+}
+
+/* o que mudou de um movimento para o seguinte */
+function compararLeituras(antes, depois){
+  const f = [];
+  const pa = Object.fromEntries(antes.pos.map(p => [p.id, p]));
+  const pd = Object.fromEntries(depois.pos.map(p => [p.id, p]));
+
+  // deslocamentos
+  Object.values(pd).forEach(b => {
+    const a = pa[b.id]; if(!a) return;
+    const mov = Math.hypot(b.x-a.x, b.y-a.y);
+    const giro = difAng(a.ang, b.ang);
+    if(emCorpos(mov) >= 0.5 && giro >= 25)
+      f.push(`${b.nome} mudou de lugar e virou ${Math.round(giro)}°.`);
+    else if(emCorpos(mov) >= 0.5)
+      f.push(`${b.nome} mudou de lugar.`);
+    else if(giro >= 25)
+      f.push(`${b.nome} virou ${Math.round(giro)}°.`);
+  });
+
+  // aproximações e afastamentos
+  const ids = Object.keys(pd).filter(i => pa[i]);
+  ids.forEach((i, k) => ids.slice(k+1).forEach(j => {
+    const d0 = Math.hypot(pa[i].x-pa[j].x, pa[i].y-pa[j].y);
+    const d1 = Math.hypot(pd[i].x-pd[j].x, pd[i].y-pd[j].y);
+    if(d0 < 1) return;
+    const var_ = (d1 - d0) / d0;
+    if(Math.abs(var_) < 0.2) return;
+    f.push(var_ < 0
+      ? `${pd[i].nome} e ${pd[j].nome} aproximaram-se ${Math.round(-var_*100)}%.`
+      : `${pd[i].nome} e ${pd[j].nome} afastaram-se ${Math.round(var_*100)}%.`);
+  }));
+
+  // olhares que surgiram ou cessaram
+  const chave = l => new Set(l.olhares.map(o => o.de.id + ">" + o.para.id));
+  const ka = chave(antes), kd = chave(depois);
+  depois.olhares.forEach(o => {
+    if(!ka.has(o.de.id + ">" + o.para.id))
+      f.push(`${o.de.nome} passou a olhar para ${o.para.nome}.`);
+  });
+  antes.olhares.forEach(o => {
+    if(!kd.has(o.de.id + ">" + o.para.id) && pd[o.de.id] && pd[o.para.id])
+      f.push(`${o.de.nome} deixou de olhar para ${o.para.nome}.`);
+  });
+
+  return f;
+}
+
+function pintarLeitura(){
+  const alvo = $("#leitura");
+  if(!alvo) return;
+  const s = sessao();
+  const bloco = $("#bloco-leitura");
+  if(bloco) bloco.hidden = !dados.opcoes.leitura;
+  if(!dados.opcoes.leitura || !s) return;
+
+  if(s.figuras.length < 2){
+    alvo.innerHTML = `<p class="vazio">Com dois ou mais representantes no campo, a leitura aparece aqui.</p>`;
+    return;
+  }
+  const l = lerCampo(posicoesDe(s.figuras));
+  const frases = frasesDaLeitura(l);
+
+  let extra = "";
+  if(s.cenas.length){
+    const ultima = lerCampo(posicoesDe(s.figuras, s.cenas[s.cenas.length-1].snap));
+    const mud = compararLeituras(ultima, l);
+    if(mud.length) extra = `<div class="rotulo" style="margin-top:12px">Desde o movimento ${String(s.cenas.length).padStart(2,"0")}</div>
+      <ul class="leitura-lista">${mud.slice(0,8).map(t => `<li>${escapar(t)}</li>`).join("")}</ul>`;
+  }
+
+  const cabe = frases.length > 9 ? frases.slice(0, 9) : frases;
+  const resto = frases.length - cabe.length;
+  alvo.innerHTML =
+    `<ul class="leitura-lista">${cabe.map(x =>
+      `<li class="${x.tipo}">${escapar(x.t)}</li>`).join("")}</ul>` +
+    (resto > 0 ? `<p class="leitura-rodape" style="border:none;padding:0;margin:6px 0 0">e mais ${resto} observaç${resto>1?"ões":"ão"} no laudo.</p>` : "") + extra +
+    `<p class="leitura-rodape">Descrição do que está posto no campo. A leitura é sua.</p>`;
+}
+
+/* ============================================================
+   Anamnese sistêmica — o levantamento que faz emergir quem
+   está fora. Toda pergunta é formulada para que "sim" seja a
+   resposta que pede atenção.
+   ============================================================ */
+const ANAMNESE = [
+  { bloco:"Sistema atual", itens:[
+    { c:"rel",      t:"sim",   p:"Está em uma relação atualmente?", cria:["Cônjuge"] },
+    { c:"relAnt",   t:"sim",   p:"Teve casamentos ou relações sérias anteriores?", cria:["Ex-cônjuge"] },
+    { c:"filhos",   t:"sim",   p:"Tem filhos?", cria:["Filho"] },
+    { c:"comQuem",  t:"texto", p:"Com quem mora hoje?" }
+  ]},
+
+  { bloco:"Família de origem", itens:[
+    { c:"lugar",    t:"texto", p:"Que lugar você ocupa entre os irmãos? (primeiro, do meio, caçula…)" },
+    { c:"irmaos",   t:"sim",   p:"Tem irmãos vivos?", cria:["Irmão","Irmã"] },
+    { c:"paiMorto", t:"sim",   p:"Seu pai já faleceu?", cria:["Falecido"] },
+    { c:"maeMorta", t:"sim",   p:"Sua mãe já faleceu?", cria:["Falecido"] },
+    { c:"paisSep",  t:"sim",   p:"Seus pais se separaram?" },
+    { c:"paisAnt",  t:"sim",   p:"Seu pai ou sua mãe tiveram noivado, casamento ou filho de outra união?", cria:["Ex-cônjuge"] },
+    { c:"avosAnt",  t:"sim",   p:"Algum avô ou avó teve relação anterior importante?", cria:["Ex-cônjuge"] }
+  ]},
+
+  { bloco:"Quem pede lugar", nota:"O núcleo do levantamento: fatos que costumam deixar alguém de fora do sistema.", itens:[
+    { c:"aborto",   t:"sim", p:"Houve abortos, espontâneos ou provocados?", cria:["Aborto"] },
+    { c:"natimorto",t:"sim", p:"Houve natimortos ou bebês que morreram logo após nascer?", cria:["Natimorto"] },
+    { c:"irmaoMorto",t:"sim",p:"Algum irmão faleceu, sobretudo na infância?", cria:["Falecido"] },
+    { c:"gemeo",    t:"sim", p:"Há registro ou suspeita de gêmeo perdido na gestação?", cria:["Aborto"] },
+    { c:"precoce",  t:"sim", p:"Alguém morreu jovem na família — pais, avós, tios?", cria:["Falecido"] },
+    { c:"parto",    t:"sim", p:"Alguma mulher da família morreu no parto?", cria:["Falecido"] },
+    { c:"suicidio", t:"sim", p:"Houve suicídio na família?", cria:["Falecido"] },
+    { c:"excluido", t:"sim", p:"Existe alguém de quem não se fala, ou que foi afastado da família?", cria:["Excluído"] },
+    { c:"adocao",   t:"sim", p:"Houve adoção, criança entregue ou criada por outros?", cria:["Excluído"] },
+    { c:"foraCasamento", t:"sim", p:"Houve filho fora do casamento ou paternidade não reconhecida?", cria:["Excluído"] },
+    { c:"vitima",   t:"sim", p:"Alguém da família sofreu violência grave, crime ou perseguição?", cria:["Excluído"] },
+    { c:"autor",    t:"sim", p:"Alguém da família causou dano grave a outra pessoa?", cria:["Excluído"] },
+    { c:"doenca",   t:"sim", p:"Há doença grave, deficiência ou internação prolongada na família?", cria:["Doença"] },
+    { c:"migracao", t:"sim", p:"Houve migração, fuga, exílio ou perda de terra?", cria:["Destino"] },
+    { c:"guerra",   t:"sim", p:"Alguém foi para a guerra, esteve preso ou foi perseguido?", cria:["Destino"] },
+    { c:"sumiu",    t:"sim", p:"Há alguém desaparecido, sem paradeiro conhecido?", cria:["Excluído"] },
+    { c:"heranca",  t:"sim", p:"Houve conflito grave de herança, dinheiro ou patrimônio?", cria:["Dinheiro"] },
+    { c:"segredo",  t:"sim", p:"Existe um segredo de família?", cria:["Segredo"] }
+  ]},
+
+  { bloco:"O que se repete", itens:[
+    { c:"repete",   t:"texto", p:"O que se repete na sua vida?" },
+    { c:"desde",    t:"texto", p:"Desde quando?" },
+    { c:"lembra",   t:"texto", p:"A quem, na família, isso lembra?" },
+    { c:"espera",   t:"texto", p:"O que você espera desta constelação?" }
+  ]}
+];
+
+const TOTAL_ANAMNESE = ANAMNESE.reduce((n,b) => n + b.itens.length, 0);
+
+function respostas(){
+  const s = sessao();
+  if(!s) return {};
+  if(!s.anamnese) s.anamnese = {};
+  return s.anamnese;
+}
+
+function contarAnamnese(s){
+  const a = (s && s.anamnese) || {};
+  let feitas = 0, sins = 0;
+  ANAMNESE.forEach(b => b.itens.forEach(i => {
+    const r = a[i.c];
+    if(!r) return;
+    if(i.t === "texto"){ if((r.obs || "").trim()) feitas++; }
+    else if(r.r){ feitas++; if(r.r === "sim") sins++; }
+  }));
+  return { feitas, sins, total:TOTAL_ANAMNESE };
+}
+
+/* itens marcados "sim" — o que a terapeuta lê antes de começar */
+function pontosDeAtencao(s){
+  const a = (s && s.anamnese) || {};
+  const fora = [];
+  ANAMNESE.forEach(b => b.itens.forEach(i => {
+    const r = a[i.c];
+    if(i.t === "sim" && r && r.r === "sim") fora.push({ item:i, obs:(r.obs || "").trim() });
+  }));
+  return fora;
+}
+
+function abrirAnamnese(){
+  const s = sessao(); if(!s) return;
+  const a = respostas();
+
+  const veu = document.createElement("div");
+  veu.className = "veu";
+  veu.id = "veu-anamnese";
+
+  const linha = i => {
+    const r = a[i.c] || {};
+    if(i.t === "texto"){
+      return `<div class="perg texto">
+        <label class="mini">${escapar(i.p)}</label>
+        <textarea class="ipt" data-obs="${i.c}" rows="2" placeholder="—">${escapar(r.obs || "")}</textarea>
+      </div>`;
+    }
+    return `<div class="perg ${r.r === "sim" ? "marcada" : ""}" data-linha="${i.c}">
+      <div class="perg-topo">
+        <span class="perg-txt">${escapar(i.p)}</span>
+        <span class="tri">
+          ${[["sim","Sim"],["nao","Não"],["ns","Não sei"]].map(([v,rot]) =>
+            `<button data-r="${i.c}:${v}" class="${r.r === v ? "on " + v : ""}">${rot}</button>`).join("")}
+        </span>
+      </div>
+      <div class="perg-baixo" ${r.r === "sim" ? "" : "hidden"}>
+        <input class="ipt" data-obs="${i.c}" value="${escapar(r.obs || "")}" placeholder="Quem, quando, o que se sabe">
+        ${i.cria ? `<button class="btn pequeno" data-cria="${i.c}">+ trazer ao campo</button>` : ""}
+      </div>
+    </div>`;
+  };
+
+  veu.innerHTML = `
+    <div class="caixa larga">
+      <div class="caixa-topo">
+        <div>
+          <h2>Anamnese sistêmica</h2>
+          <p style="margin:0">O levantamento vem antes do campo. Ele existe para fazer aparecer quem ficou de fora.</p>
+        </div>
+        <button class="btn" id="an-fechar" aria-label="Fechar">✕</button>
+      </div>
+
+      <div class="an-progresso"><div id="an-barra"></div></div>
+      <div class="an-conta" id="an-conta"></div>
+
+      <div class="an-corpo">
+        ${ANAMNESE.map(b => `
+          <div class="an-bloco">
+            <div class="rotulo">${escapar(b.bloco)}</div>
+            ${b.nota ? `<p class="an-nota">${escapar(b.nota)}</p>` : ""}
+            ${b.itens.map(linha).join("")}
+          </div>`).join("")}
+
+        <div class="an-bloco" id="an-resumo"></div>
+      </div>
+
+      <div class="fim">
+        <button class="btn" id="an-limpar">Limpar respostas</button>
+        <button class="btn principal" id="an-ok">Concluir</button>
+      </div>
+    </div>`;
+  document.body.appendChild(veu);
+
+  const atualizar = () => {
+    const n = contarAnamnese(sessao());
+    $("#an-barra").style.width = Math.round(n.feitas / n.total * 100) + "%";
+    $("#an-conta").textContent =
+      `${n.feitas} de ${n.total} respondidas` + (n.sins ? ` · ${n.sins} ponto${n.sins>1?"s":""} de atenção` : "");
+    const fora = pontosDeAtencao(sessao());
+    $("#an-resumo").innerHTML = fora.length
+      ? `<div class="rotulo">Pontos de atenção</div>
+         <ul class="an-lista">${fora.map(f =>
+            `<li><b>${escapar(f.item.p)}</b>${f.obs ? " — " + escapar(f.obs) : ""}</li>`).join("")}</ul>
+         <button class="btn" id="an-trazer-todos" style="width:100%;margin-top:8px">
+           Trazer todos ao campo (${fora.filter(f => f.item.cria).reduce((n,f) => n + f.item.cria.length, 0)} representantes)
+         </button>`
+      : `<p class="vazio">Nada marcado ainda. O que for respondido com “sim” aparece aqui como ponto de atenção.</p>`;
+    if($("#an-trazer-todos")) $("#an-trazer-todos").onclick = () => {
+      let n = 0;
+      fora.forEach(f => { if(f.item.cria) f.item.cria.forEach(papel => { criarDoRoteiro(papel, f.obs); n++; }); });
+      salvar();
+      toast(n ? `${n} representantes no campo` : "Nada a trazer");
+    };
+    salvar();
+  };
+
+  veu.querySelectorAll("[data-r]").forEach(b => {
+    b.onclick = () => {
+      const [c, v] = b.dataset.r.split(":");
+      const item = a[c] || (a[c] = {});
+      item.r = item.r === v ? null : v;
+      const linhaEl = veu.querySelector(`[data-linha="${c}"]`);
+      linhaEl.classList.toggle("marcada", item.r === "sim");
+      linhaEl.querySelector(".perg-baixo").hidden = item.r !== "sim";
+      linhaEl.querySelectorAll("[data-r]").forEach(x => {
+        const vv = x.dataset.r.split(":")[1];
+        x.className = item.r === vv ? "on " + vv : "";
+      });
+      if(item.r === "sim") linhaEl.querySelector("[data-obs]").focus();
+      atualizar();
+    };
+  });
+  veu.querySelectorAll("[data-obs]").forEach(campo => {
+    campo.oninput = () => {
+      const c = campo.dataset.obs;
+      (a[c] || (a[c] = {})).obs = campo.value;
+      atualizar();
+    };
+  });
+  veu.querySelectorAll("[data-cria]").forEach(b => {
+    b.onclick = () => {
+      const item = ANAMNESE.flatMap(x => x.itens).find(i => i.c === b.dataset.cria);
+      item.cria.forEach(papel => criarDoRoteiro(papel, (a[item.c] || {}).obs || ""));
+      salvar();
+      toast(item.cria.join(" e ") + " no campo");
+    };
+  });
+
+  const fechar = () => { veu.remove(); pintarAnamnese(); };
+  $("#an-fechar").onclick = fechar;
+  $("#an-ok").onclick = fechar;
+  $("#an-limpar").onclick = () => {
+    if(!confirm("Apagar todas as respostas desta anamnese?")) return;
+    sessao().anamnese = {};
+    veu.remove(); abrirAnamnese();
+  };
+  veu.onclick = e => { if(e.target === veu) fechar(); };
+  atualizar();
+}
+
+/* cria no campo o representante que a resposta indicou */
+function criarDoRoteiro(papel, obs){
+  const base = PALETA.flatMap(g => g.itens).find(i => i.papel === papel);
+  if(!base) return;
+  const f = addFigura(base);
+  if(f && obs) f.papel = obs.slice(0, 40);
+  render();
+}
+
+function pintarAnamnese(){
+  const n = contarAnamnese(sessao());
+  const b = $("#btn-anamnese-painel");
+  if(b) b.innerHTML = `Anamnese sistêmica <span class="selo">${n.feitas}/${n.total}</span>` +
+    (n.sins ? ` <span class="selo alerta">${n.sins}</span>` : "");
+}
+
+/* ============================================================
    11. Sessões
    ============================================================ */
 function listarSessoes(){
@@ -2119,7 +2626,7 @@ function carregarSessao(){
   });
   selecionado = null; cenaAtiva = null;
   vista = { x:0, y:0, l:LARG, a:ALT };
-  render(); painelProps(); desenharTrilho(); listarSessoes(); pintarRelogio();
+  render(); painelProps(); desenharTrilho(); listarSessoes(); pintarRelogio(); pintarAnamnese();
 }
 
 function novaSessao(){
@@ -2286,6 +2793,21 @@ function imprimir(){
     <h2>Demanda apresentada</h2>
     <p class="txt">${escapar(s.tema || "Não registrada.")}</p>
 
+    ${(() => {
+      const n = contarAnamnese(s);
+      if(!n.feitas) return "";
+      const fora = pontosDeAtencao(s);
+      const livres = ANAMNESE.flatMap(b => b.itens).filter(i => i.t === "texto")
+        .map(i => ({ i, v:((s.anamnese||{})[i.c]||{}).obs || "" })).filter(x => x.v.trim());
+      return `<h2>Levantamento sistêmico</h2>
+        <p class="txt">${n.feitas} de ${n.total} itens levantados${n.sins ? `; ${n.sins} com resposta afirmativa` : "; nenhum ponto afirmativo"}.</p>
+        ${fora.length ? `<table class="reps">
+          <tr><th style="width:56%">Fato levantado</th><th>Registro</th></tr>
+          ${fora.map(f => `<tr><td>${escapar(f.item.p)}</td><td>${escapar(f.obs || "—")}</td></tr>`).join("")}
+        </table>` : ""}
+        ${livres.map(x => `<p class="txt"><b>${escapar(x.i.p)}</b><br>${escapar(x.v)}</p>`).join("")}`;
+    })()}
+
     <h2>Composição do campo</h2>
     <table class="reps">
       <tr><th style="width:44%">Representante</th><th style="width:36%">Papel no sistema</th><th>Situação</th></tr>
@@ -2300,14 +2822,32 @@ function imprimir(){
     <div class="campo-impresso">${new XMLSerializer().serializeToString(copia)}</div>
     <div class="legenda">Disposição e direção do olhar dos representantes ao encerramento do atendimento.</div>
 
-    ${s.cenas.length ? `<h2>Movimentos observados</h2>` + s.cenas.map((c,i) => `
-      <div class="mov">
+    ${s.cenas.length ? `<h2>Movimentos observados</h2>` + s.cenas.map((c,i) => {
+      let mudancas = "";
+      if(dados.opcoes.leituraLaudo && i > 0){
+        const a = lerCampo(posicoesDe(s.figuras, s.cenas[i-1].snap));
+        const b2 = lerCampo(posicoesDe(s.figuras, c.snap));
+        const m = compararLeituras(a, b2);
+        if(m.length) mudancas = `<div class="mudou">${m.slice(0,6).map(escapar).join(" ")}</div>`;
+      }
+      return `<div class="mov">
         ${miniatura(c.snap, s.figuras, false)}
         <div>
           <div class="n">MOVIMENTO ${String(i+1).padStart(2,"0")}${c.min ? " — aos " + c.min + " min" : ""}</div>
           <p>${escapar(c.titulo)}</p>
+          ${mudancas}
         </div>
-      </div>`).join("") : ""}
+      </div>`;
+    }).join("") : ""}
+
+    ${(dados.opcoes.leituraLaudo && s.figuras.length > 1) ? (() => {
+      const fr = frasesDaLeitura(lerCampo(posicoesDe(s.figuras)));
+      if(!fr.length) return "";
+      return `<h2>Leitura do campo ao encerramento</h2>
+        <ul class="leitura-laudo">${fr.map(x => `<li>${escapar(x.t)}</li>`).join("")}</ul>
+        <p class="ressalva">Descrição geométrica das posições e direções registradas ao término do atendimento,
+        gerada automaticamente. Não constitui interpretação; a leitura clínica é de responsabilidade da terapeuta.</p>`;
+    })() : ""}
 
     ${s.frase ? `<h2>Frases de força trabalhadas</h2><p class="frase-forca">${escapar(s.frase)}</p>` : ""}
     ${bloco("Movimento final", s.final)}
@@ -2376,6 +2916,7 @@ function normalizar(){
   const antigas = { origem:"paterna", conjuge:"conjugal", abstrato:"sintoma", solucao:"luz", neutro:"filhos" };
   (dados.sessoes || []).forEach(s => {
     s.modalidade = s.modalidade || "Individual presencial";
+    s.anamnese = s.anamnese || {};
     s.obs = s.obs ?? "";
     s.segundos = s.segundos || 0;
     s.correndo = !!s.correndo;
@@ -2509,7 +3050,7 @@ function montarFundos(){
 
 function aplicarOpcoes(){
   const o = dados.opcoes;
-  ["raios","nomes","relogio","ondas","degrade"].forEach(k => { $("#ck-" + k).checked = !!o[k]; });
+  ["raios","nomes","relogio","ondas","degrade","leitura","leituraLaudo"].forEach(k => { $("#ck-" + k).checked = !!o[k]; });
   $("#in-aparencia").value = o.tema;
   $("#in-figpadrao").value = o.figuraPadrao;
   document.body.dataset.tema = o.tema;
@@ -2581,6 +3122,8 @@ $("#in-aparencia").onchange = e => {
   salvar(); desenharTrilho();
 };
 $("#in-figpadrao").onchange = e => { dados.opcoes.figuraPadrao = e.target.value; salvar(); };
+$("#ck-leitura").onchange = e => { dados.opcoes.leitura = e.target.checked; salvar(); pintarLeitura(); };
+$("#ck-leituraLaudo").onchange = e => { dados.opcoes.leituraLaudo = e.target.checked; salvar(); };
 
 ["cliente","tema","data","modalidade","frase","final","obs","tarefa","retorno"].forEach(k => {
   $("#in-" + k).oninput = e => {
@@ -2597,6 +3140,7 @@ $("#in-figpadrao").onchange = e => { dados.opcoes.figuraPadrao = e.target.value;
 $("#sel-sessao").onchange = e => { dados.atual = e.target.value; salvar(); carregarSessao(); };
 $("#btn-cena").onclick = salvarCena;
 $("#btn-carta").onclick = () => abrirCarta(null);
+$("#btn-anamnese-painel").onclick = () => { fecharGavetas(); abrirAnamnese(); };
 $("#btn-reproduzir").onclick = reproduzir;
 $("#btn-play").onclick = alternarRelogio;
 $("#btn-zera").onclick = zerarRelogio;
@@ -2610,6 +3154,7 @@ document.addEventListener("keydown", e => {
   const editando = /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName);
   if(e.key === "Escape"){
     const carta = $("#veu-carta"); if(carta) return carta.remove();
+    const an = $("#veu-anamnese"); if(an){ an.remove(); return pintarAnamnese(); }
     if(document.body.classList.contains("apresentando")) return apresentar(false);
     if(document.body.className.includes("gaveta-")) return fecharGavetas();
     if(!editando) selecionar(null);
